@@ -1,5 +1,5 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
-import 'package:lets_go_gym/localization/app_localizations.dart';
 import 'package:lets_go_gym/ui/home_page.dart';
 
 void main() {
