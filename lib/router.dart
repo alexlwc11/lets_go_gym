@@ -12,8 +12,8 @@ class ScreenPaths {
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
-final GlobalKey<NavigatorState> _shellNavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: 'shell');
+// final GlobalKey<NavigatorState> _shellNavigatorKey =
+//     GlobalKey<NavigatorState>(debugLabel: 'shell');
 
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
@@ -21,7 +21,7 @@ final appRouter = GoRouter(
   routes: [
     GoRoute(
       path: ScreenPaths.entry,
-      builder: (_, __) => const EntryScreen(title: 'Flutter Demo Home Page'),
+      builder: (_, __) => const EntryScreen(),
     ),
   ],
 );
