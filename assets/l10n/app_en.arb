@@ -1,3 +1,5 @@
 {
-  "appTitle": "Let's go gym"
+  "appTitle": "Let's go gym",
+  "entryScreen_pleaseUpdateToContinue": "Please update to latest version first",
+  "entryScreen_update": "Update"
 }

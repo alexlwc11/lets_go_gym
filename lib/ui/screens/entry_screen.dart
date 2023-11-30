@@ -1,10 +1,19 @@
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+import 'package:lets_go_gym/router.dart';
+import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
+import 'package:lets_go_gym/di.dart' as di;
 
 class EntryScreen extends StatelessWidget {
   const EntryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) => _EntryScreenBody();
+  Widget build(BuildContext context) => BlocProvider.value(
+        value: di.sl<EntryBloc>(),
+        child: _EntryScreenBody(),
+      );
 }
 
 class _EntryScreenBody extends StatelessWidget {
@@ -14,35 +23,84 @@ class _EntryScreenBody extends StatelessWidget {
   );
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Center(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  final size = constraints.maxWidth * 0.5;
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Center(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final size = constraints.maxWidth * 0.5;
 
-                  // TODO show app icon
-                  return SizedBox.square(
-                    dimension: size,
-                    child: const Placeholder(
-                      child: Center(
-                        child: Text("AppIcon"),
-                      ),
+                // TODO show app icon
+                return SizedBox.square(
+                  dimension: size,
+                  child: const Placeholder(
+                    child: Center(
+                      child: Text("AppIcon"),
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-            // TODO wrap with bloc
-            SizedBox(
-              height: 120,
-              child: Center(
-                child: _loadingContent,
-              ),
+          ),
+          SizedBox(
+            height: 120,
+            child: Center(
+              child: BlocConsumer<EntryBloc, EntryState>(
+                  listener: (context, state) {
+                    if (state is AppUpToDate) {
+                      context.go(ScreenPaths.home);
+                    }
+                  },
+                  listenWhen: (oldState, newState) =>
+                      oldState != newState && newState is AppUpToDate,
+                  buildWhen: (oldState, newState) =>
+                      oldState != newState && newState is AppOutdated,
+                  builder: (context, state) {
+                    switch (state) {
+                      case AppOutdated():
+                        return _buildOutdatedContent(context, state.storeUrl);
+                      default:
+                        return _loadingContent;
+                    }
+                  }),
             ),
-          ],
-        ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildOutdatedContent(
+    BuildContext context,
+    String storeUrl,
+  ) =>
+      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            AppLocalizations.of(context)!.entryScreen_pleaseUpdateToContinue,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          ElevatedButton(
+            style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+                  padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 62)),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                  ),
+                ),
+            onPressed: () async {
+              // await _launchUrl(context, storeUrl);
+            },
+            child: Text(
+              AppLocalizations.of(context)!.entryScreen_update,
+            ),
+          ),
+        ],
       );
 }

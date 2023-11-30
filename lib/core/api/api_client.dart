@@ -5,24 +5,18 @@ import '../utils/auth_manager.dart';
 import 'response/error/api_response_error.dart';
 
 class AuthClient extends _BaseClient {
-  AuthClient._();
+  final AuthManager _authManager;
 
-  factory AuthClient() => _instance;
-
-  static final AuthClient _instance = AuthClient._();
+  AuthClient({required AuthManager authManager}) : _authManager = authManager;
 
   @override
   Future<Map<String, dynamic>> get _defaultHeaders async => {
-        "Authorization": await AuthManager().authHeader,
+        "Authorization": await _authManager.authHeader,
       };
 }
 
 class UnAuthClient extends _BaseClient {
-  UnAuthClient._();
-
-  factory UnAuthClient() => _instance;
-
-  static final UnAuthClient _instance = UnAuthClient._();
+  UnAuthClient();
 }
 
 abstract class _BaseClient {

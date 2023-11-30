@@ -1,3 +1,5 @@
 {
-  "appTitle": "做尖喇"
+  "appTitle": "做尖喇",
+  "entryScreen_pleaseUpdateToContinue": "請先更新應用程式至最新版本",
+  "entryScreen_update": "更新"
 }

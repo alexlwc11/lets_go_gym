@@ -2,16 +2,12 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthManager {
-  AuthManager._();
+  final FlutterSecureStorage _storage;
+
+  AuthManager({required FlutterSecureStorage flutterSecureStorage})
+      : _storage = flutterSecureStorage;
 
   bool? _signedIn;
-
-  factory AuthManager() {
-    return _instance;
-  }
-
-  static final AuthManager _instance = AuthManager._();
-  final _storage = const FlutterSecureStorage();
 
   Future<bool> get isSignedIn async {
     _signedIn ??= (await getToken()) != null;
