@@ -1,5 +1,13 @@
 {
   "appTitle": "Let's go gym",
   "entryScreen_pleaseUpdateToContinue": "Please update to latest version first",
-  "entryScreen_update": "Update"
+  "entryScreen_update": "Update",
+  "mainScreen_navBar_bookmarks": "Bookmarks",
+  "mainScreen_navBar_location": "Location",
+  "mainScreen_navBar_settings": "Settings",
+  "bookmarksScreen_title": "Bookmarks",
+  "bookmarksScreen_emptyTitle": "You'll find your bookmarks here",
+  "bookmarksScreen_emptyHints": "Add location to bookmarks to check the details quickly",
+  "locationScreen_title": "Location",
+  "settingsScreen_title": "Settings"
 }

@@ -1,27 +1,99 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:lets_go_gym/di.dart' as di;
+import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
 import 'package:lets_go_gym/ui/screens/entry_screen.dart';
+import 'package:lets_go_gym/ui/screens/main_screen.dart';
+import 'package:lets_go_gym/ui/screens/bookmarks/bookmarks_screen.dart';
+import 'package:lets_go_gym/ui/screens/location/location_screen.dart';
+import 'package:lets_go_gym/ui/screens/settings/settings_screen.dart';
 
 typedef RouteBuilder = Widget Function(GoRouterState state);
 
 class ScreenPaths {
   static String entry = '/entry';
-  static String home = '/home';
+  static String bookmarks = '/bookmarks';
+  static String location = '/location';
   static String settings = '/settings';
 }
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
-// final GlobalKey<NavigatorState> _shellNavigatorKey =
-//     GlobalKey<NavigatorState>(debugLabel: 'shell');
+final GlobalKey<NavigatorState> _bookmarksNavigatorKey =
+    GlobalKey<NavigatorState>(debugLabel: 'bookmarks');
+final GlobalKey<NavigatorState> _locationNavigatorKey =
+    GlobalKey<NavigatorState>(debugLabel: 'location');
+final GlobalKey<NavigatorState> _settingsNavigatorKey =
+    GlobalKey(debugLabel: 'settings');
 
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
   initialLocation: ScreenPaths.entry,
   routes: [
     GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
       path: ScreenPaths.entry,
-      builder: (_, __) => const EntryScreen(),
+      builder: (_, __) => BlocProvider.value(
+        value: di.sl<EntryBloc>(),
+        child: const EntryScreen(),
+      ),
+    ),
+    StatefulShellRoute.indexedStack(
+      parentNavigatorKey: _rootNavigatorKey,
+      builder: (_, state, child) {
+        final path = state.fullPath ?? '';
+        int selectedIndex = _getBottomTabBarIndexFromPath(path);
+
+        return MainScreen(
+          selectedIndex: selectedIndex,
+          body: child,
+        );
+      },
+      branches: [
+        StatefulShellBranch(
+          navigatorKey: _bookmarksNavigatorKey,
+          initialLocation: ScreenPaths.bookmarks,
+          routes: [
+            GoRoute(
+              path: ScreenPaths.bookmarks,
+              builder: (_, __) => const BookmarkScreen(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          navigatorKey: _locationNavigatorKey,
+          initialLocation: ScreenPaths.location,
+          routes: [
+            GoRoute(
+              path: ScreenPaths.location,
+              builder: (_, __) => const LocationScreen(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          navigatorKey: _settingsNavigatorKey,
+          initialLocation: ScreenPaths.settings,
+          routes: [
+            GoRoute(
+              path: ScreenPaths.settings,
+              builder: (_, __) => const SettingsScreen(),
+            ),
+          ],
+        )
+      ],
     ),
   ],
 );
+
+int _getBottomTabBarIndexFromPath(String path) {
+  if (path.contains(ScreenPaths.bookmarks)) {
+    return 0;
+  } else if (path.contains(ScreenPaths.location)) {
+    return 1;
+  } else if (path.contains(ScreenPaths.settings)) {
+    return 2;
+  }
+
+  return 0;
+}

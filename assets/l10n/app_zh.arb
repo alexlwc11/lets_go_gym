@@ -1,5 +1,11 @@
 {
   "appTitle": "做尖喇",
   "entryScreen_pleaseUpdateToContinue": "請先更新應用程式至最新版本",
-  "entryScreen_update": "更新"
+  "entryScreen_update": "更新",
+  "mainScreen_navBar_bookmarks": "收藏",
+  "mainScreen_navBar_location": "地點",
+  "mainScreen_navBar_settings": "設定",
+  "bookmarksScreen_title": "收藏",
+  "locationScreen_title": "地點",
+  "settingsScreen_title": "設定"
 }
