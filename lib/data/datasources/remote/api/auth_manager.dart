@@ -2,10 +2,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthManager {
+  final SharedPreferences _sharedPreferences;
   final FlutterSecureStorage _storage;
 
-  AuthManager({required FlutterSecureStorage flutterSecureStorage})
-      : _storage = flutterSecureStorage;
+  AuthManager(
+      {required SharedPreferences sharedPreferences,
+      required FlutterSecureStorage flutterSecureStorage})
+      : _sharedPreferences = sharedPreferences,
+        _storage = flutterSecureStorage;
 
   bool? _signedIn;
 
@@ -37,12 +41,11 @@ class AuthManager {
 
   Future<void> clearSecureStorageOnReinstall() async {
     String key = 'hasRunBefore';
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    final hasRunBefore = prefs.getBool(key);
+    final hasRunBefore = _sharedPreferences.getBool(key);
 
     if (hasRunBefore == null) {
       await _storage.deleteAll();
-      prefs.setBool(key, true);
+      _sharedPreferences.setBool(key, true);
     }
   }
 }

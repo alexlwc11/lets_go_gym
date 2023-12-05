@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:lets_go_gym/domain/entities/app_info/data_info.dart';
 
 part 'app_info.g.dart';
 
@@ -6,16 +7,12 @@ part 'app_info.g.dart';
 class AppInfo {
   final int latestBuildVersion;
   final int minimumBuildVersion;
-  final DateTime regionDataLastUpdatedAt;
-  final DateTime districtDataLastUpdatedAt;
-  final DateTime sportsCenterDataLastUpdatedAt;
+  final DataInfo dataInfo;
 
   AppInfo({
     required this.latestBuildVersion,
     required this.minimumBuildVersion,
-    required this.regionDataLastUpdatedAt,
-    required this.districtDataLastUpdatedAt,
-    required this.sportsCenterDataLastUpdatedAt,
+    required this.dataInfo,
   });
 
   factory AppInfo.fromJson(Map<String, Object?> json) =>

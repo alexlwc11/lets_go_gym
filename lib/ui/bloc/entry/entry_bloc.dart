@@ -26,6 +26,7 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       final minimumBuildVersion = latestAppInfo.minimumBuildVersion ?? 0;
       final currentBuildVersion = int.parse(packageInfo.buildNumber);
 
+      // TODO check whether data up to date in next step
       if (currentBuildVersion >= minimumBuildVersion) {
         emit(AppUpToDate());
       } else {

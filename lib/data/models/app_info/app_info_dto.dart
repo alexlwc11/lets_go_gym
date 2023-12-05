@@ -1,22 +1,22 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:lets_go_gym/data/models/app_info/data_info_dto.dart';
 import 'package:lets_go_gym/domain/entities/app_info/app_info.dart';
 
 part 'app_info_dto.g.dart';
 
 @JsonSerializable()
 class AppInfoDto {
+  @JsonKey(name: 'latest_build_version')
   final int latestBuildVersion;
+  @JsonKey(name: 'minimum_build_version')
   final int minimumBuildVersion;
-  final DateTime regionDataLastUpdatedAt;
-  final DateTime districtDataLastUpdatedAt;
-  final DateTime sportsCenterDataLastUpdatedAt;
+  @JsonKey(name: 'data_info')
+  final DataInfoDto dataInfoDto;
 
   AppInfoDto({
     required this.latestBuildVersion,
     required this.minimumBuildVersion,
-    required this.regionDataLastUpdatedAt,
-    required this.districtDataLastUpdatedAt,
-    required this.sportsCenterDataLastUpdatedAt,
+    required this.dataInfoDto,
   });
 
   factory AppInfoDto.fromJson(Map<String, Object?> json) =>
@@ -30,9 +30,7 @@ extension AppInfoConverter on AppInfoDto {
     return AppInfo(
       latestBuildVersion: latestBuildVersion,
       minimumBuildVersion: minimumBuildVersion,
-      regionDataLastUpdatedAt: regionDataLastUpdatedAt,
-      districtDataLastUpdatedAt: districtDataLastUpdatedAt,
-      sportsCenterDataLastUpdatedAt: sportsCenterDataLastUpdatedAt,
+      dataInfo: dataInfoDto.toDataInfo,
     );
   }
 }
