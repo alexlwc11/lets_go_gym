@@ -7,10 +7,16 @@ part 'app_info_dto.g.dart';
 class AppInfoDto {
   final int latestBuildVersion;
   final int minimumBuildVersion;
+  final DateTime regionDataLastUpdatedAt;
+  final DateTime districtDataLastUpdatedAt;
+  final DateTime sportsCenterDataLastUpdatedAt;
 
   AppInfoDto({
     required this.latestBuildVersion,
     required this.minimumBuildVersion,
+    required this.regionDataLastUpdatedAt,
+    required this.districtDataLastUpdatedAt,
+    required this.sportsCenterDataLastUpdatedAt,
   });
 
   factory AppInfoDto.fromJson(Map<String, Object?> json) =>
@@ -22,7 +28,11 @@ class AppInfoDto {
 extension AppInfoConverter on AppInfoDto {
   AppInfo get toAppInfo {
     return AppInfo(
-        latestBuildVersion: latestBuildVersion,
-        minimumBuildVersion: minimumBuildVersion);
+      latestBuildVersion: latestBuildVersion,
+      minimumBuildVersion: minimumBuildVersion,
+      regionDataLastUpdatedAt: regionDataLastUpdatedAt,
+      districtDataLastUpdatedAt: districtDataLastUpdatedAt,
+      sportsCenterDataLastUpdatedAt: sportsCenterDataLastUpdatedAt,
+    );
   }
 }

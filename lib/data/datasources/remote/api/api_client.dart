@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import '../utils/auth_manager.dart';
+import 'auth_manager.dart';
 import 'response/error/api_response_error.dart';
 
 class AuthClient extends _BaseClient {

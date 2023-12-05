@@ -1,17 +1,29 @@
+import 'dart:async';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lets_go_gym/core/utils/localization_helper.dart';
+import 'package:lets_go_gym/data/datasources/remote/api/auth_manager.dart';
 import 'router.dart';
 import 'di.dart' as di;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await di.init();
-  runApp(const MyApp());
+
+  runZonedGuarded(() async {
+    await di.init();
+
+    await di.sl<AuthManager>().clearSecureStorageOnReinstall();
+
+    runApp(const MainApp());
+  }, (error, stack) {
+    log('$error - $stack');
+  });
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
 
   @override
   Widget build(BuildContext context) {

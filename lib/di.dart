@@ -1,7 +1,8 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
-import 'package:lets_go_gym/core/api/api_client.dart';
-import 'package:lets_go_gym/core/utils/auth_manager.dart';
+import 'package:lets_go_gym/data/datasources/local/database/database.dart';
+import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
+import 'package:lets_go_gym/data/datasources/remote/api/auth_manager.dart';
 import 'package:lets_go_gym/data/datasources/remote/app_info_remote_data_source.dart';
 import 'package:lets_go_gym/data/repositories/app_info_repository_impl.dart';
 import 'package:lets_go_gym/domain/repositories/app_info_repository.dart';
@@ -30,4 +31,5 @@ Future<void> init() async {
   sl.registerLazySingleton(() => AuthManager(flutterSecureStorage: sl()));
   sl.registerLazySingleton(() => AuthClient(authManager: sl()));
   sl.registerLazySingleton(() => UnAuthClient());
+  sl.registerSingleton(() => AppDatabase());
 }

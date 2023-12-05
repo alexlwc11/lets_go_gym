@@ -1,5 +1,5 @@
-import 'package:lets_go_gym/core/api/api_client.dart';
 import 'package:lets_go_gym/core/constants.dart';
+import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/models/app_info/app_info_dto.dart';
 
 abstract class AppInfoRemoteDataSource {
@@ -16,8 +16,15 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
 
   @override
   Future<AppInfoDto> getAppInfo() async {
-    return Future.delayed(const Duration(seconds: 3),
-        () => AppInfoDto(latestBuildVersion: 1, minimumBuildVersion: 1));
+    return Future.delayed(
+        const Duration(seconds: 3),
+        () => AppInfoDto(
+              latestBuildVersion: 1,
+              minimumBuildVersion: 1,
+              regionDataLastUpdatedAt: DateTime(2023),
+              districtDataLastUpdatedAt: DateTime(2023),
+              sportsCenterDataLastUpdatedAt: DateTime(2023),
+            ));
     // try {
     //   final response = await _unAuthClient.get(_appInfoUrl);
     //   final appInfoData = response.data as Map<String, dynamic>;
