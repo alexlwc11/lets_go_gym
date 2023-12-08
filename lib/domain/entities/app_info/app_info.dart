@@ -3,7 +3,7 @@ import 'package:lets_go_gym/domain/entities/app_info/data_info.dart';
 
 part 'app_info.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class AppInfo {
   final int latestBuildVersion;
   final int minimumBuildVersion;

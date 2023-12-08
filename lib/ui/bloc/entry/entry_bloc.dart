@@ -5,9 +5,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lets_go_gym/domain/entities/app_info/data_info.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/get_app_info.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/get_current_data_info.dart';
-import 'package:lets_go_gym/domain/usecases/app_info/update_district_data.dart';
-import 'package:lets_go_gym/domain/usecases/app_info/update_region_data.dart';
-import 'package:lets_go_gym/domain/usecases/app_info/update_sports_center_data.dart';
+import 'package:lets_go_gym/domain/usecases/app_info/update_district_data_last_updated.dart';
+import 'package:lets_go_gym/domain/usecases/app_info/update_region_data_last_updated.dart';
+import 'package:lets_go_gym/domain/usecases/app_info/update_sports_center_data_last_updated.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 
 part 'entry_event.dart';
@@ -16,16 +16,16 @@ part 'entry_state.dart';
 class EntryBloc extends Bloc<EntryEvent, EntryState> {
   final GetAppInfo getAppInfo;
   final GetCurrentDataInfo getCurrentDataInfo;
-  final UpdateRegionData updateRegionData;
-  final UpdateDistrictData updateDistrictData;
-  final UpdateSportsCenterData updateSportsCenterData;
+  final UpdateRegionDataLastUpdated updateRegionDataLastUpdated;
+  final UpdateDistrictDataLastUpdated updateDistrictDataLastUpdated;
+  final UpdateSportsCenterDataLastUpdated updateSportsCenterDataLastUpdated;
 
   EntryBloc({
     required this.getAppInfo,
     required this.getCurrentDataInfo,
-    required this.updateRegionData,
-    required this.updateDistrictData,
-    required this.updateSportsCenterData,
+    required this.updateRegionDataLastUpdated,
+    required this.updateDistrictDataLastUpdated,
+    required this.updateSportsCenterDataLastUpdated,
   }) : super(LatestAppInfoLoadingInProgress()) {
     on<AppInfoRequested>(_onAppInfoRequested);
     on<RegionDataUpdateRequested>(_onRegionDataUpdateRequested);
@@ -71,7 +71,9 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       if (latestUpdatedAt != null) {
         final lastUpdatedAt = _dataInfo?.regionDataLastUpdatedAt;
         if (lastUpdatedAt?.isBefore(latestUpdatedAt) != false) {
-          await updateRegionData.execute();
+          // TODO
+
+          await updateRegionDataLastUpdated.execute();
         }
       }
 
@@ -89,7 +91,9 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       if (latestUpdatedAt != null) {
         final lastUpdatedAt = _dataInfo?.districtDataLastUpdatedAt;
         if (lastUpdatedAt?.isBefore(latestUpdatedAt) != false) {
-          await updateDistrictData.execute();
+          // TODO
+
+          await updateDistrictDataLastUpdated.execute();
         }
       }
 
@@ -107,7 +111,9 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       if (latestUpdatedAt != null) {
         final lastUpdatedAt = _dataInfo?.sportsCenterDataLastUpdatedAt;
         if (lastUpdatedAt?.isBefore(latestUpdatedAt) != false) {
-          await updateSportsCenterData.execute();
+          // TODO
+
+          await updateSportsCenterDataLastUpdated.execute();
         }
       }
 

@@ -2,8 +2,12 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:lets_go_gym/data/datasources/local/database/tables/district.dart';
-import 'package:lets_go_gym/data/datasources/local/database/tables/region.dart';
+import 'package:lets_go_gym/data/datasources/local/database/daos/districts.dart';
+import 'package:lets_go_gym/data/datasources/local/database/daos/regions.dart';
+import 'package:lets_go_gym/data/datasources/local/database/daos/sports_centers.dart';
+import 'package:lets_go_gym/data/datasources/local/database/tables/districts.dart';
+import 'package:lets_go_gym/data/datasources/local/database/tables/regions.dart';
+import 'package:lets_go_gym/data/datasources/local/database/tables/sports_centers.dart';
 import 'package:path/path.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sqlite3/sqlite3.dart';
@@ -11,7 +15,9 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 
 part 'database.g.dart';
 
-@DriftDatabase(tables: [Region, District])
+@DriftDatabase(
+    tables: [Regions, Districts, SportsCenters],
+    daos: [RegionsDao, DistrictsDao, SportsCentersDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 

@@ -36,44 +36,17 @@ class AppInfoRepositoryImpl implements AppInfoRepository {
   }
 
   @override
-  Future<void> updateRegionData() async {
-    try {
-      // TODO get the latest data from remote source
-
-      // TODO update the records in database
-
-      /// update the stored [regionDataLastUpdated] value
-      await localDataSource.updateRegionDataLastUpdated();
-    } catch (error) {
-      return Future.error(error);
-    }
+  Future<void> updateRegionDataLastUpdated() async {
+    await localDataSource.updateRegionDataLastUpdated();
   }
 
   @override
-  Future<void> updateDistrictData() async {
-    try {
-      // TODO get the latest region data from remote source
-
-      // TODO update the records in database
-
-      /// update the stored [districtDataLastUpdated] value
-      await localDataSource.updateDistrictDataLastUpdated();
-    } catch (error) {
-      return Future.error(error);
-    }
+  Future<void> updateDistrictDataLastUpdated() async {
+    await localDataSource.updateDistrictDataLastUpdated();
   }
 
   @override
-  Future<void> updateSportsCenterData() async {
-    try {
-      // TODO get the latest region data from remote source
-
-      // TODO update the records in database
-
-      /// update the stored [sportCenterDataLastUpdate] value
-      await localDataSource.updateSportsCenterDataLastUpdated();
-    } catch (error) {
-      return Future.error(error);
-    }
+  Future<void> updateSportsCenterDataLastUpdated() async {
+    await localDataSource.updateSportsCenterDataLastUpdated();
   }
 }
