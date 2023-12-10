@@ -1,7 +1,6 @@
 import 'package:lets_go_gym/core/constants.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/models/app_info/app_info_dto.dart';
-import 'package:lets_go_gym/data/models/app_info/data_info_dto.dart';
 
 abstract class AppInfoRemoteDataSource {
   Future<AppInfoDto> getAppInfo();
@@ -17,24 +16,28 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
 
   @override
   Future<AppInfoDto> getAppInfo() async {
-    return Future.delayed(
+    try {
+      // TODO remove mock data
+      // final response = await _unAuthClient.get(_appInfoUrl);
+      // final responseData = response.data as Map<String, dynamic>;
+      final responseData = await Future.delayed(
         const Duration(seconds: 3),
-        () => AppInfoDto(
-              latestBuildVersion: 1,
-              minimumBuildVersion: 1,
-              dataInfoDto: DataInfoDto(
-                regionDataLastUpdatedAt: DateTime(2023),
-                districtDataLastUpdatedAt: DateTime(2023),
-                sportsCenterDataLastUpdatedAt: DateTime(2023),
-              ),
-            ));
-    // try {
-    //   final response = await _unAuthClient.get(_appInfoUrl);
-    //   final appInfoData = response.data as Map<String, dynamic>;
-    //
-    //   return AppInfoDto.fromJson((appInfoData['data'] as Map<String, dynamic>));
-    // } catch (error) {
-    //   rethrow;
-    // }
+        () => _appInfoJson,
+      );
+
+      return AppInfoDto.fromJson(responseData);
+    } catch (error) {
+      rethrow;
+    }
   }
 }
+
+final _appInfoJson = {
+  'latest_build_version': 1,
+  'minimum_build_version': 1,
+  'data_info': {
+    'region_data_last_updated_at': DateTime.utc(2023).toIso8601String(),
+    'district_data_last_updated_at': DateTime.utc(2023).toIso8601String(),
+    'sports_center_data_last_updated_at': DateTime.utc(2023).toIso8601String(),
+  },
+};
