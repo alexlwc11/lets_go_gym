@@ -48,3 +48,6 @@ app.*.map.json
 # generated files
 *.g.dart
 *.freezed.dart
+
+# mock data
+/lib/mock_data/

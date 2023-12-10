@@ -1,6 +1,7 @@
 import 'package:lets_go_gym/core/constants.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/models/region/region_dto.dart';
+import 'package:lets_go_gym/mock_data/mock_data.dart' as mock;
 
 abstract class RegionsRemoteDataSource {
   Future<List<RegionDto>> getLatestRegions();
@@ -23,7 +24,7 @@ class RegionsRemoteDataSourceImpl implements RegionsRemoteDataSource {
       // final responseData = response.data as Map<String, dynamic>;
       final Map<String, dynamic> responseData = await Future.delayed(
         const Duration(seconds: 3),
-        () => _regionsJson,
+        () => mock.regionsJson,
       );
       final regionsData = responseData['regions'] as List<Map<String, dynamic>>;
 
@@ -33,26 +34,3 @@ class RegionsRemoteDataSourceImpl implements RegionsRemoteDataSource {
     }
   }
 }
-
-const _regionsJson = {
-  'regions': [
-    {
-      'id': 1,
-      'code': 'HK',
-      'name_en': 'Hong Kong Island',
-      'name_zh': '香港島',
-    },
-    {
-      'id': 2,
-      'code': 'KLN',
-      'name_en': 'Kowloon',
-      'name_zh': '九龍',
-    },
-    {
-      'id': 3,
-      'code': 'NT',
-      'name_en': 'New Territories',
-      'name_zh': '新界',
-    }
-  ],
-};

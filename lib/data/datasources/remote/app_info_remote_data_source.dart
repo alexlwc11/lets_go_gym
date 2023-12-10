@@ -1,6 +1,7 @@
 import 'package:lets_go_gym/core/constants.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/models/app_info/app_info_dto.dart';
+import 'package:lets_go_gym/mock_data/mock_data.dart' as mock;
 
 abstract class AppInfoRemoteDataSource {
   Future<AppInfoDto> getAppInfo();
@@ -22,7 +23,7 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
       // final responseData = response.data as Map<String, dynamic>;
       final responseData = await Future.delayed(
         const Duration(seconds: 3),
-        () => _appInfoJson,
+        () => mock.appInfoJson,
       );
 
       return AppInfoDto.fromJson(responseData);
@@ -31,13 +32,3 @@ class AppInfoRemoteDataSourceImpl implements AppInfoRemoteDataSource {
     }
   }
 }
-
-final _appInfoJson = {
-  'latest_build_version': 1,
-  'minimum_build_version': 1,
-  'data_info': {
-    'region_data_last_updated_at': DateTime.utc(2023).toIso8601String(),
-    'district_data_last_updated_at': DateTime.utc(2023).toIso8601String(),
-    'sports_center_data_last_updated_at': DateTime.utc(2023).toIso8601String(),
-  },
-};

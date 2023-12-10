@@ -1,13 +1,17 @@
 import 'package:lets_go_gym/data/datasources/local/database/tables/districts.dart';
 import 'package:lets_go_gym/data/datasources/local/districts_local_data_source.dart';
+import 'package:lets_go_gym/data/datasources/remote/districts_remote_data_source.dart';
+import 'package:lets_go_gym/data/models/district/district_dto.dart';
 import 'package:lets_go_gym/domain/entities/district/district.dart';
 import 'package:lets_go_gym/domain/repositories/districts_repository.dart';
 
 class DistrictsRepositoryImpl implements DistrictsRepository {
   final DistrictsLocalDataSource localDataSource;
+  final DistrictsRemoteDataSource remoteDataSource;
 
   DistrictsRepositoryImpl({
     required this.localDataSource,
+    required this.remoteDataSource,
   });
 
   @override
@@ -27,6 +31,12 @@ class DistrictsRepositoryImpl implements DistrictsRepository {
           .toList();
 
   @override
-  Future<void> updateDistrictData(List<District> districts) =>
-      localDataSource.updateDistrictsData(districts);
+  Future<void> updateDistrictData() async {
+    final List<District> districts =
+        (await remoteDataSource.getLatestDistricts())
+            .map((dto) => dto.toEntity)
+            .toList();
+
+    await localDataSource.updateDistrictsData(districts);
+  }
 }
