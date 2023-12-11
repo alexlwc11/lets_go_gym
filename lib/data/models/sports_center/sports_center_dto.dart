@@ -20,9 +20,9 @@ class SportsCenterDto {
   @JsonKey(name: 'phone_number')
   final String phoneNumber;
   @JsonKey(name: 'hourly_quota')
-  final int hourlyQuota;
+  final int? hourlyQuota;
   @JsonKey(name: 'monthly_quota')
-  final int monthlyQuota;
+  final int? monthlyQuota;
 
   SportsCenterDto({
     required this.id,
@@ -32,8 +32,8 @@ class SportsCenterDto {
     required this.addressEn,
     required this.addressZh,
     required this.phoneNumber,
-    required this.hourlyQuota,
-    required this.monthlyQuota,
+    this.hourlyQuota,
+    this.monthlyQuota,
   });
 
   factory SportsCenterDto.fromJson(Map<String, Object?> json) =>

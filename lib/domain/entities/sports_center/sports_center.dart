@@ -15,11 +15,12 @@ class SportsCenter {
   final String addressEn;
   @JsonKey(name: 'address_zh')
   final String addressZh;
+  @JsonKey(name: 'phone_number')
   final String phoneNumber;
   @JsonKey(name: 'hourly_quota')
-  final int hourlyQuota;
+  final int? hourlyQuota;
   @JsonKey(name: 'monthly_quota')
-  final int monthlyQuota;
+  final int? monthlyQuota;
 
   SportsCenter({
     required this.id,

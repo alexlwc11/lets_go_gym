@@ -12,8 +12,8 @@ class SportsCenters extends BaseTable {
   TextColumn get addressEn => text()();
   TextColumn get addressZh => text()();
   TextColumn get phoneNumber => text()();
-  IntColumn get hourlyQuota => integer()();
-  IntColumn get monthlyQuota => integer()();
+  IntColumn get hourlyQuota => integer().nullable()();
+  IntColumn get monthlyQuota => integer().nullable()();
 }
 
 extension SportsCentersDataConverter on db.SportsCenter {
@@ -29,7 +29,8 @@ extension SportsCentersDataConverter on db.SportsCenter {
         monthlyQuota: monthlyQuota,
       );
 
-  static db.SportsCenter fromEntity(SportsCenter sportsCenter) => db.SportsCenter(
+  static db.SportsCenter fromEntity(SportsCenter sportsCenter) =>
+      db.SportsCenter(
         id: sportsCenter.id,
         districtId: sportsCenter.districtId,
         nameEn: sportsCenter.nameEn,
