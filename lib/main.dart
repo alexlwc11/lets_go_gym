@@ -9,9 +9,9 @@ import 'router.dart';
 import 'di.dart' as di;
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
+
     await di.init();
 
     await di.sl<AuthManager>().clearSecureStorageOnReinstall();

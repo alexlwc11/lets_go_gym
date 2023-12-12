@@ -8,11 +8,6 @@ import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
 class EntryScreen extends StatelessWidget {
   const EntryScreen({super.key});
 
-  final Widget _loadingContent = const SizedBox.square(
-    dimension: 40,
-    child: CircularProgressIndicator(),
-  );
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,27 +35,65 @@ class EntryScreen extends StatelessWidget {
             height: 120,
             child: Center(
               child: BlocConsumer<EntryBloc, EntryState>(
-                  listener: (context, state) {
-                    if (state is AllUpToDate) {
-                      context.go(ScreenPaths.bookmarks);
-                    }
-                  },
-                  listenWhen: (oldState, newState) =>
-                      oldState != newState && newState is AllUpToDate,
-                  buildWhen: (oldState, newState) =>
-                      oldState != newState && newState is AppOutdated,
-                  builder: (context, state) {
-                    switch (state) {
-                      case AppOutdated():
-                        return _buildOutdatedContent(context, state.storeUrl);
-                      default:
-                        return _loadingContent;
-                    }
-                  }),
+                listener: (context, state) {
+                  if (state is AllUpToDate) {
+                    context.go(ScreenPaths.bookmarks);
+                  }
+                },
+                listenWhen: (state, newState) =>
+                    state != newState && newState is AllUpToDate,
+                buildWhen: (state, newState) =>
+                    state != newState && newState is! AllUpToDate,
+                builder: (context, state) {
+                  switch (state) {
+                    case AppOutdated():
+                      return _buildOutdatedContent(context, state.storeUrl);
+                    case DataUpdating(finishedStep: final finishedStep):
+                      return _buildLoadingContent(
+                        context,
+                        finishedStep: finishedStep,
+                      );
+                    case FailedToUpdate(failedStep: final failedStep):
+                      return _buildFailedToUpdateContent(
+                        context,
+                        failedStep,
+                      );
+                    default:
+                      return _buildLoadingContent(context);
+                  }
+                },
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildLoadingContent(
+    BuildContext context, {
+    DataUpdateStep? finishedStep,
+  }) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        SizedBox.square(
+          dimension: 40,
+          child: TweenAnimationBuilder<double>(
+            tween: Tween<double>(begin: 0.0, end: finishedStep?.progress ?? 0),
+            duration: const Duration(milliseconds: 250),
+            builder: (context, value, _) => CircularProgressIndicator(
+              value: finishedStep == null ? null : value,
+            ),
+          ),
+        ),
+        Text(
+          finishedStep == null
+              ? context.appLocalization.entryScreen_fetchingSystemInfo
+              : context.appLocalization.entryScreen_updatingData,
+          style: Theme.of(context).textTheme.bodyLarge,
+        ),
+      ],
     );
   }
 
@@ -90,6 +123,39 @@ class EntryScreen extends StatelessWidget {
             },
             child: Text(
               context.appLocalization.entryScreen_update,
+            ),
+          ),
+        ],
+      );
+
+  Widget _buildFailedToUpdateContent(
+    BuildContext context,
+    DataUpdateStep failedStep,
+  ) =>
+      Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Text(
+            context.appLocalization.entryScreen_failedToUpdate,
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          ElevatedButton(
+            style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
+                  padding: MaterialStateProperty.all(
+                      const EdgeInsets.symmetric(vertical: 12, horizontal: 62)),
+                  shape: MaterialStateProperty.all(
+                    RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(32),
+                    ),
+                  ),
+                ),
+            onPressed: () {
+              context
+                  .read<EntryBloc>()
+                  .add(RetryUpdateRequested(retryStep: failedStep));
+            },
+            child: Text(
+              context.appLocalization.entryScreen_retry,
             ),
           ),
         ],

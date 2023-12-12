@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lets_go_gym/domain/entities/app_info/data_info.dart';
@@ -35,11 +36,13 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
     required this.updateRegionDataLastUpdated,
     required this.updateDistrictDataLastUpdated,
     required this.updateSportsCenterDataLastUpdated,
-  }) : super(LatestAppInfoLoadingInProgress()) {
+  }) : super(DataUpdating()) {
     on<AppInfoRequested>(_onAppInfoRequested);
+    on<CurrentDataInfoRequested>(_onCurrentDataInfoRequested);
     on<RegionDataUpdateRequested>(_onRegionDataUpdateRequested);
     on<DistrictDataUpdateRequested>(_onDistrictDataUpdateRequested);
     on<SportsCenterDataUpdateRequested>(_onSportsCenterDataUpdateRequested);
+    on<RetryUpdateRequested>(_onRetryUpdateRequested);
 
     add(AppInfoRequested());
   }
@@ -60,7 +63,7 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       // TODO check whether data up to date in next step
       if (currentBuildVersion >= minimumBuildVersion) {
         emit(DataUpdating(finishedStep: DataUpdateStep.appVersion));
-        add(RegionDataUpdateRequested());
+        add(CurrentDataInfoRequested());
       } else {
         // TODO update store url
         // final storeUrl = Platform.isIOS
@@ -70,6 +73,18 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       }
     } catch (_) {
       emit(FailedToUpdate(failedStep: DataUpdateStep.appVersion));
+    }
+  }
+
+  Future<void> _onCurrentDataInfoRequested(
+      CurrentDataInfoRequested event, Emitter<EntryState> emit) async {
+    try {
+      _dataInfo = await getCurrentDataInfo.execute();
+
+      emit(DataUpdating(finishedStep: DataUpdateStep.dataInfo));
+      add(RegionDataUpdateRequested());
+    } catch (_) {
+      emit(FailedToUpdate(failedStep: DataUpdateStep.dataInfo));
     }
   }
 
@@ -129,6 +144,32 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       emit(AllUpToDate());
     } catch (_) {
       emit(FailedToUpdate(failedStep: DataUpdateStep.sportsCenter));
+    }
+  }
+
+  Future<void> _onRetryUpdateRequested(
+      RetryUpdateRequested event, Emitter<EntryState> emit) async {
+    switch (event.retryStep) {
+      case DataUpdateStep.appVersion:
+        emit(DataUpdating());
+        add(AppInfoRequested());
+        break;
+      case DataUpdateStep.dataInfo:
+        emit(DataUpdating(finishedStep: DataUpdateStep.appVersion));
+        add(CurrentDataInfoRequested());
+        break;
+      case DataUpdateStep.region:
+        emit(DataUpdating(finishedStep: DataUpdateStep.dataInfo));
+        add(RegionDataUpdateRequested());
+        break;
+      case DataUpdateStep.district:
+        emit(DataUpdating(finishedStep: DataUpdateStep.region));
+        add(DistrictDataUpdateRequested());
+        break;
+      case DataUpdateStep.sportsCenter:
+        emit(DataUpdating(finishedStep: DataUpdateStep.district));
+        add(SportsCenterDataUpdateRequested());
+        break;
     }
   }
 }

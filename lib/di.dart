@@ -112,7 +112,6 @@ Future<void> init() async {
   sl.registerLazySingleton<SportsCentersDao>(() => SportsCentersDao(sl()));
 
   // Misc
-  sl.registerLazySingletonAsync(SharedPreferences.getInstance);
   sl.registerLazySingleton(() => const FlutterSecureStorage());
   sl.registerLazySingleton(() => AuthManager(
         sharedPreferences: sl(),
@@ -120,5 +119,6 @@ Future<void> init() async {
       ));
   sl.registerLazySingleton(() => AuthClient(authManager: sl()));
   sl.registerLazySingleton(() => UnAuthClient());
-  sl.registerSingleton(() => AppDatabase());
+  sl.registerSingleton(await SharedPreferences.getInstance());
+  sl.registerSingleton(AppDatabase());
 }

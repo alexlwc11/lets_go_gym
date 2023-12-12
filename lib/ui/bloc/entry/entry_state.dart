@@ -1,9 +1,19 @@
 part of 'entry_bloc.dart';
 
 @immutable
-sealed class EntryState {}
+sealed class EntryState extends Equatable {
+  @override
+  List<Object?> get props => [];
+}
 
-class LatestAppInfoLoadingInProgress extends EntryState {}
+class DataUpdating extends EntryState {
+  final DataUpdateStep? finishedStep;
+
+  DataUpdating({this.finishedStep});
+
+  @override
+  List<Object?> get props => [finishedStep];
+}
 
 class AppOutdated extends EntryState {
   final String storeUrl;
@@ -13,23 +23,24 @@ class AppOutdated extends EntryState {
 
 class AppUpToDate extends EntryState {}
 
-class DataUpdating extends EntryState {
-  final DataUpdateStep finishedStep;
-
-  DataUpdating({required this.finishedStep});
-}
-
 class AllUpToDate extends EntryState {}
 
 class FailedToUpdate extends EntryState {
   final DataUpdateStep failedStep;
 
   FailedToUpdate({required this.failedStep});
+
+  @override
+  List<Object?> get props => [failedStep];
 }
 
 enum DataUpdateStep {
-  appVersion,
-  region,
-  district,
-  sportsCenter;
+  appVersion(0.2),
+  dataInfo(0.3),
+  region(0.4),
+  district(0.6),
+  sportsCenter(0.8);
+
+  final double progress;
+  const DataUpdateStep(this.progress);
 }

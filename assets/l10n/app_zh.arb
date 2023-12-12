@@ -1,11 +1,17 @@
 {
   "appTitle": "做尖喇",
-  "entryScreen_pleaseUpdateToContinue": "請先更新應用程式至最新版本",
+  "entryScreen_pleaseUpdateToContinue": "唔該更新到最新版本先繼續用啦",
   "entryScreen_update": "更新",
+  "entryScreen_failedToUpdate": "好似發生咗啲問題，麻煩你等一陣再試多次",
+  "entryScreen_retry": "試多次",
+  "entryScreen_fetchingSystemInfo": "幫緊你幫緊你...",
+  "entryScreen_updatingData": "更新中...",
   "mainScreen_navBar_bookmarks": "收藏",
   "mainScreen_navBar_location": "地點",
   "mainScreen_navBar_settings": "設定",
   "bookmarksScreen_title": "收藏",
+  "bookmarksScreen_emptyTitle": "你可以喺依度搵到你嘅收藏",
+  "bookmarksScreen_emptyHints": "加個地點入收藏可以快啲搵到詳細資料",
   "locationScreen_title": "地點",
   "settingsScreen_title": "設定"
 }
