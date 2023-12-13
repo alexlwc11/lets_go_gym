@@ -13,5 +13,9 @@
   "bookmarksScreen_emptyTitle": "You'll find your bookmarks here",
   "bookmarksScreen_emptyHints": "Add location to bookmarks to check the details quickly",
   "locationScreen_title": "Location",
-  "settingsScreen_title": "Settings"
+  "settingsScreen_title": "Settings",
+  "settingsScreen_languageTitle": "Language",
+  "settingsScreen_languageSubtitle": "Change the app language here",
+  "settingsScreen_themeTitle": "Theme",
+  "settingsScreen_themeSubtitle": "Change the app theme here"
 }

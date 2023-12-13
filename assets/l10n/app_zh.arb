@@ -13,5 +13,9 @@
   "bookmarksScreen_emptyTitle": "你可以喺依度搵到你嘅收藏",
   "bookmarksScreen_emptyHints": "加個地點入收藏可以快啲搵到詳細資料",
   "locationScreen_title": "地點",
-  "settingsScreen_title": "設定"
+  "settingsScreen_title": "設定",
+  "settingsScreen_languageTitle": "語言",
+  "settingsScreen_languageSubtitle": "喺依度轉顯示嘅語言",
+  "settingsScreen_themeTitle": "主題",
+  "settingsScreen_themeSubtitle": "喺依度轉主題"
 }
