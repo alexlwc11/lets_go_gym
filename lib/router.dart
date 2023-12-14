@@ -6,7 +6,7 @@ import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
 import 'package:lets_go_gym/ui/screens/entry_screen.dart';
 import 'package:lets_go_gym/ui/screens/main_screen.dart';
 import 'package:lets_go_gym/ui/screens/bookmarks/bookmarks_screen.dart';
-import 'package:lets_go_gym/ui/screens/location/location_screen.dart';
+import 'package:lets_go_gym/ui/screens/locations/locations_screen.dart';
 import 'package:lets_go_gym/ui/screens/settings/settings_screen.dart';
 
 typedef RouteBuilder = Widget Function(GoRouterState state);
@@ -14,7 +14,7 @@ typedef RouteBuilder = Widget Function(GoRouterState state);
 class ScreenPaths {
   static String entry = '/entry';
   static String bookmarks = '/bookmarks';
-  static String location = '/location';
+  static String locations = '/locations';
   static String settings = '/settings';
 }
 
@@ -22,8 +22,8 @@ final GlobalKey<NavigatorState> _rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
 final GlobalKey<NavigatorState> _bookmarksNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'bookmarks');
-final GlobalKey<NavigatorState> _locationNavigatorKey =
-    GlobalKey<NavigatorState>(debugLabel: 'location');
+final GlobalKey<NavigatorState> _locationsNavigatorKey =
+    GlobalKey<NavigatorState>(debugLabel: 'locations');
 final GlobalKey<NavigatorState> _settingsNavigatorKey =
     GlobalKey(debugLabel: 'settings');
 
@@ -62,12 +62,12 @@ final appRouter = GoRouter(
           ],
         ),
         StatefulShellBranch(
-          navigatorKey: _locationNavigatorKey,
-          initialLocation: ScreenPaths.location,
+          navigatorKey: _locationsNavigatorKey,
+          initialLocation: ScreenPaths.locations,
           routes: [
             GoRoute(
-              path: ScreenPaths.location,
-              builder: (_, __) => const LocationScreen(),
+              path: ScreenPaths.locations,
+              builder: (_, __) => const LocationsScreen(),
             ),
           ],
         ),
@@ -89,7 +89,7 @@ final appRouter = GoRouter(
 int _getBottomTabBarIndexFromPath(String path) {
   if (path.contains(ScreenPaths.bookmarks)) {
     return 0;
-  } else if (path.contains(ScreenPaths.location)) {
+  } else if (path.contains(ScreenPaths.locations)) {
     return 1;
   } else if (path.contains(ScreenPaths.settings)) {
     return 2;

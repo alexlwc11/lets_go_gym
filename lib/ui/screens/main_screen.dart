@@ -32,7 +32,7 @@ class MainScreen extends StatelessWidget {
           NavigationDestination(
             icon: const Icon(Icons.location_on_outlined),
             selectedIcon: const Icon(Icons.location_on),
-            label: context.appLocalization.mainScreen_navBar_location,
+            label: context.appLocalization.mainScreen_navBar_locations,
           ),
           NavigationDestination(
             icon: const Icon(Icons.settings_outlined),
@@ -48,7 +48,7 @@ class MainScreen extends StatelessWidget {
   void _onNavBarSelectedIndexChanged(BuildContext context, int index) {
     final String destination = switch (index) {
       0 => ScreenPaths.bookmarks,
-      1 => ScreenPaths.location,
+      1 => ScreenPaths.locations,
       2 => ScreenPaths.settings,
       _ => throw ('Invalid index value')
     };
