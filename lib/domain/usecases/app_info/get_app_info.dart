@@ -6,5 +6,5 @@ class GetAppInfo {
 
   GetAppInfo({required this.repository});
 
-  Future<AppInfo> execute() async => repository.getAppInfo();
+  Future<AppInfo> execute() => repository.getAppInfo();
 }

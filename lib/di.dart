@@ -27,10 +27,14 @@ import 'package:lets_go_gym/domain/usecases/app_info/get_current_data_info.dart'
 import 'package:lets_go_gym/domain/usecases/app_info/update_district_data_last_updated.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/update_region_data_last_updated.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/update_sports_center_data_last_updated.dart';
+import 'package:lets_go_gym/domain/usecases/districts/get_all_districts.dart';
 import 'package:lets_go_gym/domain/usecases/districts/update_districts_data.dart';
+import 'package:lets_go_gym/domain/usecases/regions/get_all_regions.dart';
 import 'package:lets_go_gym/domain/usecases/regions/update_regions_data.dart';
+import 'package:lets_go_gym/domain/usecases/sports_centers/get_all_sports_centers.dart';
 import 'package:lets_go_gym/domain/usecases/sports_centers/update_sports_centers_data.dart';
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
+import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
@@ -87,12 +91,18 @@ Future<void> init() async {
   /* Regions */
   sl.registerLazySingleton<UpdateRegionsData>(
       () => UpdateRegionsData(repository: sl()));
+  sl.registerLazySingleton<GetAllRegions>(
+      () => GetAllRegions(repository: sl()));
   /* Districts */
   sl.registerLazySingleton<UpdateDistrictsData>(
       () => UpdateDistrictsData(repository: sl()));
+  sl.registerLazySingleton<GetAllDistricts>(
+      () => GetAllDistricts(repository: sl()));
   /* Sports centers */
   sl.registerLazySingleton<UpdateSportsCentersData>(
       () => UpdateSportsCentersData(repository: sl()));
+  sl.registerLazySingleton<GetAllSportsCenters>(
+      () => GetAllSportsCenters(repository: sl()));
 
   // BLoC
   sl.registerFactory(() => EntryBloc(
@@ -104,6 +114,11 @@ Future<void> init() async {
         updateRegionDataLastUpdated: sl(),
         updateDistrictDataLastUpdated: sl(),
         updateSportsCenterDataLastUpdated: sl(),
+      ));
+  sl.registerFactory(() => LocationsBloc(
+        getAllRegions: sl(),
+        getAllDistricts: sl(),
+        getAllSportsCenters: sl(),
       ));
 
   // DAO

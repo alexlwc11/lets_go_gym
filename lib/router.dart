@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_go_gym/di.dart' as di;
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
+import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:lets_go_gym/ui/screens/entry_screen.dart';
 import 'package:lets_go_gym/ui/screens/main_screen.dart';
 import 'package:lets_go_gym/ui/screens/bookmarks/bookmarks_screen.dart';
@@ -67,7 +68,10 @@ final appRouter = GoRouter(
           routes: [
             GoRoute(
               path: ScreenPaths.locations,
-              builder: (_, __) => const LocationsScreen(),
+              builder: (_, __) => BlocProvider.value(
+                value: di.sl<LocationsBloc>(),
+                child: const LocationsScreen(),
+              ),
             ),
           ],
         ),

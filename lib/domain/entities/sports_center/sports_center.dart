@@ -1,41 +1,22 @@
-import 'package:json_annotation/json_annotation.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
+part 'sports_center.freezed.dart';
 part 'sports_center.g.dart';
 
-@JsonSerializable()
-class SportsCenter {
-  final int id;
-  @JsonKey(name: 'district_id')
-  final int districtId;
-  @JsonKey(name: 'name_en')
-  final String nameEn;
-  @JsonKey(name: 'name_zh')
-  final String nameZh;
-  @JsonKey(name: 'address_en')
-  final String addressEn;
-  @JsonKey(name: 'address_zh')
-  final String addressZh;
-  @JsonKey(name: 'phone_number')
-  final String phoneNumber;
-  @JsonKey(name: 'hourly_quota')
-  final int? hourlyQuota;
-  @JsonKey(name: 'monthly_quota')
-  final int? monthlyQuota;
-
-  SportsCenter({
-    required this.id,
-    required this.districtId,
-    required this.nameEn,
-    required this.nameZh,
-    required this.addressEn,
-    required this.addressZh,
-    required this.phoneNumber,
-    required this.hourlyQuota,
-    required this.monthlyQuota,
-  });
+@freezed
+class SportsCenter with _$SportsCenter {
+  const factory SportsCenter({
+    required int id,
+    @JsonKey(name: 'district_id') required int districtId,
+    @JsonKey(name: 'name_en') required String nameEn,
+    @JsonKey(name: 'name_zh') required String nameZh,
+    @JsonKey(name: 'address_en') required String addressEn,
+    @JsonKey(name: 'address_zh') required String addressZh,
+    @JsonKey(name: 'phone_number') required String phoneNumber,
+    @JsonKey(name: 'hourly_quota') int? hourlyQuota,
+    @JsonKey(name: 'monthly_quota') int? monthlyQuota,
+  }) = _SportsCenter;
 
   factory SportsCenter.fromJson(Map<String, Object?> json) =>
       _$SportsCenterFromJson(json);
-
-  Map<String, dynamic> toJson() => _$SportsCenterToJson(this);
 }
