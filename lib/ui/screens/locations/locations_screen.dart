@@ -72,12 +72,13 @@ class _LocationScreenState extends State<LocationsScreen> {
   Widget _buildLocationListContent(List<LocationItemVM> locationItemVMs) {
     return SliverList.builder(
       itemCount: locationItemVMs.length,
-      itemBuilder: (_, index) => _locationItemBuilder(locationItemVMs[index]),
+      itemBuilder: (context, index) =>
+          _locationItemBuilder(locationItemVMs[index]),
     );
   }
 
   Widget _locationItemBuilder(LocationItemVM vm) {
-    final langCode = 'en';
+    final langCode = context.appLocalization.localeName;
 
     return LocationCard(
       key: Key(vm.itemId),

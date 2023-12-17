@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lets_go_gym/core/utils/localization_helper.dart';
 import 'package:lets_go_gym/domain/entities/district/district.dart';
 import 'package:lets_go_gym/domain/entities/region/region.dart';
 import 'package:lets_go_gym/domain/entities/sports_center/sports_center.dart';
@@ -140,22 +141,29 @@ class LocationItemVM extends Equatable {
 
   String get itemId => '${region.id}-${district.id}-${sportsCenter.id}';
 
-  // TODO get with language code
-  String getSportsCenterName(String langCode) {
-    return sportsCenter.nameEn;
-  }
+  String getSportsCenterName(String langCode) => getLocalizedString(
+        langCode,
+        en: sportsCenter.nameEn,
+        zh: sportsCenter.nameZh,
+      );
 
-  String getSportsCenterAddress(String langCode) {
-    return sportsCenter.addressEn;
-  }
+  String getSportsCenterAddress(String langCode) => getLocalizedString(
+        langCode,
+        en: sportsCenter.addressEn,
+        zh: sportsCenter.addressZh,
+      );
 
-  String getRegionName(String langCode) {
-    return region.nameEn;
-  }
+  String getRegionName(String langCode) => getLocalizedString(
+        langCode,
+        en: region.nameEn,
+        zh: region.nameZh,
+      );
 
-  String getDistrictName(String langCode) {
-    return district.nameEn;
-  }
+  String getDistrictName(String langCode) => getLocalizedString(
+        langCode,
+        en: district.nameEn,
+        zh: district.nameZh,
+      );
 
   @override
   List<Object?> get props => [sportsCenter, region, district, bookmarked];
