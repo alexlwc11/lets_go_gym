@@ -1,6 +1,8 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get_it/get_it.dart';
 import 'package:lets_go_gym/data/datasources/local/app_info_local_data_source.dart';
+import 'package:lets_go_gym/data/datasources/local/bookmarks_local_data_source.dart';
+import 'package:lets_go_gym/data/datasources/local/database/daos/bookmarks.dart';
 import 'package:lets_go_gym/data/datasources/local/database/daos/districts.dart';
 import 'package:lets_go_gym/data/datasources/local/database/daos/regions.dart';
 import 'package:lets_go_gym/data/datasources/local/database/daos/sports_centers.dart';
@@ -11,14 +13,17 @@ import 'package:lets_go_gym/data/datasources/local/sports_centers_local_data_sou
 import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/auth_manager.dart';
 import 'package:lets_go_gym/data/datasources/remote/app_info_remote_data_source.dart';
+import 'package:lets_go_gym/data/datasources/remote/bookmarks_remote_data_source.dart';
 import 'package:lets_go_gym/data/datasources/remote/districts_remote_data_source.dart';
 import 'package:lets_go_gym/data/datasources/remote/regions_remote_data_source.dart';
-import 'package:lets_go_gym/data/datasources/remote/sports_centers_data_source.dart';
+import 'package:lets_go_gym/data/datasources/remote/sports_centers_remote_data_source.dart';
 import 'package:lets_go_gym/data/repositories/app_info_repository_impl.dart';
+import 'package:lets_go_gym/data/repositories/bookmarks_repository_impl.dart';
 import 'package:lets_go_gym/data/repositories/districts_repository_impl.dart';
 import 'package:lets_go_gym/data/repositories/regions_repository_impl.dart';
 import 'package:lets_go_gym/data/repositories/sports_centers_repository_impl.dart';
 import 'package:lets_go_gym/domain/repositories/app_info_repository.dart';
+import 'package:lets_go_gym/domain/repositories/bookmarks_repository.dart';
 import 'package:lets_go_gym/domain/repositories/districts_repository.dart';
 import 'package:lets_go_gym/domain/repositories/regions_repository.dart';
 import 'package:lets_go_gym/domain/repositories/sports_centers_repository.dart';
@@ -27,6 +32,10 @@ import 'package:lets_go_gym/domain/usecases/app_info/get_current_data_info.dart'
 import 'package:lets_go_gym/domain/usecases/app_info/update_district_data_last_updated.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/update_region_data_last_updated.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/update_sports_center_data_last_updated.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/add_bookmark.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks_as_stream.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/remove_bookmark.dart';
 import 'package:lets_go_gym/domain/usecases/districts/get_all_districts.dart';
 import 'package:lets_go_gym/domain/usecases/districts/update_districts_data.dart';
 import 'package:lets_go_gym/domain/usecases/regions/get_all_regions.dart';
@@ -61,6 +70,11 @@ Future<void> init() async {
       () => SportsCentersLocalDataSourceImpl(dao: sl()));
   sl.registerLazySingleton<SportsCentersRemoteDataSource>(
       () => SportsCentersRemoteDataSourceImpl(authClient: sl()));
+  /* Bookmarks */
+  sl.registerLazySingleton<BookmarksLocalDataSource>(
+      () => BookmarksLocalDataSourceImpl(dao: sl()));
+  sl.registerLazySingleton<BookmarksRemoteDataSource>(
+      () => BookmarksRemoteDataSourceImpl(authClient: sl()));
 
   // Repositories
   /* AppInfo */
@@ -76,6 +90,9 @@ Future<void> init() async {
   sl.registerLazySingleton<SportsCentersRepository>(() =>
       SportsCentersRepositoryImpl(
           localDataSource: sl(), remoteDataSource: sl()));
+  /* Bookmarks */
+  sl.registerLazySingleton<BookmarksRepository>(() =>
+      BookmarksRepositoryImpl(localDataSource: sl(), remoteDataSource: sl()));
 
   // UseCases
   /* AppInfo */
@@ -103,6 +120,14 @@ Future<void> init() async {
       () => UpdateSportsCentersData(repository: sl()));
   sl.registerLazySingleton<GetAllSportsCenters>(
       () => GetAllSportsCenters(repository: sl()));
+  /* Bookmarks */
+  sl.registerLazySingleton<GetAllBookmarks>(
+      () => GetAllBookmarks(repository: sl()));
+  sl.registerLazySingleton<GetAllBookmarksAsStream>(
+      () => GetAllBookmarksAsStream(repository: sl()));
+  sl.registerLazySingleton<AddBookmark>(() => AddBookmark(repository: sl()));
+  sl.registerLazySingleton<RemoveBookmark>(
+      () => RemoveBookmark(repository: sl()));
 
   // BLoC
   sl.registerFactory(() => EntryBloc(
@@ -119,12 +144,17 @@ Future<void> init() async {
         getAllRegions: sl(),
         getAllDistricts: sl(),
         getAllSportsCenters: sl(),
+        getAllBookmarks: sl(),
+        getAllBookmarksAsStream: sl(),
+        addBookmark: sl(),
+        removeBookmark: sl(),
       ));
 
   // DAO
   sl.registerLazySingleton<RegionsDao>(() => RegionsDao(sl()));
   sl.registerLazySingleton<DistrictsDao>(() => DistrictsDao(sl()));
   sl.registerLazySingleton<SportsCentersDao>(() => SportsCentersDao(sl()));
+  sl.registerLazySingleton<BookmarksDao>(() => BookmarksDao(sl()));
 
   // Misc
   sl.registerLazySingleton(() => const FlutterSecureStorage());

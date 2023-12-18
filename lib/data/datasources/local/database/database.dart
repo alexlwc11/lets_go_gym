@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
+import 'package:lets_go_gym/data/datasources/local/database/daos/bookmarks.dart';
 import 'package:lets_go_gym/data/datasources/local/database/daos/districts.dart';
 import 'package:lets_go_gym/data/datasources/local/database/daos/regions.dart';
 import 'package:lets_go_gym/data/datasources/local/database/daos/sports_centers.dart';
+import 'package:lets_go_gym/data/datasources/local/database/tables/bookmarks.dart';
 import 'package:lets_go_gym/data/datasources/local/database/tables/districts.dart';
 import 'package:lets_go_gym/data/datasources/local/database/tables/regions.dart';
 import 'package:lets_go_gym/data/datasources/local/database/tables/sports_centers.dart';
@@ -16,13 +18,28 @@ import 'package:sqlite3_flutter_libs/sqlite3_flutter_libs.dart';
 part 'database.g.dart';
 
 @DriftDatabase(
-    tables: [Regions, Districts, SportsCenters],
-    daos: [RegionsDao, DistrictsDao, SportsCentersDao])
+    tables: [Regions, Districts, SportsCenters, Bookmarks],
+    daos: [RegionsDao, DistrictsDao, SportsCentersDao, BookmarksDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
+
+  @override
+  MigrationStrategy get migration {
+    return MigrationStrategy(
+      onCreate: (Migrator m) async {
+        await m.createAll();
+      },
+      onUpgrade: (Migrator m, int from, int to) async {
+        if (from < 2) {
+          /// added [Bookmarks] table in version 2
+          await m.createTable(bookmarks);
+        }
+      },
+    );
+  }
 }
 
 LazyDatabase _openConnection() {

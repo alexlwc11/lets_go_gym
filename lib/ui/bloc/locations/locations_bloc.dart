@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:collection/collection.dart';
@@ -7,9 +8,14 @@ import 'package:lets_go_gym/core/utils/localization_helper.dart';
 import 'package:lets_go_gym/domain/entities/district/district.dart';
 import 'package:lets_go_gym/domain/entities/region/region.dart';
 import 'package:lets_go_gym/domain/entities/sports_center/sports_center.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/add_bookmark.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks_as_stream.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/remove_bookmark.dart';
 import 'package:lets_go_gym/domain/usecases/districts/get_all_districts.dart';
 import 'package:lets_go_gym/domain/usecases/regions/get_all_regions.dart';
 import 'package:lets_go_gym/domain/usecases/sports_centers/get_all_sports_centers.dart';
+import 'package:rxdart/rxdart.dart';
 
 part 'locations_event.dart';
 part 'locations_state.dart';
@@ -18,39 +24,70 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
   final GetAllRegions getAllRegions;
   final GetAllDistricts getAllDistricts;
   final GetAllSportsCenters getAllSportsCenters;
+  final GetAllBookmarks getAllBookmarks;
+  final GetAllBookmarksAsStream getAllBookmarksAsStream;
+  final AddBookmark addBookmark;
+  final RemoveBookmark removeBookmark;
+
+  late final StreamSubscription _subscription;
 
   LocationsBloc({
     required this.getAllRegions,
     required this.getAllDistricts,
     required this.getAllSportsCenters,
+    required this.getAllBookmarks,
+    required this.getAllBookmarksAsStream,
+    required this.addBookmark,
+    required this.removeBookmark,
   }) : super(LocationsDataLoadingInProgress()) {
     on<LocationsDataRequested>(_onLocationsDataRequested);
     on<BookmarkUpdateRequested>(_onBookmarkUpdateRequested);
+    on<BookmarkDataUpdateReceived>(_onBookmarkDataUpdateReceived);
 
     add(LocationsDataRequested());
+    _setupSubscription();
   }
 
   List<Region> _regions = [];
   List<District> _districts = [];
   List<SportsCenter> _sportsCenters = [];
   List<LocationItemVM> _locationItemVMs = [];
+  Set<int> _bookmarkedIds = {};
   // TODO filter
   // for display
   List<LocationItemVM> _displayItemVMs = [];
+
+  void _setupSubscription() {
+    _subscription = getAllBookmarksAsStream
+        .execute()
+        .throttleTime(
+          const Duration(milliseconds: 300),
+          trailing: true,
+        )
+        .distinct()
+        .map((bookmarks) => bookmarks.map((e) => e.sportsCenterId).toSet())
+        .listen(
+          (bookmarkedIds) =>
+              add(BookmarkDataUpdateReceived(bookmarkedIds: bookmarkedIds)),
+        );
+  }
 
   Future<void> _onLocationsDataRequested(
       LocationsDataRequested event, Emitter<LocationsState> emit) async {
     try {
       _regions = await _getAllRegions();
 
-      _districts = await _getAllDistrict();
+      _districts = await _getAllDistricts();
 
-      _sportsCenters = await _getAllSportsCenter();
+      _sportsCenters = await _getAllSportsCenters();
+
+      _bookmarkedIds = await _getAllBookmarkedIds();
 
       _locationItemVMs = _convertDataToVMs(
         regions: _regions,
         districts: _districts,
         sportsCenters: _sportsCenters,
+        bookmarkedIds: _bookmarkedIds,
       );
 
       _displayItemVMs = _locationItemVMs.toList();
@@ -63,18 +100,29 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
   Future<void> _onBookmarkUpdateRequested(
       BookmarkUpdateRequested event, Emitter<LocationsState> emit) async {
     try {
-      final targetIndex =
-          _displayItemVMs.indexWhere((vm) => vm.itemId == event.itemId);
-      if (targetIndex == -1) throw Exception('item not found');
+      final item =
+          _displayItemVMs.firstWhereOrNull((vm) => vm.itemId == event.itemId);
+      if (item == null) throw Exception('item not found');
 
-      _displayItemVMs[targetIndex] = _displayItemVMs[targetIndex].copyWith(
-        bookmarked: !_displayItemVMs[targetIndex].bookmarked,
-      );
-
-      emit(LocationsDataUpdated(displayItemVMs: _displayItemVMs.toList()));
+      if (item.bookmarked) {
+        await removeBookmark.execute(item.sportsCenter.id);
+      } else {
+        await addBookmark.execute(item.sportsCenter.id);
+      }
     } catch (_) {
       // emit(LocationsDataUpdateFailure());
     }
+  }
+
+  Future<void> _onBookmarkDataUpdateReceived(
+      BookmarkDataUpdateReceived event, Emitter<LocationsState> emit) async {
+    _bookmarkedIds = event.bookmarkedIds;
+    _displayItemVMs = _displayItemVMs
+        .map((item) => item.copyWith(
+            bookmarked: _bookmarkedIds.contains(item.sportsCenter.id)))
+        .toList();
+
+    emit(LocationsDataUpdated(displayItemVMs: _displayItemVMs.toList()));
   }
 
   Future<List<Region>> _getAllRegions() async {
@@ -86,7 +134,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
     }
   }
 
-  Future<List<District>> _getAllDistrict() async {
+  Future<List<District>> _getAllDistricts() async {
     try {
       return await getAllDistricts.execute();
     } catch (_) {
@@ -95,7 +143,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
     }
   }
 
-  Future<List<SportsCenter>> _getAllSportsCenter() async {
+  Future<List<SportsCenter>> _getAllSportsCenters() async {
     try {
       return await getAllSportsCenters.execute();
     } catch (_) {
@@ -104,10 +152,23 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
     }
   }
 
+  Future<Set<int>> _getAllBookmarkedIds() async {
+    try {
+      final bookmarks = await getAllBookmarks.execute();
+
+      return bookmarks.map((e) => e.sportsCenterId).toSet();
+    } catch (_) {
+      log("Failed to get all bookmarks");
+    }
+
+    return {};
+  }
+
   List<LocationItemVM> _convertDataToVMs({
     required List<Region> regions,
     required List<District> districts,
     required List<SportsCenter> sportsCenters,
+    required Set<int> bookmarkedIds,
   }) {
     return sportsCenters
         .map((sportsCenter) {
@@ -119,10 +180,20 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
           if (region == null) return null;
 
           return LocationItemVM(
-              region: region, district: district, sportsCenter: sportsCenter);
+            region: region,
+            district: district,
+            sportsCenter: sportsCenter,
+            bookmarked: bookmarkedIds.contains(sportsCenter.id),
+          );
         })
         .whereType<LocationItemVM>()
         .toList();
+  }
+
+  @override
+  Future<void> close() {
+    _subscription.cancel();
+    return super.close();
   }
 }
 

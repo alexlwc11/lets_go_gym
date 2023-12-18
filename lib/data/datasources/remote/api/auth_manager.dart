@@ -5,10 +5,10 @@ class AuthManager {
   final SharedPreferences _sharedPreferences;
   final FlutterSecureStorage _storage;
 
-  AuthManager(
-      {required SharedPreferences sharedPreferences,
-      required FlutterSecureStorage flutterSecureStorage})
-      : _sharedPreferences = sharedPreferences,
+  AuthManager({
+    required SharedPreferences sharedPreferences,
+    required FlutterSecureStorage flutterSecureStorage,
+  })  : _sharedPreferences = sharedPreferences,
         _storage = flutterSecureStorage;
 
   bool? _signedIn;

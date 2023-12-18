@@ -16,3 +16,9 @@ class BookmarkUpdateRequested extends LocationsEvent {
     required this.itemId,
   });
 }
+
+class BookmarkDataUpdateReceived extends LocationsEvent {
+  final Set<int> bookmarkedIds;
+
+  const BookmarkDataUpdateReceived({required this.bookmarkedIds});
+}
