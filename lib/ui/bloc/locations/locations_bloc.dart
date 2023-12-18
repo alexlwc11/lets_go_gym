@@ -48,9 +48,6 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
     _setupSubscription();
   }
 
-  List<Region> _regions = [];
-  List<District> _districts = [];
-  List<SportsCenter> _sportsCenters = [];
   List<LocationItemVM> _locationItemVMs = [];
   Set<int> _bookmarkedIds = {};
   // TODO filter
@@ -75,18 +72,16 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
   Future<void> _onLocationsDataRequested(
       LocationsDataRequested event, Emitter<LocationsState> emit) async {
     try {
-      _regions = await _getAllRegions();
-
-      _districts = await _getAllDistricts();
-
-      _sportsCenters = await _getAllSportsCenters();
+      final regions = await _getAllRegions();
+      final districts = await _getAllDistricts();
+      final sportsCenters = await _getAllSportsCenters();
 
       _bookmarkedIds = await _getAllBookmarkedIds();
 
       _locationItemVMs = _convertDataToVMs(
-        regions: _regions,
-        districts: _districts,
-        sportsCenters: _sportsCenters,
+        regions: regions,
+        districts: districts,
+        sportsCenters: sportsCenters,
         bookmarkedIds: _bookmarkedIds,
       );
 
@@ -110,6 +105,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
         await addBookmark.execute(item.sportsCenter.id);
       }
     } catch (_) {
+      // TODO handle error
       // emit(LocationsDataUpdateFailure());
     }
   }
