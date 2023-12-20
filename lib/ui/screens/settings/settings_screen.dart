@@ -25,16 +25,37 @@ class SettingsScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildItemTile(BuildContext context, _SettingsItem item) => ListTile(
-        leading: Icon(item.icon),
-        title: Text(item.getTitleText(context)),
-        titleTextStyle: Theme.of(context).textTheme.titleLarge,
-        subtitle: Text(item.getSubtitleText(context)),
+  Widget _buildItemTile(BuildContext context, _SettingsItem item) =>
+      _SettingsItemTile(
+        key: ValueKey(item.name),
+        settingsItem: item,
         onTap: () => _settingsItemOnTap(context, item),
       );
 
   void _settingsItemOnTap(BuildContext context, _SettingsItem item) {
     // TODO implement
+  }
+}
+
+class _SettingsItemTile extends StatelessWidget {
+  final _SettingsItem settingsItem;
+  final VoidCallback? onTap;
+
+  const _SettingsItemTile({
+    super.key,
+    required this.settingsItem,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(settingsItem.icon),
+      title: Text(settingsItem.getTitleText(context)),
+      titleTextStyle: Theme.of(context).textTheme.titleLarge,
+      subtitle: Text(settingsItem.getSubtitleText(context)),
+      onTap: onTap,
+    );
   }
 }
 
