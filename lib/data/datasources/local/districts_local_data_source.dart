@@ -5,6 +5,7 @@ import 'package:lets_go_gym/domain/entities/district/district.dart' as entity;
 abstract class DistrictsLocalDataSource {
   Future<List<District>> getAllDistricts();
   Future<District?> getDistrictById(int id);
+  Future<List<District>> getDistrictsByIds(List<int> ids);
   Future<List<District>> getDistrictsByRegionId(int regionId);
   Future<void> updateDistrictsData(List<entity.District> districts);
 }
@@ -19,6 +20,10 @@ class DistrictsLocalDataSourceImpl implements DistrictsLocalDataSource {
 
   @override
   Future<District?> getDistrictById(int id) => _dao.findById(id);
+
+  @override
+  Future<List<District>> getDistrictsByIds(List<int> ids) =>
+      _dao.findByIds(ids);
 
   @override
   Future<List<District>> getDistrictsByRegionId(int regionId) =>

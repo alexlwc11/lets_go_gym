@@ -12,6 +12,9 @@ class DistrictsDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<District>> findAll() => select(districts).get();
 
+  Future<List<District>> findByIds(List<int> ids) =>
+      (select(districts)..where((district) => district.id.isIn(ids))).get();
+
   Future<District?> findById(int id) =>
       (select(districts)..where((district) => district.id.equals(id)))
           .getSingleOrNull();

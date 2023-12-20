@@ -11,6 +11,9 @@ class RegionsDao extends DatabaseAccessor<AppDatabase> with _$RegionsDaoMixin {
 
   Future<List<Region>> findAll() => select(regions).get();
 
+  Future<List<Region>> findByIds(List<int> ids) =>
+      (select(regions)..where((region) => region.id.isIn(ids))).get();
+
   Future<Region?> findById(int id) =>
       (select(regions)..where((region) => region.id.equals(id)))
           .getSingleOrNull();

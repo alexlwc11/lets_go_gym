@@ -25,6 +25,12 @@ class DistrictsRepositoryImpl implements DistrictsRepository {
       (await localDataSource.getDistrictById(id))?.toEntity;
 
   @override
+  Future<List<District>> getDistrictsByIds(List<int> ids) async =>
+      (await localDataSource.getDistrictsByIds(ids))
+          .map((record) => record.toEntity)
+          .toList();
+
+  @override
   Future<List<District>> getDistrictsByRegionId(int regionId) async =>
       (await localDataSource.getDistrictsByRegionId(regionId))
           .map((record) => record.toEntity)

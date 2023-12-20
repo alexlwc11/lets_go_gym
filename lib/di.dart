@@ -37,11 +37,18 @@ import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks_as_stream.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/remove_bookmark.dart';
 import 'package:lets_go_gym/domain/usecases/districts/get_all_districts.dart';
+import 'package:lets_go_gym/domain/usecases/districts/get_district_by_id.dart';
+import 'package:lets_go_gym/domain/usecases/districts/get_districts_by_ids.dart';
 import 'package:lets_go_gym/domain/usecases/districts/update_districts_data.dart';
 import 'package:lets_go_gym/domain/usecases/regions/get_all_regions.dart';
+import 'package:lets_go_gym/domain/usecases/regions/get_region_by_id.dart';
+import 'package:lets_go_gym/domain/usecases/regions/get_regions_by_ids.dart';
 import 'package:lets_go_gym/domain/usecases/regions/update_regions_data.dart';
 import 'package:lets_go_gym/domain/usecases/sports_centers/get_all_sports_centers.dart';
+import 'package:lets_go_gym/domain/usecases/sports_centers/get_sports_center_by_id.dart';
+import 'package:lets_go_gym/domain/usecases/sports_centers/get_sports_centers_by_ids.dart';
 import 'package:lets_go_gym/domain/usecases/sports_centers/update_sports_centers_data.dart';
+import 'package:lets_go_gym/ui/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -110,16 +117,28 @@ Future<void> init() async {
       () => UpdateRegionsData(repository: sl()));
   sl.registerLazySingleton<GetAllRegions>(
       () => GetAllRegions(repository: sl()));
+  sl.registerLazySingleton<GetRegionById>(
+      () => GetRegionById(repository: sl()));
+  sl.registerLazySingleton<GetRegionsByIds>(
+      () => GetRegionsByIds(repository: sl()));
   /* Districts */
   sl.registerLazySingleton<UpdateDistrictsData>(
       () => UpdateDistrictsData(repository: sl()));
   sl.registerLazySingleton<GetAllDistricts>(
       () => GetAllDistricts(repository: sl()));
+  sl.registerLazySingleton<GetDistrictById>(
+      () => GetDistrictById(repository: sl()));
+  sl.registerLazySingleton<GetDistrictsByIds>(
+      () => GetDistrictsByIds(repository: sl()));
   /* Sports centers */
   sl.registerLazySingleton<UpdateSportsCentersData>(
       () => UpdateSportsCentersData(repository: sl()));
   sl.registerLazySingleton<GetAllSportsCenters>(
       () => GetAllSportsCenters(repository: sl()));
+  sl.registerLazySingleton<GetSportsCenterById>(
+      () => GetSportsCenterById(repository: sl()));
+  sl.registerLazySingleton<GetSportsCentersByIds>(
+      () => GetSportsCentersByIds(repository: sl()));
   /* Bookmarks */
   sl.registerLazySingleton<GetAllBookmarks>(
       () => GetAllBookmarks(repository: sl()));
@@ -139,6 +158,13 @@ Future<void> init() async {
         updateRegionDataLastUpdated: sl(),
         updateDistrictDataLastUpdated: sl(),
         updateSportsCenterDataLastUpdated: sl(),
+      ));
+  sl.registerFactory(() => BookmarksBloc(
+        getAllBookmarksAsStream: sl(),
+        removeBookmark: sl(),
+        getRegionsByIds: sl(),
+        getDistrictsByIds: sl(),
+        getSportsCentersByIds: sl(),
       ));
   sl.registerFactory(() => LocationsBloc(
         getAllRegions: sl(),

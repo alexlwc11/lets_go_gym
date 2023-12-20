@@ -14,6 +14,10 @@ class SportsCentersDao extends DatabaseAccessor<AppDatabase>
 
   Future<List<SportsCenter>> findAll() => select(sportsCenters).get();
 
+  Future<List<SportsCenter>> findByIds(List<int> ids) => (select(sportsCenters)
+        ..where((sportsCenter) => sportsCenter.id.isIn(ids)))
+      .get();
+
   Future<SportsCenter?> findById(int id) => (select(sportsCenters)
         ..where((sportsCenter) => sportsCenter.id.equals(id)))
       .getSingleOrNull();

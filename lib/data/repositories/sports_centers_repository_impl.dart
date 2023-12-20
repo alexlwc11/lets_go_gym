@@ -25,6 +25,12 @@ class SportsCentersRepositoryImpl implements SportsCentersRepository {
       (await localDataSource.getSportsCenterById(id))?.toEntity;
 
   @override
+  Future<List<SportsCenter>> getSportsCentersByIds(List<int> ids) async =>
+      (await localDataSource.getSportsCentersByIds(ids))
+          .map((record) => record.toEntity)
+          .toList();
+
+  @override
   Future<List<SportsCenter>> getSportsCentersByDistrictId(
           int districtId) async =>
       (await localDataSource.getSportsCentersByDistrictId(districtId))

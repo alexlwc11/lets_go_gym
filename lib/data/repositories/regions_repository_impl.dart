@@ -25,6 +25,12 @@ class RegionsRepositoryImpl implements RegionsRepository {
       (await localDataSource.getRegionById(id))?.toEntity;
 
   @override
+  Future<List<Region>> getRegionsByIds(List<int> ids) async =>
+      (await localDataSource.getRegionsByIds(ids))
+          .map((record) => record.toEntity)
+          .toList();
+
+  @override
   Future<void> updateRegionData() async {
     final List<Region> regions = (await remoteDataSource.getLatestRegions())
         .map((dto) => dto.toEntity)

@@ -81,7 +81,7 @@ class _LocationScreenState extends State<LocationsScreen> {
     final langCode = context.appLocalization.localeName;
 
     return LocationCard(
-      key: Key(vm.itemId),
+      key: ValueKey(vm.itemId),
       sportsCenterName: vm.getSportsCenterName(langCode),
       sportsCenterAddress: vm.getSportsCenterAddress(langCode),
       regionName: vm.getRegionName(langCode),
