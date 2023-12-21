@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lets_go_gym/core/utils/localization_helper.dart';
+import 'package:lets_go_gym/router.dart';
 import 'package:lets_go_gym/ui/components/main_screen_sliver_app_bar.dart';
 
 class SettingsScreen extends StatelessWidget {
@@ -33,7 +35,12 @@ class SettingsScreen extends StatelessWidget {
       );
 
   void _settingsItemOnTap(BuildContext context, _SettingsItem item) {
-    // TODO implement
+    switch (item) {
+      case _SettingsItem.language:
+        context.push(ScreenPaths.language);
+      default:
+      // TODO implement
+    }
   }
 }
 
@@ -69,18 +76,18 @@ enum _SettingsItem {
   String getTitleText(BuildContext context) {
     switch (this) {
       case _SettingsItem.language:
-        return context.appLocalization.settingsScreen_languageTitle;
+        return context.appLocalization.settingsScreen_languagesTitle;
       case _SettingsItem.theme:
-        return context.appLocalization.settingsScreen_themeTitle;
+        return context.appLocalization.settingsScreen_themesTitle;
     }
   }
 
   String getSubtitleText(BuildContext context) {
     switch (this) {
       case _SettingsItem.language:
-        return context.appLocalization.settingsScreen_languageSubtitle;
+        return context.appLocalization.settingsScreen_languagesSubtitle;
       case _SettingsItem.theme:
-        return context.appLocalization.settingsScreen_themeSubtitle;
+        return context.appLocalization.settingsScreen_themesSubtitle;
     }
   }
 }

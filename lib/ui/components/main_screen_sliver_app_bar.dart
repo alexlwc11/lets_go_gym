@@ -15,12 +15,9 @@ class MainScreenSliverAppBar extends StatelessWidget {
   Widget build(BuildContext context) => SliverAppBar.large(
         pinned: true,
         expandedHeight: _appBarExpandedHeight,
-        flexibleSpace: FlexibleSpaceBar(
-          titlePadding: const EdgeInsets.only(left: 16, bottom: 16),
-          title: Text(
-            titleText,
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
+        title: Text(
+          titleText,
+          style: Theme.of(context).appBarTheme.toolbarTextStyle,
         ),
       );
 }

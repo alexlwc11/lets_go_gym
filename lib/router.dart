@@ -4,11 +4,13 @@ import 'package:go_router/go_router.dart';
 import 'package:lets_go_gym/di.dart' as di;
 import 'package:lets_go_gym/ui/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
+import 'package:lets_go_gym/ui/bloc/languages/language_settings_cubit.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:lets_go_gym/ui/screens/entry_screen.dart';
 import 'package:lets_go_gym/ui/screens/main_screen.dart';
 import 'package:lets_go_gym/ui/screens/bookmarks/bookmarks_screen.dart';
 import 'package:lets_go_gym/ui/screens/locations/locations_screen.dart';
+import 'package:lets_go_gym/ui/screens/settings/language_screen.dart';
 import 'package:lets_go_gym/ui/screens/settings/settings_screen.dart';
 
 typedef RouteBuilder = Widget Function(GoRouterState state);
@@ -18,6 +20,7 @@ class ScreenPaths {
   static String bookmarks = '/bookmarks';
   static String locations = '/locations';
   static String settings = '/settings';
+  static String language = '$settings/language';
 }
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
@@ -45,7 +48,7 @@ final appRouter = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       builder: (_, state, child) {
         final path = state.fullPath ?? '';
-        int selectedIndex = _getBottomTabBarIndexFromPath(path);
+        final selectedIndex = _getBottomTabBarIndexFromPath(path);
 
         return MainScreen(
           selectedIndex: selectedIndex,
@@ -88,8 +91,16 @@ final appRouter = GoRouter(
               builder: (_, __) => const SettingsScreen(),
             ),
           ],
-        )
+        ),
       ],
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      path: ScreenPaths.language,
+      builder: (context, __) => BlocProvider.value(
+        value: context.read<LanguageSettingsCubit>(),
+        child: const LanguageScreen(),
+      ),
     ),
   ],
 );

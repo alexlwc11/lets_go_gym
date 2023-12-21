@@ -14,8 +14,10 @@
   "bookmarksScreen_emptyHints": "加個地點入收藏可以快啲搵到詳細資料",
   "locationsScreen_title": "地點",
   "settingsScreen_title": "設定",
-  "settingsScreen_languageTitle": "語言",
-  "settingsScreen_languageSubtitle": "喺依度轉顯示嘅語言",
-  "settingsScreen_themeTitle": "主題",
-  "settingsScreen_themeSubtitle": "喺依度轉主題"
+  "settingsScreen_languagesTitle": "語言",
+  "settingsScreen_languagesSubtitle": "喺依度轉顯示嘅語言",
+  "settingsScreen_themesTitle": "主題",
+  "settingsScreen_themesSubtitle": "喺依度轉主題",
+  "languagesScreen_title": "語言",
+  "languagesScreen_systemTitle": "系統語言"
 }

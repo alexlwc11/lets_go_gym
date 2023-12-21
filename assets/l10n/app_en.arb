@@ -14,8 +14,12 @@
   "bookmarksScreen_emptyHints": "Add location to bookmarks to check the details quickly",
   "locationsScreen_title": "Locations",
   "settingsScreen_title": "Settings",
-  "settingsScreen_languageTitle": "Language",
-  "settingsScreen_languageSubtitle": "Change the app language here",
-  "settingsScreen_themeTitle": "Theme",
-  "settingsScreen_themeSubtitle": "Change the app theme here"
+  "settingsScreen_languagesTitle": "Languages",
+  "settingsScreen_languagesSubtitle": "Change the app language here",
+  "settingsScreen_themesTitle": "Themes",
+  "settingsScreen_themesSubtitle": "Change the app theme here",
+  "languagesScreen_title": "Languages",
+  "languagesScreen_systemTitle": "System language",
+  "languagesScreen_enTitle": "English",
+  "languagesScreen_zhTitle": "中文"
 }

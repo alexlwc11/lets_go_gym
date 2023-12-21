@@ -1,10 +1,13 @@
 import 'dart:async';
 import 'dart:developer';
 
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lets_go_gym/core/utils/localization_helper.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/auth_manager.dart';
+import 'package:lets_go_gym/ui/bloc/languages/language_settings_cubit.dart';
 import 'router.dart';
 import 'di.dart' as di;
 
@@ -27,16 +30,42 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider.value(value: di.sl<LanguageSettingsCubit>()),
+      ],
+      child: _App(),
+    );
+  }
+}
+
+class _App extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp.router(
       onGenerateTitle: (context) => context.appLocalization.appTitle,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.orange),
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: Colors.orange,
+          brightness: MediaQuery.platformBrightnessOf(context),
+        ),
       ),
+      locale:
+          _getLocaleFromLangCode(context.watch<LanguageSettingsCubit>().state),
       routeInformationProvider: appRouter.routeInformationProvider,
       routeInformationParser: appRouter.routeInformationParser,
       routerDelegate: appRouter.routerDelegate,
     );
+  }
+
+  Locale? _getLocaleFromLangCode(String langCode) {
+    return switch (langCode) {
+      '' => null,
+      _ => AppLocalizations.supportedLocales
+              .firstWhereOrNull((locale) => locale.languageCode == langCode) ??
+          AppLocalizations.supportedLocales.first
+    };
   }
 }
