@@ -6,8 +6,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:lets_go_gym/core/utils/localization_helper.dart';
+import 'package:lets_go_gym/core/utils/theme_helper.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/auth_manager.dart';
 import 'package:lets_go_gym/ui/bloc/languages/language_settings_cubit.dart';
+import 'package:lets_go_gym/ui/bloc/themes/theme_settings_cubit.dart';
 import 'router.dart';
 import 'di.dart' as di;
 
@@ -33,6 +35,7 @@ class MainApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider.value(value: di.sl<LanguageSettingsCubit>()),
+        BlocProvider.value(value: di.sl<ThemeSettingsCubit>()),
       ],
       child: _App(),
     );
@@ -49,7 +52,9 @@ class _App extends StatelessWidget {
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.orange,
-          brightness: MediaQuery.platformBrightnessOf(context),
+          brightness: getBrightnessFromThemeCode(
+                  context.watch<ThemeSettingsCubit>().state) ??
+              MediaQuery.platformBrightnessOf(context),
         ),
       ),
       locale:

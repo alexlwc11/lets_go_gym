@@ -37,9 +37,11 @@ class SettingsScreen extends StatelessWidget {
   void _settingsItemOnTap(BuildContext context, _SettingsItem item) {
     switch (item) {
       case _SettingsItem.language:
-        context.push(ScreenPaths.language);
-      default:
-      // TODO implement
+        context.push(ScreenPaths.languages);
+        break;
+      case _SettingsItem.theme:
+        context.push(ScreenPaths.themes);
+        break;
     }
   }
 }

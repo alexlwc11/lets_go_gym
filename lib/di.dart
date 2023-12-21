@@ -36,7 +36,9 @@ import 'package:lets_go_gym/domain/usecases/app_info/update_district_data_last_u
 import 'package:lets_go_gym/domain/usecases/app_info/update_region_data_last_updated.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/update_sports_center_data_last_updated.dart';
 import 'package:lets_go_gym/domain/usecases/app_settings/get_current_language_settings.dart';
+import 'package:lets_go_gym/domain/usecases/app_settings/get_current_theme_settings.dart';
 import 'package:lets_go_gym/domain/usecases/app_settings/update_language_settings.dart';
+import 'package:lets_go_gym/domain/usecases/app_settings/update_theme_settings.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/add_bookmark.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks_as_stream.dart';
@@ -57,6 +59,7 @@ import 'package:lets_go_gym/ui/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/languages/language_settings_cubit.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
+import 'package:lets_go_gym/ui/bloc/themes/theme_settings_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
@@ -125,6 +128,8 @@ Future<void> init() async {
   /* AppSettings */
   sl.registerLazySingleton(() => GetCurrentLanguageSettings(repository: sl()));
   sl.registerLazySingleton(() => UpdateLanguageSettings(repository: sl()));
+  sl.registerLazySingleton(() => GetCurrentThemeSettings(repository: sl()));
+  sl.registerLazySingleton(() => UpdateThemeSettings(repository: sl()));
   /* Regions */
   sl.registerLazySingleton(() => UpdateRegionsData(repository: sl()));
   sl.registerLazySingleton(() => GetAllRegions(repository: sl()));
@@ -176,6 +181,10 @@ Future<void> init() async {
   sl.registerFactory(() => LanguageSettingsCubit(
         getCurrentLanguageSettings: sl(),
         updateLanguageSettings: sl(),
+      ));
+  sl.registerFactory(() => ThemeSettingsCubit(
+        getCurrentThemeSettings: sl(),
+        updateThemeSettings: sl(),
       ));
 
   // DAO

@@ -15,16 +15,15 @@ class LanguageScreen extends StatelessWidget {
           MainScreenSliverAppBar(
             titleText: context.appLocalization.languagesScreen_title,
           ),
-          BlocBuilder<LanguageSettingsCubit, String>(
-              builder: (context, langCode) {
-            return SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) => _buildItemTile(
-                    context, _LanguagesItem.values[index], langCode),
-                childCount: _LanguagesItem.values.length,
-              ),
-            );
-          }),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+              (context, index) => _buildItemTile(
+                  context,
+                  _LanguagesItem.values[index],
+                  context.watch<LanguageSettingsCubit>().state),
+              childCount: _LanguagesItem.values.length,
+            ),
+          ),
         ],
       ),
     );
@@ -62,7 +61,7 @@ class _LanguagesItemTile extends StatelessWidget {
       color: isSelected ? Theme.of(context).colorScheme.surfaceVariant : null,
       clipBehavior: Clip.hardEdge,
       child: ListTile(
-        title: Text(languagesItem.getTitleText(context)),
+        title: Text(getTitleText(context)),
         titleTextStyle: Theme.of(context).textTheme.titleLarge,
         trailing: isSelected ? const Icon(Icons.check) : null,
         selected: isSelected,
@@ -74,6 +73,17 @@ class _LanguagesItemTile extends StatelessWidget {
       ),
     );
   }
+
+  String getTitleText(BuildContext context) {
+    switch (languagesItem) {
+      case _LanguagesItem.system:
+        return context.appLocalization.languagesScreen_systemTitle;
+      case _LanguagesItem.en:
+        return context.appLocalization.languagesScreen_enTitle;
+      case _LanguagesItem.zh:
+        return context.appLocalization.languagesScreen_zhTitle;
+    }
+  }
 }
 
 enum _LanguagesItem {
@@ -83,15 +93,4 @@ enum _LanguagesItem {
 
   final String langCode;
   const _LanguagesItem(this.langCode);
-
-  String getTitleText(BuildContext context) {
-    switch (this) {
-      case _LanguagesItem.system:
-        return context.appLocalization.languagesScreen_systemTitle;
-      case _LanguagesItem.en:
-        return context.appLocalization.languagesScreen_enTitle;
-      case _LanguagesItem.zh:
-        return context.appLocalization.languagesScreen_zhTitle;
-    }
-  }
 }

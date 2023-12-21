@@ -14,4 +14,11 @@ class AppSettingsRepositoryImpl implements AppSettingsRepository {
   @override
   Future<void> updateLanguageSettings(String langCode) =>
       localDataSource.updateSelectedLanguage(langCode);
+
+  @override
+  Future<String> getThemeSettings() => localDataSource.getSelectedTheme();
+
+  @override
+  Future<void> updateThemeSettings(String themeCode) =>
+      localDataSource.updateSelectedTheme(themeCode);
 }

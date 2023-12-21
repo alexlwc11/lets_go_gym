@@ -12,6 +12,7 @@ import 'package:lets_go_gym/ui/screens/bookmarks/bookmarks_screen.dart';
 import 'package:lets_go_gym/ui/screens/locations/locations_screen.dart';
 import 'package:lets_go_gym/ui/screens/settings/language_screen.dart';
 import 'package:lets_go_gym/ui/screens/settings/settings_screen.dart';
+import 'package:lets_go_gym/ui/screens/settings/themes_screen.dart';
 
 typedef RouteBuilder = Widget Function(GoRouterState state);
 
@@ -20,7 +21,8 @@ class ScreenPaths {
   static String bookmarks = '/bookmarks';
   static String locations = '/locations';
   static String settings = '/settings';
-  static String language = '$settings/language';
+  static String languages = '$settings/languages';
+  static String themes = '$settings/themes';
 }
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
@@ -96,12 +98,14 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
-      path: ScreenPaths.language,
-      builder: (context, __) => BlocProvider.value(
-        value: context.read<LanguageSettingsCubit>(),
-        child: const LanguageScreen(),
-      ),
+      path: ScreenPaths.languages,
+      builder: (_, __) => const LanguageScreen(),
     ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      path: ScreenPaths.themes,
+      builder: (_, __) => const ThemesScreen(),
+    )
   ],
 );
 

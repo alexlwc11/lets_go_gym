@@ -21,5 +21,9 @@
   "languagesScreen_title": "Languages",
   "languagesScreen_systemTitle": "System language",
   "languagesScreen_enTitle": "English",
-  "languagesScreen_zhTitle": "中文"
+  "languagesScreen_zhTitle": "中文",
+  "themesScreen_title": "Themes",
+  "themesScreen_systemTitle": "System theme",
+  "themesScreen_lightTitle": "Light",
+  "themesScreen_darkTitle": "Dark"
 }
