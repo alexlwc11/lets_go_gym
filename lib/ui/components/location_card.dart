@@ -5,6 +5,7 @@ class LocationCard extends StatelessWidget {
   final String sportsCenterAddress;
   final String regionName;
   final String districtName;
+  final VoidCallback? onPressed;
   final bool isBookmarked;
   final VoidCallback? onBookmarkPressed;
 
@@ -15,6 +16,7 @@ class LocationCard extends StatelessWidget {
     required this.regionName,
     required this.districtName,
     required this.isBookmarked,
+    this.onPressed,
     this.onBookmarkPressed,
   });
 
@@ -24,7 +26,7 @@ class LocationCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
-        onTap: () {},
+        onTap: onPressed,
         child: ListTile(
           contentPadding: const EdgeInsets.only(left: 16, right: 4),
           titleTextStyle: Theme.of(context).textTheme.titleMedium,

@@ -37,7 +37,7 @@ class EntryScreen extends StatelessWidget {
               child: BlocConsumer<EntryBloc, EntryState>(
                 listener: (context, state) {
                   if (state is AllUpToDate) {
-                    context.go(ScreenPaths.bookmarks);
+                    context.goNamed(ScreenDetails.bookmarks.name);
                   }
                 },
                 listenWhen: (state, newState) =>

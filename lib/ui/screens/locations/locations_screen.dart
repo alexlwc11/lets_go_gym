@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lets_go_gym/core/utils/localization_helper.dart';
+import 'package:lets_go_gym/router.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:lets_go_gym/ui/components/location_card.dart';
 import 'package:lets_go_gym/ui/components/main_screen_sliver_app_bar.dart';
@@ -87,6 +89,14 @@ class _LocationScreenState extends State<LocationsScreen> {
       regionName: vm.getRegionName(langCode),
       districtName: vm.getDistrictName(langCode),
       isBookmarked: vm.bookmarked,
+      onPressed: () {
+        context.pushNamed(
+          ScreenDetails.location.name,
+          pathParameters: {
+            'sports_center_id': '${vm.sportsCenterId}',
+          },
+        );
+      },
       onBookmarkPressed: () {
         context
             .read<LocationsBloc>()

@@ -47,9 +47,9 @@ class MainScreen extends StatelessWidget {
 
   void _onNavBarSelectedIndexChanged(BuildContext context, int index) {
     final String destination = switch (index) {
-      0 => ScreenPaths.bookmarks,
-      1 => ScreenPaths.locations,
-      2 => ScreenPaths.settings,
+      0 => ScreenDetails.bookmarks.path,
+      1 => ScreenDetails.locations.path,
+      2 => ScreenDetails.settings.path,
       _ => throw ('Invalid index value')
     };
 

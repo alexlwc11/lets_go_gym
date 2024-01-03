@@ -21,7 +21,7 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
       floatingActionButton: FloatingActionButton.large(
         child: const Icon(Icons.add),
         onPressed: () {
-          context.go(ScreenPaths.locations);
+          context.goNamed(ScreenDetails.locations.name);
         },
       ),
       body: CustomScrollView(

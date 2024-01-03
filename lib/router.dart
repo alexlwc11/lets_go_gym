@@ -4,9 +4,9 @@ import 'package:go_router/go_router.dart';
 import 'package:lets_go_gym/di.dart' as di;
 import 'package:lets_go_gym/ui/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
-import 'package:lets_go_gym/ui/bloc/languages/language_settings_cubit.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:lets_go_gym/ui/screens/entry_screen.dart';
+import 'package:lets_go_gym/ui/screens/location/location_screen.dart';
 import 'package:lets_go_gym/ui/screens/main_screen.dart';
 import 'package:lets_go_gym/ui/screens/bookmarks/bookmarks_screen.dart';
 import 'package:lets_go_gym/ui/screens/locations/locations_screen.dart';
@@ -16,13 +16,35 @@ import 'package:lets_go_gym/ui/screens/settings/themes_screen.dart';
 
 typedef RouteBuilder = Widget Function(GoRouterState state);
 
-class ScreenPaths {
-  static String entry = '/entry';
-  static String bookmarks = '/bookmarks';
-  static String locations = '/locations';
-  static String settings = '/settings';
-  static String languages = '$settings/languages';
-  static String themes = '$settings/themes';
+class ScreenDetails {
+  final String name;
+  final String path;
+
+  const ScreenDetails({required this.name, required this.path});
+
+  static const entry = ScreenDetails(name: 'entry', path: _ScreenPaths.entry);
+  static const bookmarks =
+      ScreenDetails(name: 'bookmarks', path: _ScreenPaths.bookmarks);
+  static const locations =
+      ScreenDetails(name: 'locations', path: _ScreenPaths.locations);
+  static const location =
+      ScreenDetails(name: 'location', path: _ScreenPaths.location);
+  static const settings =
+      ScreenDetails(name: 'settings', path: _ScreenPaths.settings);
+  static const languages =
+      ScreenDetails(name: 'languages', path: _ScreenPaths.languages);
+  static const themes =
+      ScreenDetails(name: 'themes', path: _ScreenPaths.themes);
+}
+
+class _ScreenPaths {
+  static const String entry = '/entry';
+  static const String bookmarks = '/bookmarks';
+  static const String locations = '/locations';
+  static const String location = '/locations/:sports_center_id';
+  static const String settings = '/settings';
+  static const String languages = '$settings/languages';
+  static const String themes = '$settings/themes';
 }
 
 final GlobalKey<NavigatorState> _rootNavigatorKey =
@@ -36,11 +58,12 @@ final GlobalKey<NavigatorState> _settingsNavigatorKey =
 
 final appRouter = GoRouter(
   navigatorKey: _rootNavigatorKey,
-  initialLocation: ScreenPaths.entry,
+  initialLocation: ScreenDetails.entry.path,
   routes: [
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
-      path: ScreenPaths.entry,
+      name: ScreenDetails.entry.name,
+      path: ScreenDetails.entry.path,
       builder: (_, __) => BlocProvider.value(
         value: di.sl<EntryBloc>(),
         child: const EntryScreen(),
@@ -60,10 +83,11 @@ final appRouter = GoRouter(
       branches: [
         StatefulShellBranch(
           navigatorKey: _bookmarksNavigatorKey,
-          initialLocation: ScreenPaths.bookmarks,
+          initialLocation: ScreenDetails.bookmarks.path,
           routes: [
             GoRoute(
-              path: ScreenPaths.bookmarks,
+              name: ScreenDetails.bookmarks.name,
+              path: ScreenDetails.bookmarks.path,
               builder: (_, __) => BlocProvider.value(
                 value: di.sl<BookmarksBloc>(),
                 child: const BookmarksScreen(),
@@ -73,10 +97,11 @@ final appRouter = GoRouter(
         ),
         StatefulShellBranch(
           navigatorKey: _locationsNavigatorKey,
-          initialLocation: ScreenPaths.locations,
+          initialLocation: ScreenDetails.locations.path,
           routes: [
             GoRoute(
-              path: ScreenPaths.locations,
+              name: ScreenDetails.locations.name,
+              path: ScreenDetails.locations.path,
               builder: (_, __) => BlocProvider.value(
                 value: di.sl<LocationsBloc>(),
                 child: const LocationsScreen(),
@@ -86,10 +111,11 @@ final appRouter = GoRouter(
         ),
         StatefulShellBranch(
           navigatorKey: _settingsNavigatorKey,
-          initialLocation: ScreenPaths.settings,
+          initialLocation: ScreenDetails.settings.path,
           routes: [
             GoRoute(
-              path: ScreenPaths.settings,
+              name: ScreenDetails.settings.name,
+              path: ScreenDetails.settings.path,
               builder: (_, __) => const SettingsScreen(),
             ),
           ],
@@ -98,23 +124,37 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
-      path: ScreenPaths.languages,
+      name: ScreenDetails.location.name,
+      path: ScreenDetails.location.path,
+      builder: (_, state) {
+        final sportsCenterId =
+            int.parse(state.pathParameters['sports_center_id']!);
+        print('$sportsCenterId');
+
+        return const LocationScreen();
+      },
+    ),
+    GoRoute(
+      parentNavigatorKey: _rootNavigatorKey,
+      name: ScreenDetails.languages.name,
+      path: ScreenDetails.languages.path,
       builder: (_, __) => const LanguageScreen(),
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
-      path: ScreenPaths.themes,
+      name: ScreenDetails.themes.name,
+      path: ScreenDetails.themes.path,
       builder: (_, __) => const ThemesScreen(),
     )
   ],
 );
 
 int _getBottomTabBarIndexFromPath(String path) {
-  if (path.contains(ScreenPaths.bookmarks)) {
+  if (path.contains(ScreenDetails.bookmarks.path)) {
     return 0;
-  } else if (path.contains(ScreenPaths.locations)) {
+  } else if (path.contains(ScreenDetails.locations.path)) {
     return 1;
-  } else if (path.contains(ScreenPaths.settings)) {
+  } else if (path.contains(ScreenDetails.settings.path)) {
     return 2;
   }
 
