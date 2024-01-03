@@ -72,7 +72,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
           _displayItemVMs.firstWhereOrNull((vm) => vm.itemId == event.itemId);
       if (item == null) throw Exception('item not found');
 
-      await removeBookmark.execute(item.sportsCenter.id);
+      await removeBookmark.execute(item.sportsCenterId);
     } catch (_) {
       // TODO handle error
       // emit(LocationsDataUpdateFailure());
@@ -97,7 +97,7 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
         final region = _cachedRegions[district.regionId];
         if (region == null) continue;
 
-        updatedVMs.add(BookmarkItemVM(
+        updatedVMs.add(BookmarkItemVM.create(
           region: region,
           district: district,
           sportsCenter: sportsCenter,
@@ -186,42 +186,108 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
 }
 
 class BookmarkItemVM extends Equatable {
-  final Region region;
-  final District district;
-  final SportsCenter sportsCenter;
+  final int regionId;
+  final String regionNameEn;
+  final String regionNameZh;
+  final int districtId;
+  final String districtNameEn;
+  final String districtNameZh;
+  final int sportsCenterId;
+  final String sportsCenterNameEn;
+  final String sportsCenterNameZh;
+  final String sportsCenterAddressEn;
+  final String sportsCenterAddressZh;
 
-  const BookmarkItemVM({
-    required this.region,
-    required this.district,
-    required this.sportsCenter,
+  factory BookmarkItemVM.create({
+    required Region region,
+    required District district,
+    required SportsCenter sportsCenter,
+  }) =>
+      BookmarkItemVM._(
+        regionId: region.id,
+        regionNameEn: region.nameEn,
+        regionNameZh: region.nameZh,
+        districtId: district.id,
+        districtNameEn: district.nameEn,
+        districtNameZh: district.nameZh,
+        sportsCenterId: sportsCenter.id,
+        sportsCenterNameEn: sportsCenter.nameEn,
+        sportsCenterNameZh: sportsCenter.nameZh,
+        sportsCenterAddressEn: sportsCenter.addressEn,
+        sportsCenterAddressZh: sportsCenter.addressZh,
+      );
+
+  const BookmarkItemVM._({
+    required this.regionId,
+    required this.regionNameEn,
+    required this.regionNameZh,
+    required this.districtId,
+    required this.districtNameEn,
+    required this.districtNameZh,
+    required this.sportsCenterId,
+    required this.sportsCenterNameEn,
+    required this.sportsCenterNameZh,
+    required this.sportsCenterAddressEn,
+    required this.sportsCenterAddressZh,
   });
 
-  String get itemId => '${region.id}-${district.id}-${sportsCenter.id}';
+  String get itemId => '$regionId-$districtId-$sportsCenterId';
 
   String getSportsCenterName(String langCode) => getLocalizedString(
         langCode,
-        en: sportsCenter.nameEn,
-        zh: sportsCenter.nameZh,
+        en: sportsCenterNameEn,
+        zh: sportsCenterNameZh,
       );
 
   String getSportsCenterAddress(String langCode) => getLocalizedString(
         langCode,
-        en: sportsCenter.addressEn,
-        zh: sportsCenter.addressZh,
+        en: sportsCenterAddressEn,
+        zh: sportsCenterAddressZh,
       );
 
   String getRegionName(String langCode) => getLocalizedString(
         langCode,
-        en: region.nameEn,
-        zh: region.nameZh,
+        en: regionNameEn,
+        zh: regionNameZh,
       );
 
   String getDistrictName(String langCode) => getLocalizedString(
         langCode,
-        en: district.nameEn,
-        zh: district.nameZh,
+        en: districtNameEn,
+        zh: districtNameZh,
       );
 
   @override
-  List<Object?> get props => [sportsCenter, region, district];
+  List<Object?> get props => [
+        regionId,
+        regionNameEn,
+        regionNameZh,
+        districtId,
+        districtNameEn,
+        districtNameZh,
+        sportsCenterId,
+        sportsCenterNameEn,
+        sportsCenterNameZh,
+        sportsCenterAddressEn,
+        sportsCenterAddressZh,
+      ];
+
+  BookmarkItemVM copyWith({
+    Region? region,
+    District? district,
+    SportsCenter? sportsCenter,
+  }) =>
+      BookmarkItemVM._(
+        regionId: region?.id ?? regionId,
+        regionNameEn: region?.nameEn ?? regionNameEn,
+        regionNameZh: region?.nameZh ?? regionNameZh,
+        districtId: district?.id ?? districtId,
+        districtNameEn: district?.nameEn ?? districtNameEn,
+        districtNameZh: district?.nameZh ?? districtNameZh,
+        sportsCenterId: sportsCenter?.id ?? sportsCenterId,
+        sportsCenterNameEn: sportsCenter?.nameEn ?? sportsCenterNameEn,
+        sportsCenterNameZh: sportsCenter?.nameZh ?? sportsCenterNameZh,
+        sportsCenterAddressEn: sportsCenter?.addressEn ?? sportsCenterAddressEn,
+        sportsCenterAddressZh: sportsCenter?.addressZh ?? sportsCenterAddressZh,
+      );
 }

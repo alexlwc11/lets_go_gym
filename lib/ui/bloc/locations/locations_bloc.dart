@@ -100,9 +100,9 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
       if (item == null) throw Exception('item not found');
 
       if (item.bookmarked) {
-        await removeBookmark.execute(item.sportsCenter.id);
+        await removeBookmark.execute(item.sportsCenterId);
       } else {
-        await addBookmark.execute(item.sportsCenter.id);
+        await addBookmark.execute(item.sportsCenterId);
       }
     } catch (_) {
       // TODO handle error
@@ -115,7 +115,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
     _bookmarkedIds = event.bookmarkedIds;
     _displayItemVMs = _displayItemVMs
         .map((item) => item.copyWith(
-            bookmarked: _bookmarkedIds.contains(item.sportsCenter.id)))
+            bookmarked: _bookmarkedIds.contains(item.sportsCenterId)))
         .toList();
 
     emit(LocationsDataUpdated(displayItemVMs: _displayItemVMs.toList()));
@@ -175,7 +175,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
               .firstWhereOrNull((region) => region.id == district.regionId);
           if (region == null) return null;
 
-          return LocationItemVM(
+          return LocationItemVM.create(
             region: region,
             district: district,
             sportsCenter: sportsCenter,
@@ -194,46 +194,96 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
 }
 
 class LocationItemVM extends Equatable {
-  final Region region;
-  final District district;
-  final SportsCenter sportsCenter;
+  final int regionId;
+  final String regionNameEn;
+  final String regionNameZh;
+  final int districtId;
+  final String districtNameEn;
+  final String districtNameZh;
+  final int sportsCenterId;
+  final String sportsCenterNameEn;
+  final String sportsCenterNameZh;
+  final String sportsCenterAddressEn;
+  final String sportsCenterAddressZh;
   final bool bookmarked;
 
-  const LocationItemVM({
-    required this.region,
-    required this.district,
-    required this.sportsCenter,
+  factory LocationItemVM.create({
+    required Region region,
+    required District district,
+    required SportsCenter sportsCenter,
+    required bool bookmarked,
+  }) =>
+      LocationItemVM._(
+        regionId: region.id,
+        regionNameEn: region.nameEn,
+        regionNameZh: region.nameZh,
+        districtId: district.id,
+        districtNameEn: district.nameEn,
+        districtNameZh: district.nameZh,
+        sportsCenterId: sportsCenter.id,
+        sportsCenterNameEn: sportsCenter.nameEn,
+        sportsCenterNameZh: sportsCenter.nameZh,
+        sportsCenterAddressEn: sportsCenter.addressEn,
+        sportsCenterAddressZh: sportsCenter.addressZh,
+        bookmarked: bookmarked,
+      );
+
+  const LocationItemVM._({
+    required this.regionId,
+    required this.regionNameEn,
+    required this.regionNameZh,
+    required this.districtId,
+    required this.districtNameEn,
+    required this.districtNameZh,
+    required this.sportsCenterId,
+    required this.sportsCenterNameEn,
+    required this.sportsCenterNameZh,
+    required this.sportsCenterAddressEn,
+    required this.sportsCenterAddressZh,
     this.bookmarked = false,
   });
 
-  String get itemId => '${region.id}-${district.id}-${sportsCenter.id}';
+  String get itemId => '$regionId-$districtId-$sportsCenterId';
 
   String getSportsCenterName(String langCode) => getLocalizedString(
         langCode,
-        en: sportsCenter.nameEn,
-        zh: sportsCenter.nameZh,
+        en: sportsCenterNameEn,
+        zh: sportsCenterNameZh,
       );
 
   String getSportsCenterAddress(String langCode) => getLocalizedString(
         langCode,
-        en: sportsCenter.addressEn,
-        zh: sportsCenter.addressZh,
+        en: sportsCenterAddressEn,
+        zh: sportsCenterAddressZh,
       );
 
   String getRegionName(String langCode) => getLocalizedString(
         langCode,
-        en: region.nameEn,
-        zh: region.nameZh,
+        en: regionNameEn,
+        zh: regionNameZh,
       );
 
   String getDistrictName(String langCode) => getLocalizedString(
         langCode,
-        en: district.nameEn,
-        zh: district.nameZh,
+        en: districtNameEn,
+        zh: districtNameZh,
       );
 
   @override
-  List<Object?> get props => [sportsCenter, region, district, bookmarked];
+  List<Object?> get props => [
+        regionId,
+        regionNameEn,
+        regionNameZh,
+        districtId,
+        districtNameEn,
+        districtNameZh,
+        sportsCenterId,
+        sportsCenterNameEn,
+        sportsCenterNameZh,
+        sportsCenterAddressEn,
+        sportsCenterAddressZh,
+        bookmarked
+      ];
 
   LocationItemVM copyWith({
     Region? region,
@@ -241,10 +291,18 @@ class LocationItemVM extends Equatable {
     SportsCenter? sportsCenter,
     bool? bookmarked,
   }) =>
-      LocationItemVM(
-        region: region ?? this.region,
-        district: district ?? this.district,
-        sportsCenter: sportsCenter ?? this.sportsCenter,
+      LocationItemVM._(
+        regionId: region?.id ?? regionId,
+        regionNameEn: region?.nameEn ?? regionNameEn,
+        regionNameZh: region?.nameZh ?? regionNameZh,
+        districtId: district?.id ?? districtId,
+        districtNameEn: district?.nameEn ?? districtNameEn,
+        districtNameZh: district?.nameZh ?? districtNameZh,
+        sportsCenterId: sportsCenter?.id ?? sportsCenterId,
+        sportsCenterNameEn: sportsCenter?.nameEn ?? sportsCenterNameEn,
+        sportsCenterNameZh: sportsCenter?.nameZh ?? sportsCenterNameZh,
+        sportsCenterAddressEn: sportsCenter?.addressEn ?? sportsCenterAddressEn,
+        sportsCenterAddressZh: sportsCenter?.addressZh ?? sportsCenterAddressZh,
         bookmarked: bookmarked ?? this.bookmarked,
       );
 }

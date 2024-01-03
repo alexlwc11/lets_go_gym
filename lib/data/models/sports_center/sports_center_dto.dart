@@ -23,6 +23,10 @@ class SportsCenterDto {
   final int? hourlyQuota;
   @JsonKey(name: 'monthly_quota')
   final int? monthlyQuota;
+  @JsonKey(name: 'latitude_dd', fromJson: double.parse)
+  final double? latitude;
+  @JsonKey(name: 'longitude_dd', fromJson: double.parse)
+  final double? longitude;
 
   SportsCenterDto({
     required this.id,
@@ -34,6 +38,8 @@ class SportsCenterDto {
     required this.phoneNumber,
     this.hourlyQuota,
     this.monthlyQuota,
+    this.latitude,
+    this.longitude,
   });
 
   factory SportsCenterDto.fromJson(Map<String, Object?> json) =>
@@ -54,6 +60,8 @@ extension SportsCenterConverter on SportsCenterDto {
       phoneNumber: phoneNumber,
       hourlyQuota: hourlyQuota,
       monthlyQuota: monthlyQuota,
+      latitude: latitude,
+      longitude: longitude,
     );
   }
 }

@@ -16,8 +16,7 @@ class BookmarksDataUpdated extends BookmarksState {
 
   @override
   List<Object?> get props => displayItemVMs
-      .map((vm) =>
-  '${vm.region.id}-${vm.district.id}-${vm.sportsCenter.id}')
+      .map((vm) => '${vm.regionId}-${vm.districtId}-${vm.sportsCenterId}')
       .toList();
 }
 

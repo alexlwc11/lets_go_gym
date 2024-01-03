@@ -27,10 +27,9 @@ class DataInfoDto {
 extension DataInfoConverter on DataInfoDto {
   DataInfo get toDataInfo {
     return DataInfo(
-      regionDataLastUpdatedAt: regionDataLastUpdatedAt ?? DateTime.now(),
-      districtDataLastUpdatedAt: districtDataLastUpdatedAt ?? DateTime.now(),
-      sportsCenterDataLastUpdatedAt:
-          sportsCenterDataLastUpdatedAt ?? DateTime.now(),
+      regionDataLastUpdatedAt: regionDataLastUpdatedAt,
+      districtDataLastUpdatedAt: districtDataLastUpdatedAt,
+      sportsCenterDataLastUpdatedAt: sportsCenterDataLastUpdatedAt,
     );
   }
 }

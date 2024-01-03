@@ -17,7 +17,7 @@ class LocationsDataUpdated extends LocationsState {
   @override
   List<Object?> get props => displayItemVMs
       .map((vm) =>
-          '${vm.region.id}-${vm.district.id}-${vm.sportsCenter.id}-${vm.bookmarked}')
+          '${vm.regionId}-${vm.districtId}-${vm.sportsCenterId}-${vm.bookmarked}')
       .toList();
 }
 
