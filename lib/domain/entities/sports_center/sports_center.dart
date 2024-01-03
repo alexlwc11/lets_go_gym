@@ -15,6 +15,8 @@ class SportsCenter with _$SportsCenter {
     @JsonKey(name: 'phone_number') required String phoneNumber,
     @JsonKey(name: 'hourly_quota') int? hourlyQuota,
     @JsonKey(name: 'monthly_quota') int? monthlyQuota,
+    @JsonKey(name: 'latitude_dd') double? latitude,
+    @JsonKey(name: 'longitude_dd') double? longitude,
   }) = _SportsCenter;
 
   factory SportsCenter.fromJson(Map<String, Object?> json) =>

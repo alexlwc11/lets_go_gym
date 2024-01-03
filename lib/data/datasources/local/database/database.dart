@@ -24,7 +24,7 @@ class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration {
@@ -36,6 +36,11 @@ class AppDatabase extends _$AppDatabase {
         if (from < 2) {
           /// added [Bookmarks] table in version 2
           await m.createTable(bookmarks);
+        }
+        if (from < 3) {
+          /// added [latitude] and [longitude] columns to [SportsCenters] table in version 3
+          await m.addColumn(sportsCenters, sportsCenters.latitude);
+          await m.addColumn(sportsCenters, sportsCenters.longitude);
         }
       },
     );
