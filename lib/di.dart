@@ -40,6 +40,8 @@ import 'package:lets_go_gym/domain/usecases/app_settings/get_current_theme_setti
 import 'package:lets_go_gym/domain/usecases/app_settings/update_language_settings.dart';
 import 'package:lets_go_gym/domain/usecases/app_settings/update_theme_settings.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/add_bookmark.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/check_if_bookmarked.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/check_if_bookmarked_as_stream.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks_as_stream.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/remove_bookmark.dart';
@@ -58,6 +60,7 @@ import 'package:lets_go_gym/domain/usecases/sports_centers/update_sports_centers
 import 'package:lets_go_gym/ui/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/languages/language_settings_cubit.dart';
+import 'package:lets_go_gym/ui/bloc/location/location_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/themes/theme_settings_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -148,6 +151,8 @@ Future<void> init() async {
   /* Bookmarks */
   sl.registerLazySingleton(() => GetAllBookmarks(repository: sl()));
   sl.registerLazySingleton(() => GetAllBookmarksAsStream(repository: sl()));
+  sl.registerLazySingleton(() => CheckIfBookmarked(repository: sl()));
+  sl.registerLazySingleton(() => CheckIfBookmarkedAsStream(repository: sl()));
   sl.registerLazySingleton(() => AddBookmark(repository: sl()));
   sl.registerLazySingleton(() => RemoveBookmark(repository: sl()));
 
@@ -178,6 +183,18 @@ Future<void> init() async {
         addBookmark: sl(),
         removeBookmark: sl(),
       ));
+  sl.registerFactoryParam<LocationBloc, int, dynamic>(
+    (sportsCenterId, _) => LocationBloc(
+      sportsCenterId: sportsCenterId,
+      getRegionById: sl(),
+      getDistrictById: sl(),
+      getSportsCenterById: sl(),
+      checkIfBookmarked: sl(),
+      checkIfBookmarkedAsStream: sl(),
+      addBookmark: sl(),
+      removeBookmark: sl(),
+    ),
+  );
   sl.registerFactory(() => LanguageSettingsCubit(
         getCurrentLanguageSettings: sl(),
         updateLanguageSettings: sl(),

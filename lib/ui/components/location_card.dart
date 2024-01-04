@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LocationCard extends StatelessWidget {
+  final Object? heroTag;
   final String sportsCenterName;
   final String sportsCenterAddress;
   final String regionName;
@@ -11,6 +12,7 @@ class LocationCard extends StatelessWidget {
 
   const LocationCard({
     super.key,
+    this.heroTag,
     required this.sportsCenterName,
     required this.sportsCenterAddress,
     required this.regionName,
@@ -22,7 +24,7 @@ class LocationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    final child = Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
       clipBehavior: Clip.hardEdge,
       child: InkWell(
@@ -48,6 +50,12 @@ class LocationCard extends StatelessWidget {
         ),
       ),
     );
+
+    if (heroTag != null) {
+      return Hero(tag: heroTag!, child: child);
+    } else {
+      return child;
+    }
   }
 
   Widget _buildAddressRow() {

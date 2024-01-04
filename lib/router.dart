@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lets_go_gym/di.dart' as di;
 import 'package:lets_go_gym/ui/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
+import 'package:lets_go_gym/ui/bloc/location/location_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:lets_go_gym/ui/screens/entry_screen.dart';
 import 'package:lets_go_gym/ui/screens/location/location_screen.dart';
@@ -129,9 +130,13 @@ final appRouter = GoRouter(
       builder: (_, state) {
         final sportsCenterId =
             int.parse(state.pathParameters['sports_center_id']!);
-        print('$sportsCenterId');
 
-        return const LocationScreen();
+        return Hero(
+            tag: 'sports_center_id_$sportsCenterId',
+            child: BlocProvider.value(
+              value: di.sl.get<LocationBloc>(param1: sportsCenterId),
+              child: const LocationScreen(),
+            ));
       },
     ),
     GoRoute(

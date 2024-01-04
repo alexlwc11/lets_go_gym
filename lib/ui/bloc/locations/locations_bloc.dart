@@ -88,7 +88,8 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
       _displayItemVMs = _locationItemVMs.toList();
       emit(LocationsDataUpdated(displayItemVMs: _displayItemVMs.toList()));
     } catch (_) {
-      emit(LocationsDataUpdateFailure());
+      // TODO handle error
+      // emit(LocationsDataUpdateFailure());
     }
   }
 
@@ -99,7 +100,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
           _displayItemVMs.firstWhereOrNull((vm) => vm.itemId == event.itemId);
       if (item == null) throw Exception('item not found');
 
-      if (item.bookmarked) {
+      if (item.isBookmarked) {
         await removeBookmark.execute(item.sportsCenterId);
       } else {
         await addBookmark.execute(item.sportsCenterId);
@@ -115,7 +116,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
     _bookmarkedIds = event.bookmarkedIds;
     _displayItemVMs = _displayItemVMs
         .map((item) => item.copyWith(
-            bookmarked: _bookmarkedIds.contains(item.sportsCenterId)))
+            isBookmarked: _bookmarkedIds.contains(item.sportsCenterId)))
         .toList();
 
     emit(LocationsDataUpdated(displayItemVMs: _displayItemVMs.toList()));
@@ -179,7 +180,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
             region: region,
             district: district,
             sportsCenter: sportsCenter,
-            bookmarked: bookmarkedIds.contains(sportsCenter.id),
+            isBookmarked: bookmarkedIds.contains(sportsCenter.id),
           );
         })
         .whereType<LocationItemVM>()
@@ -205,13 +206,13 @@ class LocationItemVM extends Equatable {
   final String sportsCenterNameZh;
   final String sportsCenterAddressEn;
   final String sportsCenterAddressZh;
-  final bool bookmarked;
+  final bool isBookmarked;
 
   factory LocationItemVM.create({
     required Region region,
     required District district,
     required SportsCenter sportsCenter,
-    required bool bookmarked,
+    required bool isBookmarked,
   }) =>
       LocationItemVM._(
         regionId: region.id,
@@ -225,7 +226,7 @@ class LocationItemVM extends Equatable {
         sportsCenterNameZh: sportsCenter.nameZh,
         sportsCenterAddressEn: sportsCenter.addressEn,
         sportsCenterAddressZh: sportsCenter.addressZh,
-        bookmarked: bookmarked,
+        isBookmarked: isBookmarked,
       );
 
   const LocationItemVM._({
@@ -240,7 +241,7 @@ class LocationItemVM extends Equatable {
     required this.sportsCenterNameZh,
     required this.sportsCenterAddressEn,
     required this.sportsCenterAddressZh,
-    this.bookmarked = false,
+    this.isBookmarked = false,
   });
 
   String get itemId => '$regionId-$districtId-$sportsCenterId';
@@ -282,14 +283,14 @@ class LocationItemVM extends Equatable {
         sportsCenterNameZh,
         sportsCenterAddressEn,
         sportsCenterAddressZh,
-        bookmarked
+        isBookmarked
       ];
 
   LocationItemVM copyWith({
     Region? region,
     District? district,
     SportsCenter? sportsCenter,
-    bool? bookmarked,
+    bool? isBookmarked,
   }) =>
       LocationItemVM._(
         regionId: region?.id ?? regionId,
@@ -303,6 +304,6 @@ class LocationItemVM extends Equatable {
         sportsCenterNameZh: sportsCenter?.nameZh ?? sportsCenterNameZh,
         sportsCenterAddressEn: sportsCenter?.addressEn ?? sportsCenterAddressEn,
         sportsCenterAddressZh: sportsCenter?.addressZh ?? sportsCenterAddressZh,
-        bookmarked: bookmarked ?? this.bookmarked,
+        isBookmarked: isBookmarked ?? this.isBookmarked,
       );
 }

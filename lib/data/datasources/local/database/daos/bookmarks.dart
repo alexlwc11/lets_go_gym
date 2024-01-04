@@ -14,6 +14,20 @@ class BookmarksDao extends DatabaseAccessor<AppDatabase>
 
   Stream<List<Bookmark>> findAllAsStream() => select(bookmarks).watch();
 
+  Future<bool> checkIfBookmarked(int sportsCenterId) async {
+    final record = await (select(bookmarks)
+          ..where((record) => record.sportsCenterId.equals(sportsCenterId)))
+        .getSingleOrNull();
+
+    return record != null;
+  }
+
+  Stream<bool> checkIfBookmarkedAsStream(int sportsCenterId) =>
+      (select(bookmarks)
+            ..where((record) => record.sportsCenterId.equals(sportsCenterId)))
+          .watchSingleOrNull()
+          .map((bookmark) => bookmark != null);
+
   Future<void> insertOrUpdateRecord(entity.Bookmark bookmark) {
     final newRecord = BookmarksDataConverter.fromEntity(bookmark);
 

@@ -27,6 +27,20 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
       .asBroadcastStream();
 
   @override
+  Future<bool> checkIfBookmarked(int sportsCenterId) async {
+    try {
+      return await localDataSource.checkIfBookmarked(sportsCenterId);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  @override
+  Stream<bool> checkIfBookmarkedAsStream(int sportsCenterId) => localDataSource
+      .checkIfBookmarkedAsStream(sportsCenterId)
+      .asBroadcastStream();
+
+  @override
   Future<void> addBookmark(int sportsCenterId) async {
     try {
       // TODO API request, then store the result

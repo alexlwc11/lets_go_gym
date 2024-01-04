@@ -5,6 +5,8 @@ import 'package:lets_go_gym/domain/entities/bookmark/bookmark.dart' as entity;
 abstract class BookmarksLocalDataSource {
   Future<List<Bookmark>> getAllBookmarks();
   Stream<List<Bookmark>> getAllBookmarksAsStream();
+  Future<bool> checkIfBookmarked(int sportsCenterId);
+  Stream<bool> checkIfBookmarkedAsStream(int sportsCenterId);
   Future<void> insertOrUpdateBookmark(entity.Bookmark bookmark);
   Future<void> insertLocalRecord(int sportsCenterId);
   Future<void> deleteBookmark(int sportsCenterId);
@@ -20,6 +22,14 @@ class BookmarksLocalDataSourceImpl implements BookmarksLocalDataSource {
 
   @override
   Stream<List<Bookmark>> getAllBookmarksAsStream() => _dao.findAllAsStream();
+
+  @override
+  Future<bool> checkIfBookmarked(int sportsCenterId) =>
+      _dao.checkIfBookmarked(sportsCenterId);
+
+  @override
+  Stream<bool> checkIfBookmarkedAsStream(int sportsCenterId) =>
+      _dao.checkIfBookmarkedAsStream(sportsCenterId);
 
   @override
   Future<void> insertOrUpdateBookmark(entity.Bookmark bookmark) =>

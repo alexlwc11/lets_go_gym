@@ -84,11 +84,12 @@ class _LocationScreenState extends State<LocationsScreen> {
 
     return LocationCard(
       key: ValueKey(vm.itemId),
+      heroTag: 'sports_center_id_${vm.sportsCenterId}',
       sportsCenterName: vm.getSportsCenterName(langCode),
       sportsCenterAddress: vm.getSportsCenterAddress(langCode),
       regionName: vm.getRegionName(langCode),
       districtName: vm.getDistrictName(langCode),
-      isBookmarked: vm.bookmarked,
+      isBookmarked: vm.isBookmarked,
       onPressed: () {
         context.pushNamed(
           ScreenDetails.location.name,
