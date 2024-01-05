@@ -33,9 +33,9 @@ class ScreenDetails {
   static const settings =
       ScreenDetails(name: 'settings', path: _ScreenPaths.settings);
   static const languages =
-      ScreenDetails(name: 'languages', path: _ScreenPaths.languages);
+      ScreenDetails(name: 'settings-languages', path: _ScreenPaths.languages);
   static const themes =
-      ScreenDetails(name: 'themes', path: _ScreenPaths.themes);
+      ScreenDetails(name: 'settings-themes', path: _ScreenPaths.themes);
 }
 
 class _ScreenPaths {
@@ -143,13 +143,19 @@ final appRouter = GoRouter(
       parentNavigatorKey: _rootNavigatorKey,
       name: ScreenDetails.languages.name,
       path: ScreenDetails.languages.path,
-      builder: (_, __) => const LanguageScreen(),
+      builder: (context, __) => Hero(
+        tag: ScreenDetails.languages.name,
+        child: const LanguageScreen(),
+      ),
     ),
     GoRoute(
       parentNavigatorKey: _rootNavigatorKey,
       name: ScreenDetails.themes.name,
       path: ScreenDetails.themes.path,
-      builder: (_, __) => const ThemesScreen(),
+      builder: (context, __) => Hero(
+        tag: ScreenDetails.themes.name,
+        child: const ThemesScreen(),
+      ),
     )
   ],
 );

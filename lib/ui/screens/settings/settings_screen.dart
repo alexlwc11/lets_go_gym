@@ -31,19 +31,10 @@ class SettingsScreen extends StatelessWidget {
       _SettingsItemTile(
         key: ValueKey(item.name),
         settingsItem: item,
-        onTap: () => _settingsItemOnTap(context, item),
+        onTap: () {
+          context.pushNamed(item.getScreenName());
+        },
       );
-
-  void _settingsItemOnTap(BuildContext context, _SettingsItem item) {
-    switch (item) {
-      case _SettingsItem.language:
-        context.pushNamed(ScreenDetails.languages.name);
-        break;
-      case _SettingsItem.theme:
-        context.pushNamed(ScreenDetails.themes.name);
-        break;
-    }
-  }
 }
 
 class _SettingsItemTile extends StatelessWidget {
@@ -58,38 +49,52 @@ class _SettingsItemTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(settingsItem.icon),
-      title: Text(settingsItem.getTitleText(context)),
-      titleTextStyle: Theme.of(context).textTheme.titleLarge,
-      subtitle: Text(settingsItem.getSubtitleText(context)),
-      onTap: onTap,
+    return Hero(
+      tag: settingsItem.getScreenName(),
+      child: Material(
+        child: ListTile(
+          leading: Icon(settingsItem.icon),
+          title: Text(settingsItem.getTitleText(context)),
+          titleTextStyle: Theme.of(context).textTheme.titleLarge,
+          subtitle: Text(settingsItem.getSubtitleText(context)),
+          onTap: onTap,
+        ),
+      ),
     );
   }
 }
 
 enum _SettingsItem {
-  language(Icons.translate),
-  theme(Icons.brightness_4_outlined);
+  languages(Icons.translate),
+  themes(Icons.brightness_4_outlined);
 
   final IconData icon;
   const _SettingsItem(this.icon);
 
   String getTitleText(BuildContext context) {
     switch (this) {
-      case _SettingsItem.language:
+      case _SettingsItem.languages:
         return context.appLocalization.settingsScreen_languagesTitle;
-      case _SettingsItem.theme:
+      case _SettingsItem.themes:
         return context.appLocalization.settingsScreen_themesTitle;
     }
   }
 
   String getSubtitleText(BuildContext context) {
     switch (this) {
-      case _SettingsItem.language:
+      case _SettingsItem.languages:
         return context.appLocalization.settingsScreen_languagesSubtitle;
-      case _SettingsItem.theme:
+      case _SettingsItem.themes:
         return context.appLocalization.settingsScreen_themesSubtitle;
+    }
+  }
+
+  String getScreenName() {
+    switch (this) {
+      case _SettingsItem.languages:
+        return ScreenDetails.languages.name;
+      case _SettingsItem.themes:
+        return ScreenDetails.themes.name;
     }
   }
 }
