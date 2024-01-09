@@ -13,6 +13,25 @@
   "bookmarksScreen_emptyTitle": "You'll find your bookmarks here",
   "bookmarksScreen_emptyHints": "Add location to bookmarks to check the details quickly",
   "locationsScreen_title": "Locations",
+  "locationScreen_hourlyQuota": "Hourly quota: {hourlyQuota}",
+  "@locationScreen_hourlyQuota": {
+    "description": "Hourly quota title",
+    "placeholders": {
+      "hourlyQuota": {
+        "type": "int"
+      }
+    }
+  },
+  "locationScreen_monthlyQuota": "Monthly quota: {monthlyQuota}",
+  "@locationScreen_monthlyQuota": {
+    "description": "Monthly quota title",
+    "placeholders": {
+      "monthlyQuota": {
+        "type": "int"
+      }
+    }
+  },
+  "locationScreen_addressCard_title": "Address",
   "settingsScreen_title": "Settings",
   "settingsScreen_languagesTitle": "Languages",
   "settingsScreen_languagesSubtitle": "Change the app language here",
@@ -25,5 +44,6 @@
   "themesScreen_title": "Themes",
   "themesScreen_systemTitle": "System theme",
   "themesScreen_lightTitle": "Light",
-  "themesScreen_darkTitle": "Dark"
+  "themesScreen_darkTitle": "Dark",
+  "general_dot": " • "
 }

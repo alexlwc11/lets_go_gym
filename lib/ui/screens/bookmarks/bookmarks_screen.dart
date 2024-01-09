@@ -71,12 +71,21 @@ class _BookmarksScreenState extends State<BookmarksScreen> {
 
     return LocationCard(
       key: ValueKey(vm.itemId),
-      heroTag: 'sports_center_id_${vm.sportsCenterId}',
+      heroTag: 'bookmarks-${vm.sportsCenterId}',
       sportsCenterName: vm.getSportsCenterName(langCode),
       sportsCenterAddress: vm.getSportsCenterAddress(langCode),
       regionName: vm.getRegionName(langCode),
       districtName: vm.getDistrictName(langCode),
       isBookmarked: true,
+      onPressed: () {
+        context.pushNamed(
+          ScreenDetails.location.name,
+          pathParameters: {
+            'sports_center_id': '${vm.sportsCenterId}',
+          },
+          extra: 'fromBookmarks',
+        );
+      },
       onBookmarkPressed: () {
         context
             .read<BookmarksBloc>()

@@ -130,13 +130,19 @@ final appRouter = GoRouter(
       builder: (_, state) {
         final sportsCenterId =
             int.parse(state.pathParameters['sports_center_id']!);
+        final heroTag = switch (state.extra) {
+          'fromLocations' => 'locations-$sportsCenterId',
+          'fromBookmarks' => 'bookmarks-$sportsCenterId',
+          _ => '$sportsCenterId',
+        };
 
         return Hero(
-            tag: 'sports_center_id_$sportsCenterId',
-            child: BlocProvider.value(
-              value: di.sl.get<LocationBloc>(param1: sportsCenterId),
-              child: const LocationScreen(),
-            ));
+          tag: heroTag,
+          child: BlocProvider.value(
+            value: di.sl.get<LocationBloc>(param1: sportsCenterId),
+            child: const LocationScreen(),
+          ),
+        );
       },
     ),
     GoRoute(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:lets_go_gym/core/utils/localization_helper.dart';
 import 'package:lets_go_gym/ui/bloc/location/location_bloc.dart';
 
@@ -11,45 +12,79 @@ class LocationScreen extends StatelessWidget {
     final langCode = context.appLocalization.localeName;
 
     return Scaffold(
-      body: CustomScrollView(
-        slivers: [
-          BlocBuilder<LocationBloc, LocationState>(
-            builder: (context, state) {
-              switch (state) {
-                case LocationDataLoadingInProgress():
-                  return const _SliverAppBar(titleText: '');
-                case LocationDataUpdated(vm: final vm):
-                case LocationDataUpdateFailure(vm: final vm):
-                  return _SliverAppBar(
-                    titleText: vm.getSportsCenterName(langCode),
-                    actions: [
-                      IconButton(
-                        isSelected: vm.isBookmarked,
-                        selectedIcon: const Icon(Icons.bookmark),
-                        icon: const Icon(Icons.bookmark_border),
-                        onPressed: () {
-                          context
-                              .read<LocationBloc>()
-                              .add(BookmarkUpdateRequested());
-                        },
-                      ),
-                    ],
-                  );
-              }
-            },
-          ),
-          BlocBuilder<LocationBloc, LocationState>(
-            builder: (context, state) {
-              switch (state) {
-                case LocationDataLoadingInProgress():
-                  return _buildLoadingContent();
-                case LocationDataUpdated(vm: final vm):
-                case LocationDataUpdateFailure(vm: final vm):
-                  return _buildLocationContent(vm, langCode);
-              }
-            },
-          ),
-        ],
+      body: SafeArea(
+        child: CustomScrollView(
+          slivers: [
+            SliverAppBar.medium(
+              pinned: true,
+              surfaceTintColor: Colors.transparent,
+              leading: IconButton.filledTonal(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => context.pop(),
+              ),
+              actions: [
+                BlocBuilder<LocationBloc, LocationState>(
+                  builder: (context, state) {
+                    switch (state) {
+                      case LocationDataLoadingInProgress():
+                        return const SizedBox();
+                      case LocationDataUpdated(vm: final vm):
+                      case LocationDataUpdateFailure(vm: final vm):
+                        return IconButton.filledTonal(
+                          isSelected: vm.isBookmarked,
+                          selectedIcon: const Icon(Icons.bookmark),
+                          icon: const Icon(Icons.bookmark_border),
+                          onPressed: () {
+                            context
+                                .read<LocationBloc>()
+                                .add(BookmarkUpdateRequested());
+                          },
+                        );
+                    }
+                  },
+                ),
+                // add spacing here to match with the leading spacing
+                const SizedBox(width: 4),
+              ],
+              centerTitle: true,
+              title: BlocBuilder<LocationBloc, LocationState>(
+                builder: (context, state) {
+                  switch (state) {
+                    case LocationDataLoadingInProgress():
+                      return const SizedBox();
+                    case LocationDataUpdated(vm: final vm):
+                    case LocationDataUpdateFailure(vm: final vm):
+                      return Text(
+                        vm.getSportsCenterName(langCode),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      );
+                  }
+                },
+              ),
+              bottom: AppBar(
+                automaticallyImplyLeading: false,
+                surfaceTintColor: Colors.transparent,
+                title: _BottomDetailsAppBarContent(),
+              ),
+            ),
+            BlocBuilder<LocationBloc, LocationState>(
+              builder: (context, state) {
+                switch (state) {
+                  case LocationDataLoadingInProgress():
+                    return _buildLoadingContent();
+                  case LocationDataUpdated(vm: final vm):
+                  case LocationDataUpdateFailure(vm: final vm):
+                    return SliverList.list(
+                      children: [
+                        _AddressCard(vm.getSportsCenterAddress(langCode)),
+                      ],
+                    );
+                }
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -62,110 +97,126 @@ class LocationScreen extends StatelessWidget {
           ),
         ),
       );
-
-  Widget _buildLocationContent(LocationVM vm, String langCode) => SliverList(
-        delegate: SliverChildListDelegate(
-          [
-            _InfoSection(vm),
-          ],
-        ),
-      );
 }
 
-class _InfoSection extends StatelessWidget {
-  final LocationVM vm;
-
-  const _InfoSection(this.vm);
-
+class _BottomDetailsAppBarContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final langCode = context.appLocalization.localeName;
 
-    return Card(
-      margin: const EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 16, right: 16),
-            child: Row(
-              children: [
-                const Icon(Icons.info_outline),
-                const SizedBox(width: 8),
-                Text(
-                  'Info',
-                  style: Theme.of(context).textTheme.titleLarge,
-                ),
-                const Spacer(),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(Icons.keyboard_arrow_up),
-                )
-              ],
-            ),
-          ),
-          // Divider(),
-          // const SizedBox(height: 12),
-          // Row(
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     const Icon(Icons.people, size: 16),
-          //     const SizedBox(width: 4),
-          //     Expanded(
-          //       child: Text(
-          //         'Hourly quota: ${vm.hourlyQuota} | Monthly quota: ${vm.monthlyQuota}',
-          //         style: Theme.of(context).textTheme.bodySmall,
-          //         overflow: TextOverflow.fade,
-          //         maxLines: 1,
-          //       ),
-          //     ),
-          //   ],
-          // ),
-          // const SizedBox(height: 4),
-          // Row(
-          //   crossAxisAlignment: CrossAxisAlignment.start,
-          //   children: [
-          //     const Icon(Icons.location_pin, size: 16),
-          //     const SizedBox(width: 4),
-          //     Expanded(
-          //       child: Text(
-          //         '${vm.getDistrictName(langCode)}, ${vm.getRegionName(langCode)}',
-          //         style: Theme.of(context).textTheme.bodySmall,
-          //         overflow: TextOverflow.fade,
-          //         maxLines: 1,
-          //       ),
-          //     ),
-          //   ],
-          // ),
-        ],
-      ),
+    return BlocBuilder<LocationBloc, LocationState>(
+      builder: (context, state) {
+        switch (state) {
+          case LocationDataLoadingInProgress():
+            return const SizedBox();
+          case LocationDataUpdated(vm: final vm):
+          case LocationDataUpdateFailure(vm: final vm):
+            return Center(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (vm.hourlyQuota != null)
+                        Row(
+                          children: [
+                            const Icon(Icons.access_time, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              context.appLocalization
+                                  .locationScreen_hourlyQuota(vm.hourlyQuota!),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                      if (vm.hourlyQuota != null && vm.monthlyQuota != null)
+                        Text(context.appLocalization.general_dot,
+                            style: Theme.of(context).textTheme.bodySmall),
+                      if (vm.monthlyQuota != null)
+                        Row(
+                          children: [
+                            const Icon(Icons.calendar_month, size: 16),
+                            const SizedBox(width: 4),
+                            Text(
+                              context.appLocalization
+                                  .locationScreen_monthlyQuota(
+                                      vm.monthlyQuota!),
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ],
+                        ),
+                    ],
+                  ),
+                  const SizedBox(height: 8),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Icon(Icons.location_pin, size: 16),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          '${vm.getDistrictName(langCode)}, ${vm.getRegionName(langCode)}',
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+        }
+      },
     );
   }
 }
 
-class _SliverAppBar extends StatelessWidget {
-  final double _defaultExpandedHeight = 130;
+class _AddressCard extends StatelessWidget {
+  final String address;
 
-  final String titleText;
-  final List<Widget>? actions;
-
-  const _SliverAppBar({
-    required this.titleText,
-    this.actions,
-  });
+  const _AddressCard(this.address);
 
   @override
   Widget build(BuildContext context) {
-    return SliverAppBar.large(
-      pinned: true,
-      expandedHeight: _defaultExpandedHeight,
-      title: Text(
-        titleText,
-        style: Theme.of(context).appBarTheme.toolbarTextStyle,
-        maxLines: 2,
-        overflow: TextOverflow.fade,
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      child: Column(
+        children: [
+          ListTile(
+            titleTextStyle: Theme.of(context).textTheme.titleMedium,
+            title: Row(
+              children: [
+                const Icon(Icons.map),
+                const SizedBox(width: 4),
+                Text(context.appLocalization.locationScreen_addressCard_title),
+              ],
+            ),
+            subtitle: Padding(
+              padding: const EdgeInsets.all(4),
+              child: Text(
+                address,
+                overflow: TextOverflow.fade,
+                maxLines: 3,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(4),
+            child: Placeholder(
+              child: SizedBox(
+                height: 200,
+                width: double.infinity,
+                child: Center(
+                  child: Text(
+                    'Map',
+                    style: Theme.of(context).textTheme.headlineLarge,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
-      actions: actions,
     );
   }
 }

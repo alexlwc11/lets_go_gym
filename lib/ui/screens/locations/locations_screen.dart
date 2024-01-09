@@ -84,7 +84,7 @@ class _LocationScreenState extends State<LocationsScreen> {
 
     return LocationCard(
       key: ValueKey(vm.itemId),
-      heroTag: 'sports_center_id_${vm.sportsCenterId}',
+      heroTag: 'locations-${vm.sportsCenterId}',
       sportsCenterName: vm.getSportsCenterName(langCode),
       sportsCenterAddress: vm.getSportsCenterAddress(langCode),
       regionName: vm.getRegionName(langCode),
@@ -96,6 +96,7 @@ class _LocationScreenState extends State<LocationsScreen> {
           pathParameters: {
             'sports_center_id': '${vm.sportsCenterId}',
           },
+          extra: 'fromLocations',
         );
       },
       onBookmarkPressed: () {

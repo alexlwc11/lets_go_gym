@@ -13,6 +13,25 @@
   "bookmarksScreen_emptyTitle": "你可以喺依度搵到你嘅收藏",
   "bookmarksScreen_emptyHints": "加個地點入收藏可以快啲搵到詳細資料",
   "locationsScreen_title": "地點",
+  "locationScreen_hourlyQuota": "時票名額：{hourlyQuota}",
+  "@locationScreen_hourlyQuota": {
+    "description": "Hourly quota title",
+    "placeholders": {
+      "hourlyQuota": {
+        "type": "int"
+      }
+    }
+  },
+  "locationScreen_monthlyQuota": "月票名額：{monthlyQuota}",
+  "@locationScreen_monthlyQuota": {
+    "description": "Monthly quota title",
+    "placeholders": {
+      "monthlyQuota": {
+        "type": "int"
+      }
+    }
+  },
+  "locationScreen_addressCard_title": "地址",
   "settingsScreen_title": "設定",
   "settingsScreen_languagesTitle": "語言",
   "settingsScreen_languagesSubtitle": "喺依度轉顯示嘅語言",
@@ -25,5 +44,6 @@
   "themesScreen_title": "主題",
   "themesScreen_systemTitle": "系統主題",
   "themesScreen_lightTitle": "淺色",
-  "themesScreen_darkTitle": "深色"
+  "themesScreen_darkTitle": "深色",
+  "general_dot": " • "
 }

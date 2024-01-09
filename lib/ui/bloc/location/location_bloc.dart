@@ -163,14 +163,14 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 }
 
 class LocationVM extends Equatable {
-  final String regionNameEn;
-  final String regionNameZh;
-  final String districtNameEn;
-  final String districtNameZh;
-  final String sportsCenterNameEn;
-  final String sportsCenterNameZh;
-  final String sportsCenterAddressEn;
-  final String sportsCenterAddressZh;
+  final String _regionNameEn;
+  final String _regionNameZh;
+  final String _districtNameEn;
+  final String _districtNameZh;
+  final String _sportsCenterNameEn;
+  final String _sportsCenterNameZh;
+  final String _sportsCenterAddressEn;
+  final String _sportsCenterAddressZh;
   final List<String> phoneNumbers;
   final int? hourlyQuota;
   final int? monthlyQuota;
@@ -206,56 +206,63 @@ class LocationVM extends Equatable {
   }
 
   const LocationVM._({
-    required this.regionNameEn,
-    required this.regionNameZh,
-    required this.districtNameEn,
-    required this.districtNameZh,
-    required this.sportsCenterNameEn,
-    required this.sportsCenterNameZh,
-    required this.sportsCenterAddressEn,
-    required this.sportsCenterAddressZh,
+    required String regionNameEn,
+    required String regionNameZh,
+    required String districtNameEn,
+    required String districtNameZh,
+    required String sportsCenterNameEn,
+    required String sportsCenterNameZh,
+    required String sportsCenterAddressEn,
+    required String sportsCenterAddressZh,
     required this.phoneNumbers,
     this.hourlyQuota,
     this.monthlyQuota,
     this.latitude,
     this.longitude,
     this.isBookmarked = false,
-  });
+  })  : _regionNameEn = regionNameEn,
+        _regionNameZh = regionNameEn,
+        _districtNameEn = districtNameEn,
+        _districtNameZh = districtNameZh,
+        _sportsCenterNameEn = sportsCenterNameEn,
+        _sportsCenterNameZh = sportsCenterNameZh,
+        _sportsCenterAddressEn = sportsCenterAddressEn,
+        _sportsCenterAddressZh = sportsCenterAddressZh;
 
   String getSportsCenterName(String langCode) => getLocalizedString(
         langCode,
-        en: sportsCenterNameEn,
-        zh: sportsCenterNameZh,
+        en: _sportsCenterNameEn,
+        zh: _sportsCenterNameZh,
       );
 
   String getSportsCenterAddress(String langCode) => getLocalizedString(
         langCode,
-        en: sportsCenterAddressEn,
-        zh: sportsCenterAddressZh,
+        en: _sportsCenterAddressEn,
+        zh: _sportsCenterAddressZh,
       );
 
   String getRegionName(String langCode) => getLocalizedString(
         langCode,
-        en: regionNameEn,
-        zh: regionNameZh,
+        en: _regionNameEn,
+        zh: _regionNameZh,
       );
 
   String getDistrictName(String langCode) => getLocalizedString(
         langCode,
-        en: districtNameEn,
-        zh: districtNameZh,
+        en: _districtNameEn,
+        zh: _districtNameZh,
       );
 
   @override
   List<Object?> get props => [
-        regionNameEn,
-        regionNameZh,
-        districtNameEn,
-        districtNameZh,
-        sportsCenterNameEn,
-        sportsCenterNameZh,
-        sportsCenterAddressEn,
-        sportsCenterAddressZh,
+        _regionNameEn,
+        _regionNameZh,
+        _districtNameEn,
+        _districtNameZh,
+        _sportsCenterNameEn,
+        _sportsCenterNameZh,
+        _sportsCenterAddressEn,
+        _sportsCenterAddressZh,
         phoneNumbers.join('/'),
         hourlyQuota,
         monthlyQuota,
@@ -268,14 +275,14 @@ class LocationVM extends Equatable {
     bool? isBookmarked,
   }) =>
       LocationVM._(
-        regionNameEn: regionNameEn,
-        regionNameZh: regionNameZh,
-        districtNameEn: districtNameEn,
-        districtNameZh: districtNameZh,
-        sportsCenterNameEn: sportsCenterNameEn,
-        sportsCenterNameZh: sportsCenterNameZh,
-        sportsCenterAddressEn: sportsCenterAddressEn,
-        sportsCenterAddressZh: sportsCenterAddressZh,
+        regionNameEn: _regionNameEn,
+        regionNameZh: _regionNameZh,
+        districtNameEn: _districtNameEn,
+        districtNameZh: _districtNameZh,
+        sportsCenterNameEn: _sportsCenterNameEn,
+        sportsCenterNameZh: _sportsCenterNameZh,
+        sportsCenterAddressEn: _sportsCenterAddressEn,
+        sportsCenterAddressZh: _sportsCenterAddressZh,
         phoneNumbers: phoneNumbers,
         hourlyQuota: hourlyQuota,
         monthlyQuota: monthlyQuota,
