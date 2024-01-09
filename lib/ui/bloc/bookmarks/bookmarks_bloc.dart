@@ -187,16 +187,16 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
 
 class BookmarkItemVM extends Equatable {
   final int regionId;
-  final String regionNameEn;
-  final String regionNameZh;
+  final String _regionNameEn;
+  final String _regionNameZh;
   final int districtId;
-  final String districtNameEn;
-  final String districtNameZh;
+  final String _districtNameEn;
+  final String _districtNameZh;
   final int sportsCenterId;
-  final String sportsCenterNameEn;
-  final String sportsCenterNameZh;
-  final String sportsCenterAddressEn;
-  final String sportsCenterAddressZh;
+  final String _sportsCenterNameEn;
+  final String _sportsCenterNameZh;
+  final String _sportsCenterAddressEn;
+  final String _sportsCenterAddressZh;
 
   factory BookmarkItemVM.create({
     required Region region,
@@ -219,57 +219,64 @@ class BookmarkItemVM extends Equatable {
 
   const BookmarkItemVM._({
     required this.regionId,
-    required this.regionNameEn,
-    required this.regionNameZh,
+    required String regionNameEn,
+    required String regionNameZh,
     required this.districtId,
-    required this.districtNameEn,
-    required this.districtNameZh,
+    required String districtNameEn,
+    required String districtNameZh,
     required this.sportsCenterId,
-    required this.sportsCenterNameEn,
-    required this.sportsCenterNameZh,
-    required this.sportsCenterAddressEn,
-    required this.sportsCenterAddressZh,
-  });
+    required String sportsCenterNameEn,
+    required String sportsCenterNameZh,
+    required String sportsCenterAddressEn,
+    required String sportsCenterAddressZh,
+  })  : _regionNameEn = regionNameEn,
+        _regionNameZh = regionNameZh,
+        _districtNameEn = districtNameEn,
+        _districtNameZh = districtNameZh,
+        _sportsCenterNameEn = sportsCenterNameEn,
+        _sportsCenterNameZh = sportsCenterNameZh,
+        _sportsCenterAddressEn = sportsCenterAddressEn,
+        _sportsCenterAddressZh = sportsCenterAddressZh;
 
   String get itemId => '$regionId-$districtId-$sportsCenterId';
 
   String getSportsCenterName(String langCode) => getLocalizedString(
         langCode,
-        en: sportsCenterNameEn,
-        zh: sportsCenterNameZh,
+        en: _sportsCenterNameEn,
+        zh: _sportsCenterNameZh,
       );
 
   String getSportsCenterAddress(String langCode) => getLocalizedString(
         langCode,
-        en: sportsCenterAddressEn,
-        zh: sportsCenterAddressZh,
+        en: _sportsCenterAddressEn,
+        zh: _sportsCenterAddressZh,
       );
 
   String getRegionName(String langCode) => getLocalizedString(
         langCode,
-        en: regionNameEn,
-        zh: regionNameZh,
+        en: _regionNameEn,
+        zh: _regionNameZh,
       );
 
   String getDistrictName(String langCode) => getLocalizedString(
         langCode,
-        en: districtNameEn,
-        zh: districtNameZh,
+        en: _districtNameEn,
+        zh: _districtNameZh,
       );
 
   @override
   List<Object?> get props => [
         regionId,
-        regionNameEn,
-        regionNameZh,
+        _regionNameEn,
+        _regionNameZh,
         districtId,
-        districtNameEn,
-        districtNameZh,
+        _districtNameEn,
+        _districtNameZh,
         sportsCenterId,
-        sportsCenterNameEn,
-        sportsCenterNameZh,
-        sportsCenterAddressEn,
-        sportsCenterAddressZh,
+        _sportsCenterNameEn,
+        _sportsCenterNameZh,
+        _sportsCenterAddressEn,
+        _sportsCenterAddressZh,
       ];
 
   BookmarkItemVM copyWith({
@@ -279,15 +286,17 @@ class BookmarkItemVM extends Equatable {
   }) =>
       BookmarkItemVM._(
         regionId: region?.id ?? regionId,
-        regionNameEn: region?.nameEn ?? regionNameEn,
-        regionNameZh: region?.nameZh ?? regionNameZh,
+        regionNameEn: region?.nameEn ?? _regionNameEn,
+        regionNameZh: region?.nameZh ?? _regionNameZh,
         districtId: district?.id ?? districtId,
-        districtNameEn: district?.nameEn ?? districtNameEn,
-        districtNameZh: district?.nameZh ?? districtNameZh,
+        districtNameEn: district?.nameEn ?? _districtNameEn,
+        districtNameZh: district?.nameZh ?? _districtNameZh,
         sportsCenterId: sportsCenter?.id ?? sportsCenterId,
-        sportsCenterNameEn: sportsCenter?.nameEn ?? sportsCenterNameEn,
-        sportsCenterNameZh: sportsCenter?.nameZh ?? sportsCenterNameZh,
-        sportsCenterAddressEn: sportsCenter?.addressEn ?? sportsCenterAddressEn,
-        sportsCenterAddressZh: sportsCenter?.addressZh ?? sportsCenterAddressZh,
+        sportsCenterNameEn: sportsCenter?.nameEn ?? _sportsCenterNameEn,
+        sportsCenterNameZh: sportsCenter?.nameZh ?? _sportsCenterNameZh,
+        sportsCenterAddressEn:
+            sportsCenter?.addressEn ?? _sportsCenterAddressEn,
+        sportsCenterAddressZh:
+            sportsCenter?.addressZh ?? _sportsCenterAddressZh,
       );
 }

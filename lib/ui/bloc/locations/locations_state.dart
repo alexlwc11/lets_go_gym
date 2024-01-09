@@ -15,10 +15,8 @@ class LocationsDataUpdated extends LocationsState {
   const LocationsDataUpdated({required this.displayItemVMs});
 
   @override
-  List<Object?> get props => displayItemVMs
-      .map((vm) =>
-          '${vm.regionId}-${vm.districtId}-${vm.sportsCenterId}-${vm.isBookmarked}')
-      .toList();
+  List<Object?> get props =>
+      displayItemVMs.map((vm) => '${vm.itemId}-${vm.isBookmarked}').toList();
 }
 
 class LocationsDataUpdateFailure extends LocationsState {}

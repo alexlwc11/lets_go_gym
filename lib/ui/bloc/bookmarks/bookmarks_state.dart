@@ -15,9 +15,7 @@ class BookmarksDataUpdated extends BookmarksState {
   const BookmarksDataUpdated({required this.displayItemVMs});
 
   @override
-  List<Object?> get props => displayItemVMs
-      .map((vm) => '${vm.regionId}-${vm.districtId}-${vm.sportsCenterId}')
-      .toList();
+  List<Object?> get props => displayItemVMs.map((vm) => vm.itemId).toList();
 }
 
 class BookmarksDataUpdateFailure extends BookmarksState {}
