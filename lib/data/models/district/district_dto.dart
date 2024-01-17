@@ -21,7 +21,7 @@ class DistrictDto {
     required this.nameZh,
   });
 
-  factory DistrictDto.fromJson(Map<String, Object?> json) =>
+  factory DistrictDto.fromJson(Map<String, dynamic> json) =>
       _$DistrictDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$DistrictDtoToJson(this);

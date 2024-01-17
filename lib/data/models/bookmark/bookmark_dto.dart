@@ -15,7 +15,7 @@ class BookmarkDto {
     this.sportsCenterId,
   });
 
-  factory BookmarkDto.fromJson(Map<String, Object?> json) =>
+  factory BookmarkDto.fromJson(Map<String, dynamic> json) =>
       _$BookmarkDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$BookmarkDtoToJson(this);

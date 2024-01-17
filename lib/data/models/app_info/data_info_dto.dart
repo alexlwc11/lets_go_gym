@@ -18,7 +18,7 @@ class DataInfoDto {
     this.sportsCenterDataLastUpdatedAt,
   });
 
-  factory DataInfoDto.fromJson(Map<String, Object?> json) =>
+  factory DataInfoDto.fromJson(Map<String, dynamic> json) =>
       _$DataInfoDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$DataInfoDtoToJson(this);

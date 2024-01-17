@@ -1,7 +1,6 @@
 import 'package:lets_go_gym/core/constants.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/models/district/district_dto.dart';
-import 'package:lets_go_gym/mock_data/mock_data.dart' as mock;
 
 abstract class DistrictsRemoteDataSource {
   Future<List<DistrictDto>> getLatestDistricts();
@@ -19,17 +18,11 @@ class DistrictsRemoteDataSourceImpl implements DistrictsRemoteDataSource {
   @override
   Future<List<DistrictDto>> getLatestDistricts() async {
     try {
-      // TODO remove mock data
-      // final response = await _authClient.get(_districtsUrl);
-      // final responseData = response.data as Map<String, dynamic>;
-      final Map<String, dynamic> responseData = await Future.delayed(
-        const Duration(seconds: 3),
-        () => mock.districtsJson,
-      );
-      final districtsData =
-          responseData['districts'] as List<Map<String, dynamic>>;
+      final response = await _authClient.get(_districtsUrl);
+      final responseData = response.data as Map<String, dynamic>;
+      final districtsData = responseData['districts'] as List;
 
-      return districtsData.map(DistrictDto.fromJson).toList();
+      return districtsData.map((i) => DistrictDto.fromJson(i)).toList();
     } catch (error) {
       rethrow;
     }

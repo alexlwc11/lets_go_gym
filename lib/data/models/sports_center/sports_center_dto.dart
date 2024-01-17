@@ -42,7 +42,7 @@ class SportsCenterDto {
     this.longitude,
   });
 
-  factory SportsCenterDto.fromJson(Map<String, Object?> json) =>
+  factory SportsCenterDto.fromJson(Map<String, dynamic> json) =>
       _$SportsCenterDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$SportsCenterDtoToJson(this);

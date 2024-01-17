@@ -21,7 +21,7 @@ class RegionDto {
     required this.nameZh,
   });
 
-  factory RegionDto.fromJson(Map<String, Object?> json) =>
+  factory RegionDto.fromJson(Map<String, dynamic> json) =>
       _$RegionDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$RegionDtoToJson(this);

@@ -19,7 +19,7 @@ class AppInfoDto {
     required this.dataInfoDto,
   });
 
-  factory AppInfoDto.fromJson(Map<String, Object?> json) =>
+  factory AppInfoDto.fromJson(Map<String, dynamic> json) =>
       _$AppInfoDtoFromJson(json);
 
   Map<String, dynamic> toJson() => _$AppInfoDtoToJson(this);
