@@ -17,8 +17,8 @@ class SportsCenterDto {
   final String addressEn;
   @JsonKey(name: 'address_zh')
   final String addressZh;
-  @JsonKey(name: 'phone_number')
-  final String phoneNumber;
+  @JsonKey(name: 'phone_numbers')
+  final String phoneNumbers;
   @JsonKey(name: 'hourly_quota')
   final int? hourlyQuota;
   @JsonKey(name: 'monthly_quota')
@@ -35,7 +35,7 @@ class SportsCenterDto {
     required this.nameZh,
     required this.addressEn,
     required this.addressZh,
-    required this.phoneNumber,
+    required this.phoneNumbers,
     this.hourlyQuota,
     this.monthlyQuota,
     this.latitude,
@@ -57,7 +57,7 @@ extension SportsCenterConverter on SportsCenterDto {
       nameZh: nameZh,
       addressEn: addressEn,
       addressZh: addressZh,
-      phoneNumber: phoneNumber,
+      phoneNumbers: phoneNumbers,
       hourlyQuota: hourlyQuota,
       monthlyQuota: monthlyQuota,
       latitude: latitude,

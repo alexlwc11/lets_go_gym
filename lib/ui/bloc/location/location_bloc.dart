@@ -184,8 +184,7 @@ class LocationVM extends Equatable {
     required SportsCenter sportsCenter,
     required bool isBookmarked,
   }) {
-    final phoneNumbers =
-        sportsCenter.phoneNumber.replaceAll(' ', '').split('/');
+    final phoneNumbers = sportsCenter.phoneNumbers.split('/');
 
     return LocationVM._(
       regionNameEn: region.nameEn,

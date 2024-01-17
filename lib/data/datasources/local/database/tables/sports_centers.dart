@@ -11,7 +11,7 @@ class SportsCenters extends BaseTable {
   TextColumn get nameZh => text()();
   TextColumn get addressEn => text()();
   TextColumn get addressZh => text()();
-  TextColumn get phoneNumber => text()();
+  TextColumn get phoneNumbers => text()();
   IntColumn get hourlyQuota => integer().nullable()();
   IntColumn get monthlyQuota => integer().nullable()();
   RealColumn get latitude => real().nullable()();
@@ -26,7 +26,7 @@ extension SportsCentersDataConverter on db.SportsCenter {
         nameZh: nameZh,
         addressEn: addressEn,
         addressZh: addressZh,
-        phoneNumber: phoneNumber,
+        phoneNumbers: phoneNumbers,
         hourlyQuota: hourlyQuota,
         monthlyQuota: monthlyQuota,
         latitude: latitude,
@@ -41,7 +41,7 @@ extension SportsCentersDataConverter on db.SportsCenter {
         nameZh: sportsCenter.nameZh,
         addressEn: sportsCenter.addressEn,
         addressZh: sportsCenter.addressZh,
-        phoneNumber: sportsCenter.phoneNumber,
+        phoneNumbers: sportsCenter.phoneNumbers,
         hourlyQuota: sportsCenter.hourlyQuota,
         monthlyQuota: sportsCenter.monthlyQuota,
         latitude: sportsCenter.latitude,

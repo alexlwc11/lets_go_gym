@@ -12,7 +12,7 @@ class SportsCenter with _$SportsCenter {
     @JsonKey(name: 'name_zh') required String nameZh,
     @JsonKey(name: 'address_en') required String addressEn,
     @JsonKey(name: 'address_zh') required String addressZh,
-    @JsonKey(name: 'phone_number') required String phoneNumber,
+    @JsonKey(name: 'phone_numbers') required String phoneNumbers,
     @JsonKey(name: 'hourly_quota') int? hourlyQuota,
     @JsonKey(name: 'monthly_quota') int? monthlyQuota,
     @JsonKey(name: 'latitude') double? latitude,
