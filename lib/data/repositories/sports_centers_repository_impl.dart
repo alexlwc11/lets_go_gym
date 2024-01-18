@@ -52,4 +52,8 @@ class SportsCentersRepositoryImpl implements SportsCentersRepository {
 
     await localDataSource.updateSportsCentersData(sportsCenters);
   }
+
+  @override
+  Future<String> getSportsCenterDetailsUrl(int id) async =>
+      remoteDataSource.getSportsCenterDetailsUrl(id);
 }

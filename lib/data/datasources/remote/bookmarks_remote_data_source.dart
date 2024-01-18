@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:lets_go_gym/core/constants.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/models/bookmark/bookmark_dto.dart';
@@ -28,6 +30,7 @@ class BookmarksRemoteDataSourceImpl implements BookmarksRemoteDataSource {
 
       return bookmarksData.map(BookmarkDto.fromJson).toList();
     } catch (error) {
+      log(error.toString());
       rethrow;
     }
   }
@@ -44,6 +47,7 @@ class BookmarksRemoteDataSourceImpl implements BookmarksRemoteDataSource {
 
       return BookmarkDto.fromJson(bookmarksData);
     } catch (error) {
+      log(error.toString());
       rethrow;
     }
   }
@@ -55,6 +59,7 @@ class BookmarksRemoteDataSourceImpl implements BookmarksRemoteDataSource {
 
       await _authClient.delete(_bookmarksUrl, data: bookmarkDto.toJson());
     } catch (error) {
+      log(error.toString());
       rethrow;
     }
   }

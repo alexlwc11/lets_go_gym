@@ -14,6 +14,7 @@ import 'package:lets_go_gym/domain/usecases/bookmarks/remove_bookmark.dart';
 import 'package:lets_go_gym/domain/usecases/districts/get_district_by_id.dart';
 import 'package:lets_go_gym/domain/usecases/regions/get_region_by_id.dart';
 import 'package:lets_go_gym/domain/usecases/sports_centers/get_sports_center_by_id.dart';
+import 'package:lets_go_gym/domain/usecases/sports_centers/get_sports_center_details_url.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'location_event.dart';
@@ -25,6 +26,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   final GetRegionById getRegionById;
   final GetDistrictById getDistrictById;
   final GetSportsCenterById getSportsCenterById;
+  final GetSportsCenterDetailsUrl getSportsCenterDetailsUrl;
   final CheckIfBookmarked checkIfBookmarked;
   final CheckIfBookmarkedAsStream checkIfBookmarkedAsStream;
   final AddBookmark addBookmark;
@@ -37,6 +39,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     required this.getRegionById,
     required this.getDistrictById,
     required this.getSportsCenterById,
+    required this.getSportsCenterDetailsUrl,
     required this.checkIfBookmarked,
     required this.checkIfBookmarkedAsStream,
     required this.addBookmark,
@@ -45,6 +48,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     on<LocationDataRequested>(_onLocationDataLoadRequested);
     on<LocationIsBookmarkedUpdateReceived>(
         _onLocationIsBookmarkedUpdateReceived);
+    on<LocationDetailsUrlRequested>(_onLocationDetailsUrlRequested);
     on<BookmarkUpdateRequested>(_onBookmarkUpdateRequested);
 
     add(LocationDataRequested(sportsCenterId: sportsCenterId));
@@ -82,12 +86,23 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       );
 
       emit(LocationDataUpdated(vm: _locationVM));
+      add(LocationDetailsUrlRequested(sportsCenterId: sportsCenterId));
     } catch (_) {
       // TODO handle error
       // emit(LocationDataUpdateFailure());
     } finally {
       _setupSubscription();
     }
+  }
+
+  Future<void> _onLocationDetailsUrlRequested(
+      LocationDetailsUrlRequested event, Emitter<LocationState> emit) async {
+    try {
+      final detailsUrl = await _getSportsCenterDetailsUrl(event.sportsCenterId);
+
+      _locationVM = _locationVM.copyWith(detailsUrl: detailsUrl);
+      emit(LocationDataUpdated(vm: _locationVM));
+    } catch (_) {}
   }
 
   Future<void> _onBookmarkUpdateRequested(
@@ -117,7 +132,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
       return region;
     } catch (error) {
-      log("Failed to get region");
+      log("Failed to get region: $error");
       rethrow;
     }
   }
@@ -129,7 +144,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
       return district;
     } catch (error) {
-      log("Failed to get district");
+      log("Failed to get district: $error");
       rethrow;
     }
   }
@@ -141,7 +156,16 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
 
       return sportsCenter;
     } catch (error) {
-      log("Failed to get sports center");
+      log("Failed to get sports center: $error");
+      rethrow;
+    }
+  }
+
+  Future<String> _getSportsCenterDetailsUrl(int sportsCenterId) async {
+    try {
+      return await getSportsCenterDetailsUrl.execute(sportsCenterId);
+    } catch (error) {
+      log("Failed to get sports center details url: $error");
       rethrow;
     }
   }
@@ -149,8 +173,8 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   Future<bool> _checkIfBookmarked(int sportsCenterId) async {
     try {
       return await checkIfBookmarked.execute(sportsCenterId);
-    } catch (_) {
-      log("Failed to get bookmark data");
+    } catch (error) {
+      log("Failed to get bookmark data: $error");
       rethrow;
     }
   }
@@ -176,6 +200,7 @@ class LocationVM extends Equatable {
   final int? monthlyQuota;
   final double? latitude;
   final double? longitude;
+  final String? detailsUrl;
   final bool isBookmarked;
 
   factory LocationVM.create({
@@ -218,6 +243,7 @@ class LocationVM extends Equatable {
     this.monthlyQuota,
     this.latitude,
     this.longitude,
+    this.detailsUrl,
     this.isBookmarked = false,
   })  : _regionNameEn = regionNameEn,
         _regionNameZh = regionNameEn,
@@ -267,10 +293,12 @@ class LocationVM extends Equatable {
         monthlyQuota,
         latitude,
         longitude,
+        detailsUrl,
         isBookmarked
       ];
 
   LocationVM copyWith({
+    String? detailsUrl,
     bool? isBookmarked,
   }) =>
       LocationVM._(
@@ -287,6 +315,7 @@ class LocationVM extends Equatable {
         monthlyQuota: monthlyQuota,
         latitude: latitude,
         longitude: longitude,
+        detailsUrl: detailsUrl ?? this.detailsUrl,
         isBookmarked: isBookmarked ?? this.isBookmarked,
       );
 }

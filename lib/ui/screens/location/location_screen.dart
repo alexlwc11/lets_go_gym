@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lets_go_gym/core/utils/localization_helper.dart';
+import 'package:lets_go_gym/core/utils/url_launcher_helper.dart';
 import 'package:lets_go_gym/ui/bloc/location/location_bloc.dart';
 
 class LocationScreen extends StatelessWidget {
@@ -78,6 +79,8 @@ class LocationScreen extends StatelessWidget {
                     return SliverList.list(
                       children: [
                         _AddressCard(vm.getSportsCenterAddress(langCode)),
+                        if (vm.detailsUrl?.isNotEmpty == true)
+                          _MoreDetailsCard(vm.detailsUrl!),
                       ],
                     );
                 }
@@ -180,6 +183,7 @@ class _AddressCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      clipBehavior: Clip.hardEdge,
       child: Column(
         children: [
           ListTile(
@@ -214,6 +218,37 @@ class _AddressCard extends StatelessWidget {
                 ),
               ),
             ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _MoreDetailsCard extends StatelessWidget {
+  final String url;
+
+  const _MoreDetailsCard(this.url);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+      clipBehavior: Clip.hardEdge,
+      child: Column(
+        children: [
+          ListTile(
+            titleTextStyle: Theme.of(context).textTheme.titleMedium,
+            title: Row(
+              children: [
+                const Icon(Icons.info_outline),
+                const SizedBox(width: 4),
+                Text(context
+                    .appLocalization.locationScreen_moreDetailsCard_title),
+              ],
+            ),
+            trailing: const Icon(Icons.keyboard_arrow_right),
+            onTap: () => launchUrl(url),
           ),
         ],
       ),

@@ -1,9 +1,12 @@
+import 'dart:developer';
+
 import 'package:lets_go_gym/core/constants.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/models/sports_center/sports_center_dto.dart';
 
 abstract class SportsCentersRemoteDataSource {
   Future<List<SportsCenterDto>> getLatestSportsCenters();
+  Future<String> getSportsCenterDetailsUrl(int id);
 }
 
 class SportsCentersRemoteDataSourceImpl
@@ -26,6 +29,20 @@ class SportsCentersRemoteDataSourceImpl
 
       return sportsCentersData.map((i) => SportsCenterDto.fromJson(i)).toList();
     } catch (error) {
+      log(error.toString());
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> getSportsCenterDetailsUrl(int id) async {
+    try {
+      final response =
+          await _authClient.get('$_sportsCentersUrl/$id/details_url');
+      final responseData = response.data as Map<String, dynamic>;
+      return responseData['url'];
+    } catch (error) {
+      log(error.toString());
       rethrow;
     }
   }

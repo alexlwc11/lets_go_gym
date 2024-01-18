@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:lets_go_gym/core/constants.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/models/region/region_dto.dart';
@@ -24,7 +26,7 @@ class RegionsRemoteDataSourceImpl implements RegionsRemoteDataSource {
 
       return regionsData.map((i) => RegionDto.fromJson(i)).toList();
     } catch (error) {
-      print(error);
+      log(error.toString());
       rethrow;
     }
   }

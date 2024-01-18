@@ -32,6 +32,7 @@
     }
   },
   "locationScreen_addressCard_title": "地址",
+  "locationScreen_moreDetailsCard_title": "更多資料",
   "settingsScreen_title": "設定",
   "settingsScreen_languagesTitle": "語言",
   "settingsScreen_languagesSubtitle": "喺依度轉顯示嘅語言",

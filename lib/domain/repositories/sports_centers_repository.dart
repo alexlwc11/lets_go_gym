@@ -6,5 +6,6 @@ abstract class SportsCentersRepository {
   Future<List<SportsCenter>> getSportsCentersByIds(List<int> ids);
   Future<List<SportsCenter>> getSportsCentersByDistrictId(int districtId);
   Future<List<SportsCenter>> getSportsCentersByRegionId(int regionId);
+  Future<String> getSportsCenterDetailsUrl(int id);
   Future<void> updateSportsCenterData();
 }

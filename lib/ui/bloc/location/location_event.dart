@@ -10,6 +10,12 @@ class LocationDataRequested extends LocationEvent {
   const LocationDataRequested({required this.sportsCenterId});
 }
 
+class LocationDetailsUrlRequested extends LocationEvent {
+  final int sportsCenterId;
+
+  const LocationDetailsUrlRequested({required this.sportsCenterId});
+}
+
 class LocationIsBookmarkedUpdateReceived extends LocationEvent {
   final bool isBookmarked;
 

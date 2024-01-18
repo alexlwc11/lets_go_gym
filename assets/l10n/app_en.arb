@@ -32,6 +32,7 @@
     }
   },
   "locationScreen_addressCard_title": "Address",
+  "locationScreen_moreDetailsCard_title": "More details",
   "settingsScreen_title": "Settings",
   "settingsScreen_languagesTitle": "Languages",
   "settingsScreen_languagesSubtitle": "Change the app language here",
