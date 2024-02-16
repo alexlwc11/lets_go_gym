@@ -6,6 +6,7 @@ import 'package:lets_go_gym/router.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:lets_go_gym/ui/components/location_card.dart';
 import 'package:lets_go_gym/ui/components/main_screen_sliver_app_bar.dart';
+import 'package:lets_go_gym/ui/cubits/locations_fliter/locations_filter_cubit.dart';
 import 'package:lets_go_gym/ui/models/animated_list_model.dart';
 
 class LocationsScreen extends StatefulWidget {
@@ -18,17 +19,10 @@ class LocationsScreen extends StatefulWidget {
 class _LocationScreenState extends State<LocationsScreen> {
   final GlobalKey<SliverAnimatedListState> _listKey =
       GlobalKey<SliverAnimatedListState>();
-  late AnimatedListModel<LocationItemVM> _list;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _list = AnimatedListModel(
-      listKey: _listKey,
-      removedItemBuilder: _buildRemovedItem,
-    );
-  }
+  late final AnimatedListModel<LocationItemVM> _list = AnimatedListModel(
+    listKey: _listKey,
+    removedItemBuilder: _buildRemovedItem,
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -37,6 +31,26 @@ class _LocationScreenState extends State<LocationsScreen> {
         slivers: [
           MainScreenSliverAppBar(
             titleText: context.appLocalization.locationsScreen_title,
+            actions: [
+              BlocConsumer<LocationsFilterCubit, LocationsFilter>(
+                listenWhen: (old, newValue) {
+                  return old != newValue;
+                },
+                listener: (_, filter) {
+                  context
+                      .read<LocationsBloc>()
+                      .add(LocationsFilterUpdated(updateFilter: filter));
+                },
+                builder: (context, filter) {
+                  return IconButton(
+                    onPressed: () {},
+                    icon: filter.isEmpty
+                        ? const Icon(Icons.filter_alt_off)
+                        : const Icon(Icons.filter_alt),
+                  );
+                },
+              ),
+            ],
           ),
           BlocBuilder<LocationsBloc, LocationsState>(
             builder: (context, state) {
@@ -66,16 +80,13 @@ class _LocationScreenState extends State<LocationsScreen> {
         ),
       );
 
-  Widget _buildLocationListContent() {
-    return SliverAnimatedList(
-      key: _listKey,
-      initialItemCount: _list.length,
-      itemBuilder: (context, index, animation) =>
-          _locationItemBuilder(index, animation),
-    );
-  }
+  Widget _buildLocationListContent() => SliverAnimatedList(
+        key: _listKey,
+        initialItemCount: _list.length,
+        itemBuilder: _itemBuilder,
+      );
 
-  Widget _locationItemBuilder(int index, Animation<double> animation) =>
+  Widget _itemBuilder(BuildContext _, int index, Animation<double> animation) =>
       _buildLocationCard(_list[index], animation);
 
   Widget _buildRemovedItem(LocationItemVM vm, Animation<double> animation) =>

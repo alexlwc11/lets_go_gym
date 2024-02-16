@@ -9,6 +9,8 @@ class LocationsFilter extends Equatable {
     this.districtIds = const {},
   });
 
+  bool get isEmpty => regionIds.isEmpty && districtIds.isEmpty;
+
   @override
   List<Object?> get props => [
         ...regionIds.map((id) => 'region-$id'),
