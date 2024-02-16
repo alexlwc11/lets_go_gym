@@ -64,6 +64,7 @@ import 'package:lets_go_gym/ui/bloc/languages/language_settings_cubit.dart';
 import 'package:lets_go_gym/ui/bloc/location/location_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/themes/theme_settings_cubit.dart';
+import 'package:lets_go_gym/ui/cubits/locations_fliter/locations_filter_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 final sl = GetIt.instance;
@@ -206,6 +207,10 @@ Future<void> init() async {
         getCurrentThemeSettings: sl(),
         updateThemeSettings: sl(),
       ));
+  // Cubit
+  sl.registerFactory(
+    () => LocationsFilterCubit(),
+  );
 
   // DAO
   sl.registerLazySingleton(() => RegionsDao(sl()));
