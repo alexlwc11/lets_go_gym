@@ -6,8 +6,10 @@ import 'package:lets_go_gym/router.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:lets_go_gym/ui/components/location_card.dart';
 import 'package:lets_go_gym/ui/components/main_screen_sliver_app_bar.dart';
-import 'package:lets_go_gym/ui/cubits/locations_fliter/locations_filter_cubit.dart';
+import 'package:lets_go_gym/ui/components/modals/locations_filter_modal.dart';
+import 'package:lets_go_gym/ui/cubits/locations_filter/locations_filter_cubit.dart';
 import 'package:lets_go_gym/ui/models/animated_list_model.dart';
+import 'package:lets_go_gym/ui/models/locations_filter.dart';
 
 class LocationsScreen extends StatefulWidget {
   const LocationsScreen({super.key});
@@ -43,7 +45,18 @@ class _LocationScreenState extends State<LocationsScreen> {
                 },
                 builder: (context, filter) {
                   return IconButton(
-                    onPressed: () {},
+                    onPressed: () {
+                      showModalBottomSheet(
+                        context: context,
+                        enableDrag: false,
+                        builder: (_) => LocationsFilterModal(
+                          filter: filter,
+                          onLocationsFilterApply: context
+                              .read<LocationsFilterCubit>()
+                              .updateFilters,
+                        ),
+                      );
+                    },
                     icon: filter.isEmpty
                         ? const Icon(Icons.filter_alt_off)
                         : const Icon(Icons.filter_alt),

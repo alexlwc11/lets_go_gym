@@ -15,7 +15,8 @@ import 'package:lets_go_gym/domain/usecases/bookmarks/remove_bookmark.dart';
 import 'package:lets_go_gym/domain/usecases/districts/get_all_districts.dart';
 import 'package:lets_go_gym/domain/usecases/regions/get_all_regions.dart';
 import 'package:lets_go_gym/domain/usecases/sports_centers/get_all_sports_centers.dart';
-import 'package:lets_go_gym/ui/cubits/locations_fliter/locations_filter_cubit.dart';
+import 'package:lets_go_gym/ui/cubits/locations_filter/locations_filter_cubit.dart';
+import 'package:lets_go_gym/ui/models/locations_filter.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'locations_event.dart';
