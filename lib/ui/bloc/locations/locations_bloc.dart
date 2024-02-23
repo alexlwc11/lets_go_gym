@@ -15,6 +15,8 @@ import 'package:lets_go_gym/domain/usecases/bookmarks/remove_bookmark.dart';
 import 'package:lets_go_gym/domain/usecases/districts/get_all_districts.dart';
 import 'package:lets_go_gym/domain/usecases/regions/get_all_regions.dart';
 import 'package:lets_go_gym/domain/usecases/sports_centers/get_all_sports_centers.dart';
+import 'package:lets_go_gym/ui/cubits/locations_filter/locations_filter_cubit.dart';
+import 'package:lets_go_gym/ui/models/locations_filter.dart';
 import 'package:rxdart/rxdart.dart';
 
 part 'locations_event.dart';
@@ -41,6 +43,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
     required this.removeBookmark,
   }) : super(LocationsDataLoadingInProgress()) {
     on<LocationsDataRequested>(_onLocationsDataRequested);
+    on<LocationsFilterUpdated>(_onLocationsFilterUpdated);
     on<BookmarkUpdateRequested>(_onBookmarkUpdateRequested);
     on<BookmarkDataUpdateReceived>(_onBookmarkDataUpdateReceived);
 
@@ -48,9 +51,10 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
     _setupSubscription();
   }
 
+  // cached generated vms
   List<LocationItemVM> _locationItemVMs = [];
+  // bookmarked ids
   Set<int> _bookmarkedIds = {};
-  // TODO filter
   // for display
   List<LocationItemVM> _displayItemVMs = [];
 
@@ -91,6 +95,26 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
       // TODO handle error
       // emit(LocationsDataUpdateFailure());
     }
+  }
+
+  void _onLocationsFilterUpdated(
+      LocationsFilterUpdated event, Emitter<LocationsState> emit) {
+    final regionIds = event.updateFilter.regionIds;
+    final districtIds = event.updateFilter.districtIds;
+    _displayItemVMs = _locationItemVMs.where((element) {
+      if (regionIds.isNotEmpty && districtIds.isNotEmpty) {
+        return regionIds.contains(element.regionId) ||
+            districtIds.contains(element.districtId);
+      } else if (regionIds.isNotEmpty) {
+        return regionIds.contains(element.regionId);
+      } else if (districtIds.isNotEmpty) {
+        return districtIds.contains(element.districtId);
+      } else {
+        return true;
+      }
+    }).toList();
+
+    emit(LocationsDataUpdated(displayItemVMs: _displayItemVMs.toList()));
   }
 
   Future<void> _onBookmarkUpdateRequested(

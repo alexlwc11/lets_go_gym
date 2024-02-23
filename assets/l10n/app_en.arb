@@ -31,6 +31,10 @@
       }
     }
   },
+  "locationsFilterModal_title": "Filter",
+  "locationsFilterModal_regionsSection_title": "Regions",
+  "locationsFilterModal_districtsSection_title": "Districts",
+  "locationsFilterModal_filterLabel_all": "All",
   "locationScreen_addressCard_title": "Address",
   "locationScreen_moreDetailsCard_title": "More details",
   "settingsScreen_title": "Settings",
