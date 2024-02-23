@@ -5,7 +5,6 @@ import 'package:lets_go_gym/core/utils/localization_helper.dart';
 import 'package:lets_go_gym/di.dart' as di;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/locations_filter_modal/locations_filter_modal_bloc.dart';
-import 'package:lets_go_gym/ui/cubits/locations_filter/locations_filter_cubit.dart';
 import 'package:lets_go_gym/ui/models/locations_filter.dart';
 
 class LocationsFilterModal extends StatelessWidget {
@@ -51,11 +50,12 @@ class _LocationsFilterModalBodyState extends State<_LocationsFilterModalBody> {
                   automaticallyImplyLeading: false,
                   backgroundColor: Colors.transparent,
                   scrolledUnderElevation: 0,
-                  title: Text('Filter'),
+                  title:
+                      Text(context.appLocalization.locationsFilterModal_title),
                   centerTitle: true,
                   actions: [
                     IconButton(
-                      icon: Icon(Icons.check),
+                      icon: const Icon(Icons.check),
                       onPressed: () {
                         context
                             .read<LocationsFilterModalBloc>()
@@ -106,7 +106,7 @@ class _LocationsFilterModalBodyState extends State<_LocationsFilterModalBody> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Regions',
+          context.appLocalization.locationsFilterModal_regionsSection_title,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         Wrap(
@@ -115,7 +115,9 @@ class _LocationsFilterModalBodyState extends State<_LocationsFilterModalBody> {
             FilterChip.elevated(
               key: const ValueKey('all-region-chip'),
               padding: const EdgeInsets.all(4),
-              label: Text('All'),
+              label: Text(
+                context.appLocalization.locationsFilterModal_filterLabel_all,
+              ),
               selected: noFilterSelected,
               onSelected: (_) {
                 context
@@ -155,7 +157,7 @@ class _LocationsFilterModalBodyState extends State<_LocationsFilterModalBody> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          'Districts',
+          context.appLocalization.locationsFilterModal_districtsSection_title,
           style: Theme.of(context).textTheme.titleMedium,
         ),
         Wrap(
@@ -164,7 +166,9 @@ class _LocationsFilterModalBodyState extends State<_LocationsFilterModalBody> {
             FilterChip.elevated(
               key: const ValueKey('all-district-chip'),
               padding: const EdgeInsets.all(4),
-              label: Text('All'),
+              label: Text(
+                context.appLocalization.locationsFilterModal_filterLabel_all,
+              ),
               selected: noFilterSelected,
               onSelected: (_) {
                 context
