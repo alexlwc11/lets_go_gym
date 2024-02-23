@@ -40,7 +40,7 @@ dependencies:
   equatable: 2.0.5
   freezed_annotation: 2.4.1
   rxdart: 0.27.7
-  url_launcher: 6.2.4
+  url_launcher: 6.2.5
 
   get_it: 7.6.7
 
@@ -54,7 +54,7 @@ dependencies:
   flutter_bloc: 8.1.4
 
   # API
-  dio: 5.4.0
+  dio: 5.4.1
 
   # Database
   drift: 2.15.0
