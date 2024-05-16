@@ -59,7 +59,9 @@ class _ThemeItemTile extends StatelessWidget {
     return Card(
       elevation: 0,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      color: isSelected ? Theme.of(context).colorScheme.surfaceVariant : null,
+      color: isSelected
+          ? Theme.of(context).colorScheme.surfaceContainerHighest
+          : null,
       clipBehavior: Clip.hardEdge,
       child: ListTile(
         leading: Icon(getIcon(themeItem)),

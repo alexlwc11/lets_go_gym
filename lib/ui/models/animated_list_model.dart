@@ -24,14 +24,14 @@ class AnimatedListModel<E> {
   final RemovedItemBuilder<E> removedItemBuilder;
   final List<E> _items;
 
-  SliverAnimatedListState get _animatedList => listKey.currentState!;
+  SliverAnimatedListState? get _animatedList => listKey.currentState;
 
   void update(List<E> updatedItems) {
     if (updatedItems.equals(_items)) return;
 
     if (_items.isNotEmpty) {
       _items.clear();
-      _animatedList.removeAllItems(
+      _animatedList?.removeAllItems(
         (context, animation) => FadeTransition(
           opacity: animation.drive(Tween(begin: 1, end: 0)),
         ),
@@ -39,18 +39,18 @@ class AnimatedListModel<E> {
     }
 
     _items.addAll(updatedItems);
-    _animatedList.insertAllItems(0, updatedItems.length);
+    _animatedList?.insertAllItems(0, updatedItems.length);
   }
 
   void insert(int index, E item) {
     _items.insert(index, item);
-    _animatedList.insertItem(index);
+    _animatedList?.insertItem(index);
   }
 
   E removeAt(int index) {
     final E removedItem = _items.removeAt(index);
     if (removedItem != null) {
-      _animatedList.removeItem(
+      _animatedList?.removeItem(
         index,
         (BuildContext context, Animation<double> animation) =>
             removedItemBuilder(removedItem, animation),
