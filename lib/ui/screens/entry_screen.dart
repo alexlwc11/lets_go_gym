@@ -110,9 +110,9 @@ class EntryScreen extends StatelessWidget {
           ),
           ElevatedButton(
             style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
-                  padding: MaterialStateProperty.all(
+                  padding: WidgetStateProperty.all(
                       const EdgeInsets.symmetric(vertical: 12, horizontal: 62)),
-                  shape: MaterialStateProperty.all(
+                  shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32),
                     ),
@@ -141,9 +141,9 @@ class EntryScreen extends StatelessWidget {
           ),
           ElevatedButton(
             style: Theme.of(context).elevatedButtonTheme.style?.copyWith(
-                  padding: MaterialStateProperty.all(
+                  padding: WidgetStateProperty.all(
                       const EdgeInsets.symmetric(vertical: 12, horizontal: 62)),
-                  shape: MaterialStateProperty.all(
+                  shape: WidgetStateProperty.all(
                     RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(32),
                     ),
