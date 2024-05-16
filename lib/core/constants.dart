@@ -3,7 +3,7 @@ import 'dart:io';
 // TODO update
 class ApiConstants {
   static String get baseUrl =>
-      Platform.isIOS ? _localhostIOS : _localhostAndroid;
+      '${Platform.isIOS ? _localhostIOS : _localhostAndroid}/api';
   static const String _prodBaseUrl = '';
   static const String _devBaseUrl = '';
   static const String _localhostAndroid = 'http://10.0.2.2:8080';
