@@ -1,51 +1,51 @@
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:developer';
 
-class AuthManager {
-  final SharedPreferences _sharedPreferences;
-  final FlutterSecureStorage _storage;
+import 'package:lets_go_gym/domain/entities/token/session_token.dart';
+import 'package:lets_go_gym/domain/usecases/auth/get_device_uuid.dart';
+import 'package:lets_go_gym/domain/usecases/auth/get_stored_session_token.dart';
+import 'package:lets_go_gym/domain/usecases/auth/refresh_session_token.dart';
+import 'package:lets_go_gym/domain/usecases/auth/save_session_token.dart';
 
-  AuthManager({
-    required SharedPreferences sharedPreferences,
-    required FlutterSecureStorage flutterSecureStorage,
-  })  : _sharedPreferences = sharedPreferences,
-        _storage = flutterSecureStorage;
+const _authHeaderPrefix = 'Bearer ';
 
-  bool? _signedIn;
+class TokenManager {
+  final GetDeviceUUID getDeviceUUID;
+  final GetStoredSessionToken getStoredSessionToken;
+  final SaveSessionToken saveSessionToken;
+  final RefreshSessionToken refreshSessionToken;
 
-  Future<bool> get isSignedIn async {
-    _signedIn ??= (await getToken()) != null;
+  TokenManager({
+    required this.getDeviceUUID,
+    required this.getStoredSessionToken,
+    required this.saveSessionToken,
+    required this.refreshSessionToken,
+  });
 
-    return _signedIn!;
-  }
+  SessionToken? _sessionToken;
 
   Future<String> get authHeader async {
-    final token = await getToken();
-    return 'Bearer $token';
+    _sessionToken ??= await getStoredSessionToken.execute();
+    if (_sessionToken == null) {
+      // Failed to retrieve the session token from secure storage
+      log('TokenManager#authHeader - Missing session token');
+      return '';
+    } else if (_sessionToken!.sessionTokenExpiredAt.isAfter(DateTime.now())) {
+      // Session token expired, need to refresh
+      await _refreshToken(_sessionToken!.refreshToken);
+    }
+
+    final token = _sessionToken?.sessionToken ?? '';
+    return '$_authHeaderPrefix$token';
   }
 
-  Future<String?> getToken() async {
-    final token = await _storage.read(key: 'token');
-    return token;
-  }
+  Future<void> _refreshToken(String refreshToken) async {
+    try {
+      final newSessionToken = await refreshSessionToken.execute(refreshToken);
 
-  Future<void> saveToken({required String token}) async {
-    await _storage.write(key: 'token', value: token);
-    _signedIn = true;
-  }
-
-  Future<void> deleteToken() async {
-    await _storage.delete(key: 'token');
-    _signedIn = false;
-  }
-
-  Future<void> clearSecureStorageOnReinstall() async {
-    String key = 'hasRunBefore';
-    final hasRunBefore = _sharedPreferences.getBool(key);
-
-    if (hasRunBefore == null) {
-      await _storage.deleteAll();
-      _sharedPreferences.setBool(key, true);
+      await saveSessionToken.execute(newSessionToken);
+      _sessionToken = newSessionToken;
+    } catch (error) {
+      log('AuthManager#_refreshToken', error: error);
     }
   }
 }

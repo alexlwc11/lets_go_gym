@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lets_go_gym/core/utils/localization_helper.dart';
-import 'package:lets_go_gym/router.dart';
+import 'package:lets_go_gym/core/utils/localization/localization_helper.dart';
+import 'package:lets_go_gym/core/router/router.dart';
 import 'package:lets_go_gym/ui/components/main_screen_sliver_app_bar.dart';
 
 class SettingsScreen extends StatelessWidget {
