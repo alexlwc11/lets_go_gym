@@ -1,7 +1,7 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-const _hasRunBeforeKey = 'letsGoGym_hasRunBefore';
+const _hasRunBeforeKey = 'hasRunBefore';
 
 Future<void> clearSecureStorageOnReinstall({
   required FlutterSecureStorage secureStorage,
