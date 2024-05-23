@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lets_go_gym/core/utils/localization_helper.dart';
-import 'package:lets_go_gym/di.dart' as di;
+import 'package:lets_go_gym/core/utils/localization/localization_helper.dart';
+import 'package:lets_go_gym/core/di/di.dart' as di;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/locations_filter_modal/locations_filter_modal_bloc.dart';
 import 'package:lets_go_gym/ui/models/locations_filter.dart';

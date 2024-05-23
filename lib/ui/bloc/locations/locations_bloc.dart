@@ -4,7 +4,7 @@ import 'dart:developer';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lets_go_gym/core/utils/localization_helper.dart';
+import 'package:lets_go_gym/core/utils/localization/localization_helper.dart';
 import 'package:lets_go_gym/domain/entities/district/district.dart';
 import 'package:lets_go_gym/domain/entities/region/region.dart';
 import 'package:lets_go_gym/domain/entities/sports_center/sports_center.dart';

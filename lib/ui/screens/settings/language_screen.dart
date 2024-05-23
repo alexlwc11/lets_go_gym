@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lets_go_gym/core/utils/localization_helper.dart';
+import 'package:lets_go_gym/core/utils/localization/localization_helper.dart';
 import 'package:lets_go_gym/ui/bloc/languages/language_settings_cubit.dart';
 import 'package:lets_go_gym/ui/components/main_screen_sliver_app_bar.dart';
 

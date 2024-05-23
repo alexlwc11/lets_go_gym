@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lets_go_gym/di.dart' as di;
+import 'package:lets_go_gym/core/di/di.dart' as di;
 import 'package:lets_go_gym/ui/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/location/location_bloc.dart';

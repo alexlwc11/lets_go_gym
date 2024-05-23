@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lets_go_gym/core/utils/localization_helper.dart';
-import 'package:lets_go_gym/router.dart';
+import 'package:lets_go_gym/core/utils/localization/localization_helper.dart';
+import 'package:lets_go_gym/core/router/router.dart';
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
 
 class EntryScreen extends StatelessWidget {
@@ -72,7 +72,7 @@ class EntryScreen extends StatelessWidget {
 
   Widget _buildLoadingContent(
     BuildContext context, {
-    DataUpdateStep? finishedStep,
+    AppInitStep? finishedStep,
   }) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -130,7 +130,7 @@ class EntryScreen extends StatelessWidget {
 
   Widget _buildFailedToUpdateContent(
     BuildContext context,
-    DataUpdateStep failedStep,
+    AppInitStep failedStep,
   ) =>
       Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

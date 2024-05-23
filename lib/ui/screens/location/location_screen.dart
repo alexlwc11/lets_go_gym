@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lets_go_gym/core/utils/localization_helper.dart';
-import 'package:lets_go_gym/core/utils/url_launcher_helper.dart';
+import 'package:lets_go_gym/core/utils/localization/localization_helper.dart';
+import 'package:lets_go_gym/core/utils/helper/url_launcher_helper.dart';
 import 'package:lets_go_gym/ui/bloc/location/location_bloc.dart';
 
 class LocationScreen extends StatelessWidget {

@@ -3,6 +3,8 @@ part of 'entry_bloc.dart';
 @immutable
 abstract class EntryEvent {}
 
+class AuthTokenRequested extends EntryEvent {}
+
 class AppInfoRequested extends EntryEvent {}
 
 class CurrentDataInfoRequested extends EntryEvent {}
@@ -14,7 +16,7 @@ class DistrictDataUpdateRequested extends EntryEvent {}
 class SportsCenterDataUpdateRequested extends EntryEvent {}
 
 class RetryUpdateRequested extends EntryEvent {
-  final DataUpdateStep retryStep;
+  final AppInitStep retryStep;
 
   RetryUpdateRequested({required this.retryStep});
 }

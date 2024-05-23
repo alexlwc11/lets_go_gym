@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:lets_go_gym/core/constants.dart';
+import 'package:lets_go_gym/core/utils/constant/constants.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/models/bookmark/bookmark_dto.dart';
 
@@ -43,9 +43,7 @@ class BookmarksRemoteDataSourceImpl implements BookmarksRemoteDataSource {
           await _authClient.post(_bookmarksUrl, data: bookmarkDto.toJson());
       final responseData = response.data as Map<String, dynamic>;
 
-      final bookmarksData = responseData['bookmark'];
-
-      return BookmarkDto.fromJson(bookmarksData);
+      return BookmarkDto.fromJson(responseData);
     } catch (error) {
       log(error.toString());
       rethrow;

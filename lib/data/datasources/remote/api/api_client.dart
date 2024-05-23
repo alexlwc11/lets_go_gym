@@ -1,13 +1,13 @@
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'auth_manager.dart';
+import 'token_manager.dart';
 import 'response/error/api_response_error.dart';
 
 class AuthClient extends _BaseClient {
-  final AuthManager _authManager;
+  final TokenManager _authManager;
 
-  AuthClient({required AuthManager authManager}) : _authManager = authManager;
+  AuthClient({required TokenManager authManager}) : _authManager = authManager;
 
   @override
   Future<Map<String, dynamic>> get _defaultHeaders async => {
