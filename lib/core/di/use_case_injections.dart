@@ -11,10 +11,10 @@ import 'package:lets_go_gym/domain/usecases/app_settings/update_theme_settings.d
 import 'package:lets_go_gym/domain/usecases/auth/get_device_uuid.dart';
 import 'package:lets_go_gym/domain/usecases/auth/get_stored_session_token.dart';
 import 'package:lets_go_gym/domain/usecases/auth/refresh_session_token.dart';
-import 'package:lets_go_gym/domain/usecases/auth/register.dart';
+import 'package:lets_go_gym/domain/usecases/auth/register_new_user.dart';
 import 'package:lets_go_gym/domain/usecases/auth/save_device_uuid.dart';
 import 'package:lets_go_gym/domain/usecases/auth/save_session_token.dart';
-import 'package:lets_go_gym/domain/usecases/auth/sign_in.dart';
+import 'package:lets_go_gym/domain/usecases/auth/user_sign_in.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/add_bookmark.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/check_if_bookmarked.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/check_if_bookmarked_as_stream.dart';
@@ -77,7 +77,7 @@ void initUseCaseInjections() {
   sl.registerLazySingleton(() => SaveDeviceUUID(repository: sl()));
   sl.registerLazySingleton(() => GetStoredSessionToken(repository: sl()));
   sl.registerLazySingleton(() => SaveSessionToken(repository: sl()));
-  sl.registerLazySingleton(() => Register(repository: sl()));
-  sl.registerLazySingleton(() => SignIn(repository: sl()));
+  sl.registerLazySingleton(() => RegisterNewUser(repository: sl()));
+  sl.registerLazySingleton(() => UserSignIn(repository: sl()));
   sl.registerLazySingleton(() => RefreshSessionToken(repository: sl()));
 }

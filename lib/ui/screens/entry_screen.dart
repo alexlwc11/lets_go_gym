@@ -72,7 +72,7 @@ class EntryScreen extends StatelessWidget {
 
   Widget _buildLoadingContent(
     BuildContext context, {
-    DataUpdateStep? finishedStep,
+    AppInitStep? finishedStep,
   }) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -130,7 +130,7 @@ class EntryScreen extends StatelessWidget {
 
   Widget _buildFailedToUpdateContent(
     BuildContext context,
-    DataUpdateStep failedStep,
+    AppInitStep failedStep,
   ) =>
       Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,

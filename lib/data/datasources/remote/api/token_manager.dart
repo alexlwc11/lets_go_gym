@@ -29,8 +29,9 @@ class TokenManager {
       // Failed to retrieve the session token from secure storage
       log('TokenManager#authHeader - Missing session token');
       return '';
-    } else if (_sessionToken!.sessionTokenExpiredAt.isAfter(DateTime.now())) {
+    } else if (_sessionToken!.sessionTokenExpiredAt.isBefore(DateTime.now())) {
       // Session token expired, need to refresh
+      log('TokenManager#authHeader - Token expired');
       await _refreshToken(_sessionToken!.refreshToken);
     }
 

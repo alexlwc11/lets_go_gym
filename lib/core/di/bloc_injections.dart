@@ -11,6 +11,12 @@ import 'package:lets_go_gym/ui/models/locations_filter.dart';
 
 void initBlocInjections() {
   sl.registerFactory(() => EntryBloc(
+        registerNewUser: sl(),
+        userSignIn: sl(),
+        getDeviceUUID: sl(),
+        saveDeviceUUID: sl(),
+        getStoredSessionToken: sl(),
+        saveSessionToken: sl(),
         getAppInfo: sl(),
         getCurrentDataInfo: sl(),
         updateRegionsData: sl(),

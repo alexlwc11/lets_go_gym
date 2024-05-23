@@ -3,7 +3,7 @@ import 'package:lets_go_gym/core/di/di.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:lets_go_gym/data/datasources/local/database/database.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
-import 'package:lets_go_gym/data/datasources/remote/api/auth_manager.dart';
+import 'package:lets_go_gym/data/datasources/remote/api/token_manager.dart';
 
 Future<void> initMiscInjections() async {
   sl.registerLazySingleton(() => const FlutterSecureStorage());
