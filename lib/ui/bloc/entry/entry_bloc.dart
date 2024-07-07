@@ -1,14 +1,20 @@
-import 'dart:io';
-
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:lets_go_gym/core/utils/helper/uuid_helper.dart';
 import 'package:lets_go_gym/domain/entities/app_info/data_info.dart';
+import 'package:lets_go_gym/domain/entities/token/session_token.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/get_app_info.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/get_current_data_info.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/update_district_data_last_updated.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/update_region_data_last_updated.dart';
 import 'package:lets_go_gym/domain/usecases/app_info/update_sports_center_data_last_updated.dart';
+import 'package:lets_go_gym/domain/usecases/auth/get_device_uuid.dart';
+import 'package:lets_go_gym/domain/usecases/auth/get_stored_session_token.dart';
+import 'package:lets_go_gym/domain/usecases/auth/register_new_user.dart';
+import 'package:lets_go_gym/domain/usecases/auth/save_device_uuid.dart';
+import 'package:lets_go_gym/domain/usecases/auth/save_session_token.dart';
+import 'package:lets_go_gym/domain/usecases/auth/user_sign_in.dart';
 import 'package:lets_go_gym/domain/usecases/districts/update_districts_data.dart';
 import 'package:lets_go_gym/domain/usecases/regions/update_regions_data.dart';
 import 'package:lets_go_gym/domain/usecases/sports_centers/update_sports_centers_data.dart';
@@ -18,6 +24,12 @@ part 'entry_event.dart';
 part 'entry_state.dart';
 
 class EntryBloc extends Bloc<EntryEvent, EntryState> {
+  final RegisterNewUser registerNewUser;
+  final UserSignIn userSignIn;
+  final GetDeviceUUID getDeviceUUID;
+  final SaveDeviceUUID saveDeviceUUID;
+  final GetStoredSessionToken getStoredSessionToken;
+  final SaveSessionToken saveSessionToken;
   final GetAppInfo getAppInfo;
   final GetCurrentDataInfo getCurrentDataInfo;
   final UpdateRegionsData updateRegionsData;
@@ -28,6 +40,12 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
   final UpdateSportsCenterDataLastUpdated updateSportsCenterDataLastUpdated;
 
   EntryBloc({
+    required this.registerNewUser,
+    required this.userSignIn,
+    required this.getDeviceUUID,
+    required this.saveDeviceUUID,
+    required this.getStoredSessionToken,
+    required this.saveSessionToken,
     required this.getAppInfo,
     required this.getCurrentDataInfo,
     required this.updateRegionsData,
@@ -37,6 +55,7 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
     required this.updateDistrictDataLastUpdated,
     required this.updateSportsCenterDataLastUpdated,
   }) : super(DataUpdating()) {
+    on<AuthTokenRequested>(_onAuthTokenRequested);
     on<AppInfoRequested>(_onAppInfoRequested);
     on<CurrentDataInfoRequested>(_onCurrentDataInfoRequested);
     on<RegionDataUpdateRequested>(_onRegionDataUpdateRequested);
@@ -44,11 +63,40 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
     on<SportsCenterDataUpdateRequested>(_onSportsCenterDataUpdateRequested);
     on<RetryUpdateRequested>(_onRetryUpdateRequested);
 
-    add(AppInfoRequested());
+    add(AuthTokenRequested());
   }
 
   DataInfo? _latestDataInfo;
   DataInfo? _dataInfo;
+
+  Future<void> _onAuthTokenRequested(
+      AuthTokenRequested event, Emitter<EntryState> emit) async {
+    try {
+      String? deviceUUID = await getDeviceUUID.execute();
+      SessionToken? storedSessionToken = await getStoredSessionToken.execute();
+      if (deviceUUID == null) {
+        // no device UUID found, generate new UUID and register as new user
+        final newDeviceUUID = generateUUID();
+        final newSessionToken = await registerNewUser.execute(newDeviceUUID);
+        await saveSessionToken.execute(newSessionToken);
+        await saveDeviceUUID.execute(newDeviceUUID);
+      } else if (storedSessionToken == null ||
+          (storedSessionToken.sessionTokenExpiredAt.isBefore(DateTime.now()) &&
+              storedSessionToken.refreshTokenExpiredAt
+                  .isBefore(DateTime.now()))) {
+        // sign in with the stored device UUID if:
+        // 1. no session token found OR
+        // 2. session token and refresh token are expired
+        final newSessionToken = await userSignIn.execute(deviceUUID);
+        await saveSessionToken.execute(newSessionToken);
+      }
+
+      emit(DataUpdating(finishedStep: AppInitStep.authToken));
+      add(AppInfoRequested());
+    } catch (_) {
+      emit(FailedToUpdate(failedStep: AppInitStep.authToken));
+    }
+  }
 
   Future<void> _onAppInfoRequested(
       AppInfoRequested event, Emitter<EntryState> emit) async {
@@ -62,7 +110,7 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
 
       // TODO check whether data up to date in next step
       if (currentBuildVersion >= minimumBuildVersion) {
-        emit(DataUpdating(finishedStep: DataUpdateStep.appVersion));
+        emit(DataUpdating(finishedStep: AppInitStep.appVersion));
         add(CurrentDataInfoRequested());
       } else {
         // TODO update store url
@@ -72,7 +120,7 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
         emit(AppOutdated(storeUrl: ''));
       }
     } catch (_) {
-      emit(FailedToUpdate(failedStep: DataUpdateStep.appVersion));
+      emit(FailedToUpdate(failedStep: AppInitStep.appVersion));
     }
   }
 
@@ -81,10 +129,10 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
     try {
       _dataInfo = await getCurrentDataInfo.execute();
 
-      emit(DataUpdating(finishedStep: DataUpdateStep.dataInfo));
+      emit(DataUpdating(finishedStep: AppInitStep.dataInfo));
       add(RegionDataUpdateRequested());
     } catch (_) {
-      emit(FailedToUpdate(failedStep: DataUpdateStep.dataInfo));
+      emit(FailedToUpdate(failedStep: AppInitStep.dataInfo));
     }
   }
 
@@ -101,10 +149,10 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
         }
       }
 
-      emit(DataUpdating(finishedStep: DataUpdateStep.region));
+      emit(DataUpdating(finishedStep: AppInitStep.region));
       add(DistrictDataUpdateRequested());
     } catch (_) {
-      emit(FailedToUpdate(failedStep: DataUpdateStep.region));
+      emit(FailedToUpdate(failedStep: AppInitStep.region));
     }
   }
 
@@ -121,10 +169,10 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
         }
       }
 
-      emit(DataUpdating(finishedStep: DataUpdateStep.district));
+      emit(DataUpdating(finishedStep: AppInitStep.district));
       add(SportsCenterDataUpdateRequested());
     } catch (_) {
-      emit(FailedToUpdate(failedStep: DataUpdateStep.district));
+      emit(FailedToUpdate(failedStep: AppInitStep.district));
     }
   }
 
@@ -143,31 +191,35 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
 
       emit(AllUpToDate());
     } catch (_) {
-      emit(FailedToUpdate(failedStep: DataUpdateStep.sportsCenter));
+      emit(FailedToUpdate(failedStep: AppInitStep.sportsCenter));
     }
   }
 
   Future<void> _onRetryUpdateRequested(
       RetryUpdateRequested event, Emitter<EntryState> emit) async {
     switch (event.retryStep) {
-      case DataUpdateStep.appVersion:
+      case AppInitStep.authToken:
         emit(DataUpdating());
+        add(AuthTokenRequested());
+        break;
+      case AppInitStep.appVersion:
+        emit(DataUpdating(finishedStep: AppInitStep.authToken));
         add(AppInfoRequested());
         break;
-      case DataUpdateStep.dataInfo:
-        emit(DataUpdating(finishedStep: DataUpdateStep.appVersion));
+      case AppInitStep.dataInfo:
+        emit(DataUpdating(finishedStep: AppInitStep.appVersion));
         add(CurrentDataInfoRequested());
         break;
-      case DataUpdateStep.region:
-        emit(DataUpdating(finishedStep: DataUpdateStep.dataInfo));
+      case AppInitStep.region:
+        emit(DataUpdating(finishedStep: AppInitStep.dataInfo));
         add(RegionDataUpdateRequested());
         break;
-      case DataUpdateStep.district:
-        emit(DataUpdating(finishedStep: DataUpdateStep.region));
+      case AppInitStep.district:
+        emit(DataUpdating(finishedStep: AppInitStep.region));
         add(DistrictDataUpdateRequested());
         break;
-      case DataUpdateStep.sportsCenter:
-        emit(DataUpdating(finishedStep: DataUpdateStep.district));
+      case AppInitStep.sportsCenter:
+        emit(DataUpdating(finishedStep: AppInitStep.district));
         add(SportsCenterDataUpdateRequested());
         break;
     }

@@ -7,7 +7,7 @@ sealed class EntryState extends Equatable {
 }
 
 class DataUpdating extends EntryState {
-  final DataUpdateStep? finishedStep;
+  final AppInitStep? finishedStep;
 
   DataUpdating({this.finishedStep});
 
@@ -26,7 +26,7 @@ class AppUpToDate extends EntryState {}
 class AllUpToDate extends EntryState {}
 
 class FailedToUpdate extends EntryState {
-  final DataUpdateStep failedStep;
+  final AppInitStep failedStep;
 
   FailedToUpdate({required this.failedStep});
 
@@ -34,7 +34,8 @@ class FailedToUpdate extends EntryState {
   List<Object?> get props => [failedStep];
 }
 
-enum DataUpdateStep {
+enum AppInitStep {
+  authToken(0.1),
   appVersion(0.2),
   dataInfo(0.3),
   region(0.4),
@@ -42,5 +43,5 @@ enum DataUpdateStep {
   sportsCenter(0.8);
 
   final double progress;
-  const DataUpdateStep(this.progress);
+  const AppInitStep(this.progress);
 }

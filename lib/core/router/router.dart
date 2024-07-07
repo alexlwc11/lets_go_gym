@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:lets_go_gym/di.dart' as di;
+import 'package:lets_go_gym/core/di/di.dart' as di;
 import 'package:lets_go_gym/ui/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/location/location_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
+import 'package:lets_go_gym/ui/cubits/locations_filter/locations_filter_cubit.dart';
 import 'package:lets_go_gym/ui/screens/entry_screen.dart';
 import 'package:lets_go_gym/ui/screens/location/location_screen.dart';
 import 'package:lets_go_gym/ui/screens/main_screen.dart';
@@ -103,8 +104,11 @@ final appRouter = GoRouter(
             GoRoute(
               name: ScreenDetails.locations.name,
               path: ScreenDetails.locations.path,
-              builder: (_, __) => BlocProvider.value(
-                value: di.sl<LocationsBloc>(),
+              builder: (_, __) => MultiBlocProvider(
+                providers: [
+                  BlocProvider.value(value: di.sl<LocationsBloc>()),
+                  BlocProvider.value(value: di.sl<LocationsFilterCubit>()),
+                ],
                 child: const LocationsScreen(),
               ),
             ),

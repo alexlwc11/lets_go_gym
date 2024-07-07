@@ -9,6 +9,14 @@ abstract class LocationsEvent extends Equatable {
 
 class LocationsDataRequested extends LocationsEvent {}
 
+class LocationsFilterUpdated extends LocationsEvent {
+  final LocationsFilter updateFilter;
+
+  const LocationsFilterUpdated({
+    required this.updateFilter,
+  });
+}
+
 class BookmarkUpdateRequested extends LocationsEvent {
   final String itemId;
 

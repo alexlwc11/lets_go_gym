@@ -5,13 +5,15 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:lets_go_gym/core/utils/localization_helper.dart';
-import 'package:lets_go_gym/core/utils/theme_helper.dart';
-import 'package:lets_go_gym/data/datasources/remote/api/auth_manager.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:lets_go_gym/core/utils/helper/clear_storage_helper.dart';
+import 'package:lets_go_gym/core/utils/localization/localization_helper.dart';
+import 'package:lets_go_gym/core/utils/theme/theme_helper.dart';
 import 'package:lets_go_gym/ui/bloc/languages/language_settings_cubit.dart';
 import 'package:lets_go_gym/ui/bloc/themes/theme_settings_cubit.dart';
-import 'router.dart';
-import 'di.dart' as di;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'core/router/router.dart';
+import 'core/di/di.dart' as di;
 
 void main() async {
   runZonedGuarded(() async {
@@ -19,7 +21,10 @@ void main() async {
 
     await di.init();
 
-    await di.sl<AuthManager>().clearSecureStorageOnReinstall();
+    await clearSecureStorageOnReinstall(
+      secureStorage: di.sl<FlutterSecureStorage>(),
+      sharedPreferences: di.sl<SharedPreferences>(),
+    );
 
     runApp(const MainApp());
   }, (error, stack) {

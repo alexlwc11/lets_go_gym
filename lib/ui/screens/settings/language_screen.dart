@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:lets_go_gym/core/utils/localization_helper.dart';
+import 'package:lets_go_gym/core/utils/localization/localization_helper.dart';
 import 'package:lets_go_gym/ui/bloc/languages/language_settings_cubit.dart';
 import 'package:lets_go_gym/ui/components/main_screen_sliver_app_bar.dart';
 
@@ -58,7 +58,9 @@ class _LanguagesItemTile extends StatelessWidget {
     return Card(
       elevation: 0,
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-      color: isSelected ? Theme.of(context).colorScheme.surfaceVariant : null,
+      color: isSelected
+          ? Theme.of(context).colorScheme.surfaceContainerHighest
+          : null,
       clipBehavior: Clip.hardEdge,
       child: ListTile(
         title: Text(getTitleText(context)),

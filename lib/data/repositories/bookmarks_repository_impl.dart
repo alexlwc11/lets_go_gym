@@ -1,7 +1,6 @@
 import 'package:lets_go_gym/data/datasources/local/bookmarks_local_data_source.dart';
 import 'package:lets_go_gym/data/datasources/local/database/tables/bookmarks.dart';
 import 'package:lets_go_gym/data/datasources/remote/bookmarks_remote_data_source.dart';
-import 'package:lets_go_gym/data/models/bookmark/bookmark_dto.dart';
 import 'package:lets_go_gym/domain/entities/bookmark/bookmark.dart';
 import 'package:lets_go_gym/domain/repositories/bookmarks_repository.dart';
 

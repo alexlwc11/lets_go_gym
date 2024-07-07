@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:lets_go_gym/core/constants.dart';
+import 'package:lets_go_gym/core/utils/constant/constants.dart';
 import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/models/app_info/app_info_dto.dart';
 
