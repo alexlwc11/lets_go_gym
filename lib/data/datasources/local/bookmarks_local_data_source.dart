@@ -1,45 +1,95 @@
-import 'package:lets_go_gym/data/datasources/local/database/daos/bookmarks.dart';
-import 'package:lets_go_gym/data/datasources/local/database/database.dart';
-import 'package:lets_go_gym/domain/entities/bookmark/bookmark.dart' as entity;
+import 'dart:convert';
+
+import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class BookmarksLocalDataSource {
-  Future<List<Bookmark>> getAllBookmarks();
-  Stream<List<Bookmark>> getAllBookmarksAsStream();
-  Future<bool> checkIfBookmarked(int sportsCenterId);
+  Set<int> getAllBookmarks();
+  Stream<Set<int>> getAllBookmarksAsStream();
+  bool checkIfBookmarked(int sportsCenterId);
   Stream<bool> checkIfBookmarkedAsStream(int sportsCenterId);
-  Future<void> insertOrUpdateBookmark(entity.Bookmark bookmark);
-  Future<void> insertLocalRecord(int sportsCenterId);
-  Future<void> deleteBookmark(int sportsCenterId);
+  Future<void> addBookmark(int sportsCenterId);
+  Future<void> removeBookmark(int sportsCenterId);
+  Future<void> updateBookmarks(Set<int> sportsCenterIds);
+  Future<void> dispose();
 }
 
+const _bookmarksKey = "bookmarkedLocationIds";
+
 class BookmarksLocalDataSourceImpl implements BookmarksLocalDataSource {
-  final BookmarksDao _dao;
+  final SharedPreferences _sharedPreferences;
 
-  BookmarksLocalDataSourceImpl({required BookmarksDao dao}) : _dao = dao;
+  BookmarksLocalDataSourceImpl({required SharedPreferences sharedPreferences})
+      : _sharedPreferences = sharedPreferences;
 
-  @override
-  Future<List<Bookmark>> getAllBookmarks() => _dao.findAll();
-
-  @override
-  Stream<List<Bookmark>> getAllBookmarksAsStream() => _dao.findAllAsStream();
+  final BehaviorSubject<Set<int>> _bookmarksStream = BehaviorSubject();
 
   @override
-  Future<bool> checkIfBookmarked(int sportsCenterId) =>
-      _dao.checkIfBookmarked(sportsCenterId);
+  Set<int> getAllBookmarks() =>
+      (json.decode(_sharedPreferences.getString(_bookmarksKey) ?? '[]')
+              as List<int>)
+          .toSet();
+
+  @override
+  Stream<Set<int>> getAllBookmarksAsStream() =>
+      _bookmarksStream.asBroadcastStream();
+
+  @override
+  bool checkIfBookmarked(int sportsCenterId) {
+    return getAllBookmarks().contains(sportsCenterId);
+  }
 
   @override
   Stream<bool> checkIfBookmarkedAsStream(int sportsCenterId) =>
-      _dao.checkIfBookmarkedAsStream(sportsCenterId);
+      getAllBookmarksAsStream()
+          .map((updatedBookmarks) => updatedBookmarks.contains(sportsCenterId));
 
   @override
-  Future<void> insertOrUpdateBookmark(entity.Bookmark bookmark) =>
-      _dao.insertOrUpdateRecord(bookmark);
+  Future<void> addBookmark(int sportsCenterId) async {
+    final currentBookmarksJson = _sharedPreferences.getString(_bookmarksKey);
+
+    final Set<int> updatedBookmarks = {sportsCenterId};
+    if (currentBookmarksJson != null) {
+      final currentBookmarks = (json.decode(currentBookmarksJson) as List<int>);
+      // already bookmarked, no need to update
+      if (currentBookmarks.contains(sportsCenterId)) return;
+
+      updatedBookmarks.addAll(currentBookmarks);
+    }
+
+    await _sharedPreferences.setString(
+        _bookmarksKey, json.encode(updatedBookmarks.toList()));
+
+    _bookmarksStream.add(updatedBookmarks);
+  }
 
   @override
-  Future<void> insertLocalRecord(int sportsCenterId) =>
-      _dao.insertLocalRecord(sportsCenterId);
+  Future<void> removeBookmark(int sportsCenterId) async {
+    final currentBookmarksJson = _sharedPreferences.getString(_bookmarksKey);
+    if (currentBookmarksJson == null) return;
+
+    final updatedBookmarks = json.decode(currentBookmarksJson) as List<int>;
+    // not bookmarked, not need to update
+    if (!updatedBookmarks.contains(sportsCenterId)) return;
+
+    updatedBookmarks.remove(sportsCenterId);
+
+    await _sharedPreferences.setString(
+        _bookmarksKey, json.encode(updatedBookmarks));
+
+    _bookmarksStream.add(updatedBookmarks.toSet());
+  }
 
   @override
-  Future<void> deleteBookmark(int sportsCenterId) =>
-      _dao.deleteBySportsCenterId(sportsCenterId);
+  Future<void> updateBookmarks(Set<int> sportsCenterIds) async {
+    await _sharedPreferences.setString(
+        _bookmarksKey, json.encode(sportsCenterIds.toList()));
+
+    _bookmarksStream.add(sportsCenterIds);
+  }
+
+  @override
+  Future<void> dispose() async {
+    await _bookmarksStream.close();
+  }
 }

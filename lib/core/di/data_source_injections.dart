@@ -39,7 +39,9 @@ void initDataSourcesInjections() {
       () => SportsCentersRemoteDataSourceImpl(authClient: sl()));
   /* Bookmarks */
   sl.registerLazySingleton<BookmarksLocalDataSource>(
-      () => BookmarksLocalDataSourceImpl(dao: sl()));
+    () => BookmarksLocalDataSourceImpl(sharedPreferences: sl()),
+    dispose: (dataSource) => dataSource.dispose(),
+  );
   sl.registerLazySingleton<BookmarksRemoteDataSource>(
       () => BookmarksRemoteDataSourceImpl(authClient: sl()));
   /* Auth */

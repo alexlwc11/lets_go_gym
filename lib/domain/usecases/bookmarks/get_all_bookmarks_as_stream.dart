@@ -1,4 +1,3 @@
-import 'package:lets_go_gym/domain/entities/bookmark/bookmark.dart';
 import 'package:lets_go_gym/domain/repositories/bookmarks_repository.dart';
 
 class GetAllBookmarksAsStream {
@@ -6,5 +5,5 @@ class GetAllBookmarksAsStream {
 
   GetAllBookmarksAsStream({required this.repository});
 
-  Stream<List<Bookmark>> execute() => repository.getAllBookmarksAsStream();
+  Stream<Set<int>> execute() => repository.getAllBookmarksAsStream();
 }

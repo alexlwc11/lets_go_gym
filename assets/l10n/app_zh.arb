@@ -31,7 +31,7 @@
       }
     }
   },
-  "locationsFilterModal_title": "過濾器",
+  "locationsFilterModal_title": "篩選",
   "locationsFilterModal_regionsSection_title": "區域",
   "locationsFilterModal_districtsSection_title": "地區",
   "locationsFilterModal_filterLabel_all": "全部",

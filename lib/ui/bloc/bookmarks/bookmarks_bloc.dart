@@ -63,7 +63,6 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
           trailing: true,
         )
         .distinct()
-        .map((bookmarks) => bookmarks.map((e) => e.sportsCenterId).toSet())
         .listen(
           (bookmarkedIds) =>
               add(BookmarkDataUpdateReceived(bookmarkedIds: bookmarkedIds)),
