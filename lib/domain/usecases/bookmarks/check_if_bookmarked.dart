@@ -5,6 +5,6 @@ class CheckIfBookmarked {
 
   CheckIfBookmarked({required this.repository});
 
-  Future<bool> execute(int sportsCenterId) =>
+  bool execute(int sportsCenterId) =>
       repository.checkIfBookmarked(sportsCenterId);
 }

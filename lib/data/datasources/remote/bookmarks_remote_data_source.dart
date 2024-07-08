@@ -5,9 +5,8 @@ import 'package:lets_go_gym/data/datasources/remote/api/api_client.dart';
 import 'package:lets_go_gym/data/models/bookmark/bookmark_dto.dart';
 
 abstract class BookmarksRemoteDataSource {
-  Future<List<BookmarkDto>> getBookmarks();
-  Future<BookmarkDto> addBookmark(int sportsCenterId);
-  Future<void> removeBookmark(int bookmarkId);
+  Future<BookmarkDto> getBookmarks();
+  Future<void> putBookmarks(Set<int> sportsCenterIds);
 }
 
 class BookmarksRemoteDataSourceImpl implements BookmarksRemoteDataSource {
@@ -20,27 +19,9 @@ class BookmarksRemoteDataSourceImpl implements BookmarksRemoteDataSource {
   }) : _authClient = authClient;
 
   @override
-  Future<List<BookmarkDto>> getBookmarks() async {
+  Future<BookmarkDto> getBookmarks() async {
     try {
       final response = await _authClient.get(_bookmarksUrl);
-      final responseData = response.data as Map<String, dynamic>;
-
-      final bookmarksData =
-          responseData['bookmarks'] as List<Map<String, dynamic>>;
-
-      return bookmarksData.map(BookmarkDto.fromJson).toList();
-    } catch (error) {
-      log(error.toString());
-      rethrow;
-    }
-  }
-
-  @override
-  Future<BookmarkDto> addBookmark(int sportsCenterId) async {
-    try {
-      final bookmarkDto = BookmarkDto(sportsCenterId: sportsCenterId);
-      final response =
-          await _authClient.post(_bookmarksUrl, data: bookmarkDto.toJson());
       final responseData = response.data as Map<String, dynamic>;
 
       return BookmarkDto.fromJson(responseData);
@@ -51,11 +32,10 @@ class BookmarksRemoteDataSourceImpl implements BookmarksRemoteDataSource {
   }
 
   @override
-  Future<void> removeBookmark(int bookmarkId) async {
+  Future<void> putBookmarks(Set<int> sportsCenterIds) async {
     try {
-      final bookmarkDto = BookmarkDto(id: bookmarkId);
-
-      await _authClient.delete(_bookmarksUrl, data: bookmarkDto.toJson());
+      final bookmarkDto = BookmarkDto(sportsCenterIds: sportsCenterIds);
+      await _authClient.post(_bookmarksUrl, data: bookmarkDto.toJson());
     } catch (error) {
       log(error.toString());
       rethrow;

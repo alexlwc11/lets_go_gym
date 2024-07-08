@@ -72,7 +72,6 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
           trailing: true,
         )
         .distinct()
-        .map((bookmarks) => bookmarks.map((e) => e.sportsCenterId).toSet())
         .listen(
           (bookmarkedIds) =>
               add(BookmarkDataUpdateReceived(bookmarkedIds: bookmarkedIds)),
@@ -86,7 +85,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
       final districts = await _getDistricts();
       final sportsCenters = await _getSportsCenters();
 
-      _bookmarkedIds = await _getBookmarkedIds();
+      _bookmarkedIds = _getAllBookmarkedIds();
 
       _locationItemVMs = _convertDataToVMs(
         regions: regions,
@@ -179,11 +178,9 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
     }
   }
 
-  Future<Set<int>> _getBookmarkedIds() async {
+  Set<int> _getAllBookmarkedIds() {
     try {
-      final bookmarks = await _getAllBookmarks.execute();
-
-      return bookmarks.map((e) => e.sportsCenterId).toSet();
+      return _getAllBookmarks.execute();
     } catch (_) {
       log("Failed to get all bookmarks");
     }
@@ -220,7 +217,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
   @override
   Future<void> close() async {
     await _subscription.cancel();
-    return super.close();
+    super.close();
   }
 }
 

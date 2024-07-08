@@ -191,7 +191,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   @override
   Future<void> close() async {
     await _subscription.cancel();
-    return super.close();
+    super.close();
   }
 }
 

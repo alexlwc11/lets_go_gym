@@ -1,7 +1,5 @@
 import 'package:lets_go_gym/data/datasources/local/bookmarks_local_data_source.dart';
-import 'package:lets_go_gym/data/datasources/local/database/tables/bookmarks.dart';
 import 'package:lets_go_gym/data/datasources/remote/bookmarks_remote_data_source.dart';
-import 'package:lets_go_gym/domain/entities/bookmark/bookmark.dart';
 import 'package:lets_go_gym/domain/repositories/bookmarks_repository.dart';
 
 class BookmarksRepositoryImpl implements BookmarksRepository {
@@ -14,21 +12,22 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
   });
 
   @override
-  Future<List<Bookmark>> getAllBookmarks() async =>
-      (await localDataSource.getAllBookmarks())
-          .map((record) => record.toEntity)
-          .toList();
-
-  @override
-  Stream<List<Bookmark>> getAllBookmarksAsStream() => localDataSource
-      .getAllBookmarksAsStream()
-      .map((recordList) => recordList.map((record) => record.toEntity).toList())
-      .asBroadcastStream();
-
-  @override
-  Future<bool> checkIfBookmarked(int sportsCenterId) async {
+  Set<int> getAllBookmarks() {
     try {
-      return await localDataSource.checkIfBookmarked(sportsCenterId);
+      return localDataSource.getAllBookmarks();
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  @override
+  Stream<Set<int>> getAllBookmarksAsStream() =>
+      localDataSource.getAllBookmarksAsStream();
+
+  @override
+  bool checkIfBookmarked(int sportsCenterId) {
+    try {
+      return localDataSource.checkIfBookmarked(sportsCenterId);
     } catch (error) {
       rethrow;
     }
@@ -42,27 +41,37 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
   @override
   Future<void> addBookmark(int sportsCenterId) async {
     try {
-      // TODO API request, then store the result
-      // final dto = await remoteDataSource.addBookmark(sportsCenterId);
-      //
-      // final bookmark = dto.toEntity;
-      //
-      // await localDataSource.insertOrUpdateBookmark(bookmark);
+      final bookmarks = getAllBookmarks();
+      if (bookmarks.contains(sportsCenterId)) return;
 
-      // temporarily create record in local database
-      await localDataSource.insertLocalRecord(sportsCenterId);
+      await remoteDataSource.putBookmarks(bookmarks..add(sportsCenterId));
+
+      await localDataSource.addBookmark(sportsCenterId);
     } catch (error) {
       rethrow;
     }
   }
 
   @override
-  Future<void> removeBookmark(int bookmarkId) async {
+  Future<void> removeBookmark(int sportsCenterId) async {
     try {
-      // TODO API request
-      // await remoteDataSource.removeBookmark(bookmarkId);
+      final bookmarks = getAllBookmarks();
+      if (!bookmarks.contains(sportsCenterId)) return;
 
-      await localDataSource.deleteBookmark(bookmarkId);
+      await remoteDataSource.putBookmarks(bookmarks..remove(sportsCenterId));
+
+      await localDataSource.removeBookmark(sportsCenterId);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> updateBookmarks(Set<int> sportsCenterIds) async {
+    try {
+      await remoteDataSource.putBookmarks(sportsCenterIds);
+
+      await localDataSource.updateBookmarks(sportsCenterIds);
     } catch (error) {
       rethrow;
     }

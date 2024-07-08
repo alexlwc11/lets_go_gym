@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:drift/drift.dart';
 import 'package:drift/native.dart';
-import 'package:lets_go_gym/data/datasources/local/database/daos/bookmarks.dart';
 import 'package:lets_go_gym/data/datasources/local/database/daos/districts.dart';
 import 'package:lets_go_gym/data/datasources/local/database/daos/regions.dart';
 import 'package:lets_go_gym/data/datasources/local/database/daos/sports_centers.dart';
@@ -19,12 +18,12 @@ part 'database.g.dart';
 
 @DriftDatabase(
     tables: [Regions, Districts, SportsCenters, Bookmarks],
-    daos: [RegionsDao, DistrictsDao, SportsCentersDao, BookmarksDao])
+    daos: [RegionsDao, DistrictsDao, SportsCentersDao])
 class AppDatabase extends _$AppDatabase {
   AppDatabase() : super(_openConnection());
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration {
@@ -46,6 +45,10 @@ class AppDatabase extends _$AppDatabase {
           /// rename [phone_number] column to [phone_numbers] in [SportsCenters] table in version 4
           await m.renameColumn(
               sportsCenters, "phone_number", sportsCenters.phoneNumbers);
+        }
+        if (from < 5) {
+          /// drop [Bookmarks] table in version5
+          await m.drop(bookmarks);
         }
       },
     );
