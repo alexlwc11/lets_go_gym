@@ -20,7 +20,9 @@ import 'package:lets_go_gym/domain/usecases/bookmarks/check_if_bookmarked.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/check_if_bookmarked_as_stream.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/get_all_bookmarks_as_stream.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/get_latest_bookmarks.dart';
 import 'package:lets_go_gym/domain/usecases/bookmarks/remove_bookmark.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/update_bookmarks.dart';
 import 'package:lets_go_gym/domain/usecases/districts/get_all_districts.dart';
 import 'package:lets_go_gym/domain/usecases/districts/get_district_by_id.dart';
 import 'package:lets_go_gym/domain/usecases/districts/get_districts_by_ids.dart';
@@ -66,12 +68,14 @@ void initUseCaseInjections() {
   sl.registerLazySingleton(() => GetSportsCentersByIds(repository: sl()));
   sl.registerLazySingleton(() => GetSportsCenterDetailsUrl(repository: sl()));
   /* Bookmarks */
+  sl.registerLazySingleton(() => GetLatestBookmarks(repository: sl()));
   sl.registerLazySingleton(() => GetAllBookmarks(repository: sl()));
   sl.registerLazySingleton(() => GetAllBookmarksAsStream(repository: sl()));
   sl.registerLazySingleton(() => CheckIfBookmarked(repository: sl()));
   sl.registerLazySingleton(() => CheckIfBookmarkedAsStream(repository: sl()));
   sl.registerLazySingleton(() => AddBookmark(repository: sl()));
   sl.registerLazySingleton(() => RemoveBookmark(repository: sl()));
+  sl.registerLazySingleton(() => UpdateBookmarks(repository: sl()));
   /* Auth */
   sl.registerLazySingleton(() => GetDeviceUUID(repository: sl()));
   sl.registerLazySingleton(() => SaveDeviceUUID(repository: sl()));

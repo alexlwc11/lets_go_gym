@@ -1,4 +1,5 @@
 abstract class BookmarksRepository {
+  Future<void> getLatestBookmarks();
   Set<int> getAllBookmarks();
   Stream<Set<int>> getAllBookmarksAsStream();
   bool checkIfBookmarked(int sportsCenterId);

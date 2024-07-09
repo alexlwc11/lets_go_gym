@@ -35,7 +35,7 @@ class BookmarksRemoteDataSourceImpl implements BookmarksRemoteDataSource {
   Future<void> putBookmarks(Set<int> sportsCenterIds) async {
     try {
       final bookmarkDto = BookmarkDto(sportsCenterIds: sportsCenterIds);
-      await _authClient.post(_bookmarksUrl, data: bookmarkDto.toJson());
+      await _authClient.put(_bookmarksUrl, data: bookmarkDto.toJson());
     } catch (error) {
       log(error.toString());
       rethrow;

@@ -15,6 +15,8 @@ class DistrictDataUpdateRequested extends EntryEvent {}
 
 class SportsCenterDataUpdateRequested extends EntryEvent {}
 
+class LatestBookmarksRequested extends EntryEvent {}
+
 class RetryUpdateRequested extends EntryEvent {
   final AppInitStep retryStep;
 

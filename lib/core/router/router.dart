@@ -6,6 +6,7 @@ import 'package:lets_go_gym/ui/bloc/bookmarks/bookmarks_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/entry/entry_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/location/location_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
+import 'package:lets_go_gym/ui/cubits/bookmark_ids/bookmark_ids_cubit.dart';
 import 'package:lets_go_gym/ui/cubits/locations_filter/locations_filter_cubit.dart';
 import 'package:lets_go_gym/ui/screens/entry_screen.dart';
 import 'package:lets_go_gym/ui/screens/location/location_screen.dart';
@@ -108,6 +109,7 @@ final appRouter = GoRouter(
                 providers: [
                   BlocProvider.value(value: di.sl<LocationsBloc>()),
                   BlocProvider.value(value: di.sl<LocationsFilterCubit>()),
+                  BlocProvider.value(value: di.sl<BookmarkIdsCubit>())
                 ],
                 child: const LocationsScreen(),
               ),

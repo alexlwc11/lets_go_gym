@@ -18,4 +18,11 @@ class BookmarksDataUpdated extends BookmarksState {
   List<Object?> get props => displayItemVMs.map((vm) => vm.itemId).toList();
 }
 
-class BookmarksDataUpdateFailure extends BookmarksState {}
+class BookmarksDataUpdateFailure extends BookmarksState {
+  final List<BookmarkItemVM> displayItemVMs;
+
+  const BookmarksDataUpdateFailure({required this.displayItemVMs});
+
+  @override
+  List<Object?> get props => displayItemVMs.map((vm) => vm.itemId).toList();
+}

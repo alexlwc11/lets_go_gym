@@ -12,6 +12,18 @@ class BookmarksRepositoryImpl implements BookmarksRepository {
   });
 
   @override
+  Future<void> getLatestBookmarks() async {
+    try {
+      final bookmarks =
+          (await remoteDataSource.getBookmarks()).sportsCenterIds ?? {};
+
+      await localDataSource.updateBookmarks(bookmarks);
+    } catch (error) {
+      rethrow;
+    }
+  }
+
+  @override
   Set<int> getAllBookmarks() {
     try {
       return localDataSource.getAllBookmarks();
