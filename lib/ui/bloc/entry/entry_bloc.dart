@@ -15,6 +15,7 @@ import 'package:lets_go_gym/domain/usecases/auth/register_new_user.dart';
 import 'package:lets_go_gym/domain/usecases/auth/save_device_uuid.dart';
 import 'package:lets_go_gym/domain/usecases/auth/save_session_token.dart';
 import 'package:lets_go_gym/domain/usecases/auth/user_sign_in.dart';
+import 'package:lets_go_gym/domain/usecases/bookmarks/get_latest_bookmarks.dart';
 import 'package:lets_go_gym/domain/usecases/districts/update_districts_data.dart';
 import 'package:lets_go_gym/domain/usecases/regions/update_regions_data.dart';
 import 'package:lets_go_gym/domain/usecases/sports_centers/update_sports_centers_data.dart';
@@ -38,6 +39,7 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
   final UpdateRegionDataLastUpdated _updateRegionDataLastUpdated;
   final UpdateDistrictDataLastUpdated _updateDistrictDataLastUpdated;
   final UpdateSportsCenterDataLastUpdated _updateSportsCenterDataLastUpdated;
+  final GetLatestBookmarks _getLatestBookmarks;
 
   EntryBloc({
     required RegisterNewUser registerNewUser,
@@ -55,7 +57,9 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
     required UpdateDistrictDataLastUpdated updateDistrictDataLastUpdated,
     required UpdateSportsCenterDataLastUpdated
         updateSportsCenterDataLastUpdated,
-  })  : _updateSportsCenterDataLastUpdated = updateSportsCenterDataLastUpdated,
+    required GetLatestBookmarks getLatestBookmarks,
+  })  : _getLatestBookmarks = getLatestBookmarks,
+        _updateSportsCenterDataLastUpdated = updateSportsCenterDataLastUpdated,
         _updateDistrictDataLastUpdated = updateDistrictDataLastUpdated,
         _updateRegionDataLastUpdated = updateRegionDataLastUpdated,
         _updateSportsCentersData = updateSportsCentersData,
@@ -76,6 +80,7 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
     on<RegionDataUpdateRequested>(_onRegionDataUpdateRequested);
     on<DistrictDataUpdateRequested>(_onDistrictDataUpdateRequested);
     on<SportsCenterDataUpdateRequested>(_onSportsCenterDataUpdateRequested);
+    on<LatestBookmarksRequested>(_onLatestBookmarksRequested);
     on<RetryUpdateRequested>(_onRetryUpdateRequested);
 
     add(AuthTokenRequested());
@@ -123,7 +128,6 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       final minimumBuildVersion = latestAppInfo.minimumBuildVersion;
       final currentBuildVersion = int.parse(packageInfo.buildNumber);
 
-      // TODO check whether data up to date in next step
       if (currentBuildVersion >= minimumBuildVersion) {
         emit(DataUpdating(finishedStep: AppInitStep.appVersion));
         add(CurrentDataInfoRequested());
@@ -204,9 +208,21 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
         }
       }
 
-      emit(AllUpToDate());
+      emit(DataUpdating(finishedStep: AppInitStep.sportsCenter));
+      add(LatestBookmarksRequested());
     } catch (_) {
       emit(FailedToUpdate(failedStep: AppInitStep.sportsCenter));
+    }
+  }
+
+  Future<void> _onLatestBookmarksRequested(
+      LatestBookmarksRequested event, Emitter<EntryState> emit) async {
+    try {
+      await _getLatestBookmarks.execute();
+
+      emit(AllUpToDate());
+    } catch (_) {
+      emit(FailedToUpdate(failedStep: AppInitStep.bookmarks));
     }
   }
 
@@ -237,6 +253,9 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
         emit(DataUpdating(finishedStep: AppInitStep.district));
         add(SportsCenterDataUpdateRequested());
         break;
+      case AppInitStep.bookmarks:
+        emit(DataUpdating(finishedStep: AppInitStep.sportsCenter));
+        add(LatestBookmarksRequested());
     }
   }
 }

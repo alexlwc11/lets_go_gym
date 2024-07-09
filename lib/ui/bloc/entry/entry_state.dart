@@ -40,7 +40,8 @@ enum AppInitStep {
   dataInfo(0.3),
   region(0.4),
   district(0.6),
-  sportsCenter(0.8);
+  sportsCenter(0.8),
+  bookmarks(0.9);
 
   final double progress;
   const AppInitStep(this.progress);

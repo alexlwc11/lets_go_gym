@@ -77,9 +77,10 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
       if (item == null) throw Exception('item not found');
 
       await _removeBookmark.execute(item.sportsCenterId);
-    } catch (_) {
-      // TODO handle error
-      // emit(LocationsDataUpdateFailure());
+    } catch (error) {
+      log("BookmarksBloc#onBookmarkUpdateRequested: $error");
+      emit(
+          BookmarksDataUpdateFailure(displayItemVMs: _displayItemVMs.toList()));
     }
   }
 
@@ -112,8 +113,9 @@ class BookmarksBloc extends Bloc<BookmarksEvent, BookmarksState> {
       _displayItemVMs = _bookmarkItemVMs;
       emit(BookmarksDataUpdated(displayItemVMs: _displayItemVMs.toList()));
     } catch (error) {
-      // TODO handle error
-      // emit(BookmarksDataUpdateFailure());
+      log("BookmarksBloc#onBookmarkDataUpdateReceived: $error");
+      emit(
+          BookmarksDataUpdateFailure(displayItemVMs: _displayItemVMs.toList()));
     }
   }
 

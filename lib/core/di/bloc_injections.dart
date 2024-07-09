@@ -6,6 +6,7 @@ import 'package:lets_go_gym/ui/bloc/location/location_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/locations/locations_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/locations_filter_modal/locations_filter_modal_bloc.dart';
 import 'package:lets_go_gym/ui/bloc/themes/theme_settings_cubit.dart';
+import 'package:lets_go_gym/ui/cubits/bookmark_ids/bookmark_ids_cubit.dart';
 import 'package:lets_go_gym/ui/cubits/locations_filter/locations_filter_cubit.dart';
 import 'package:lets_go_gym/ui/models/locations_filter.dart';
 
@@ -25,6 +26,7 @@ void initBlocInjections() {
         updateRegionDataLastUpdated: sl(),
         updateDistrictDataLastUpdated: sl(),
         updateSportsCenterDataLastUpdated: sl(),
+        getLatestBookmarks: sl(),
       ));
   sl.registerFactory(() => BookmarksBloc(
         getAllBookmarksAsStream: sl(),
@@ -37,10 +39,6 @@ void initBlocInjections() {
         getAllRegions: sl(),
         getAllDistricts: sl(),
         getAllSportsCenters: sl(),
-        getAllBookmarks: sl(),
-        getAllBookmarksAsStream: sl(),
-        addBookmark: sl(),
-        removeBookmark: sl(),
       ));
   sl.registerFactoryParam<LocationBloc, int, dynamic>(
       (sportsCenterId, _) => LocationBloc(
@@ -54,6 +52,12 @@ void initBlocInjections() {
             addBookmark: sl(),
             removeBookmark: sl(),
           ));
+  sl.registerFactory(() => BookmarkIdsCubit(
+        getAllBookmarksAsStream: sl(),
+        addBookmark: sl(),
+        removeBookmark: sl(),
+        updateBookmarks: sl(),
+      ));
   sl.registerFactoryParam<LocationsFilterModalBloc, LocationsFilter, dynamic>(
       (locationsFilter, _) => LocationsFilterModalBloc(
             currentFilter: locationsFilter,

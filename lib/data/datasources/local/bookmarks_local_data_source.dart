@@ -25,14 +25,19 @@ class BookmarksLocalDataSourceImpl implements BookmarksLocalDataSource {
   final BehaviorSubject<Set<int>> _bookmarksStream = BehaviorSubject();
 
   @override
-  Set<int> getAllBookmarks() =>
-      (json.decode(_sharedPreferences.getString(_bookmarksKey) ?? '[]')
-              as List<int>)
-          .toSet();
+  Set<int> getAllBookmarks() {
+    return (json.decode(_sharedPreferences.getString(_bookmarksKey) ?? '[]')
+            as List<dynamic>)
+        .cast<int>()
+        .toSet();
+  }
 
   @override
-  Stream<Set<int>> getAllBookmarksAsStream() =>
-      _bookmarksStream.asBroadcastStream();
+  Stream<Set<int>> getAllBookmarksAsStream() {
+    _bookmarksStream.add(getAllBookmarks());
+
+    return _bookmarksStream.asBroadcastStream();
+  }
 
   @override
   bool checkIfBookmarked(int sportsCenterId) {
@@ -46,17 +51,12 @@ class BookmarksLocalDataSourceImpl implements BookmarksLocalDataSource {
 
   @override
   Future<void> addBookmark(int sportsCenterId) async {
-    final currentBookmarksJson = _sharedPreferences.getString(_bookmarksKey);
+    final currentBookmarks = getAllBookmarks();
 
     final Set<int> updatedBookmarks = {sportsCenterId};
-    if (currentBookmarksJson != null) {
-      final currentBookmarks = (json.decode(currentBookmarksJson) as List<int>);
-      // already bookmarked, no need to update
-      if (currentBookmarks.contains(sportsCenterId)) return;
+    if (currentBookmarks.contains(sportsCenterId)) return;
 
-      updatedBookmarks.addAll(currentBookmarks);
-    }
-
+    updatedBookmarks.addAll(currentBookmarks);
     await _sharedPreferences.setString(
         _bookmarksKey, json.encode(updatedBookmarks.toList()));
 
@@ -65,17 +65,15 @@ class BookmarksLocalDataSourceImpl implements BookmarksLocalDataSource {
 
   @override
   Future<void> removeBookmark(int sportsCenterId) async {
-    final currentBookmarksJson = _sharedPreferences.getString(_bookmarksKey);
-    if (currentBookmarksJson == null) return;
+    final currentBookmarks = getAllBookmarks();
+    if (currentBookmarks.isEmpty) return;
 
-    final updatedBookmarks = json.decode(currentBookmarksJson) as List<int>;
     // not bookmarked, not need to update
-    if (!updatedBookmarks.contains(sportsCenterId)) return;
+    if (!currentBookmarks.contains(sportsCenterId)) return;
 
-    updatedBookmarks.remove(sportsCenterId);
-
+    final updatedBookmarks = currentBookmarks..remove(sportsCenterId);
     await _sharedPreferences.setString(
-        _bookmarksKey, json.encode(updatedBookmarks));
+        _bookmarksKey, json.encode(updatedBookmarks.toList()));
 
     _bookmarksStream.add(updatedBookmarks.toSet());
   }

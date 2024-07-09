@@ -16,17 +16,3 @@ class LocationsFilterUpdated extends LocationsEvent {
     required this.updateFilter,
   });
 }
-
-class BookmarkUpdateRequested extends LocationsEvent {
-  final String itemId;
-
-  const BookmarkUpdateRequested({
-    required this.itemId,
-  });
-}
-
-class BookmarkDataUpdateReceived extends LocationsEvent {
-  final Set<int> bookmarkedIds;
-
-  const BookmarkDataUpdateReceived({required this.bookmarkedIds});
-}
