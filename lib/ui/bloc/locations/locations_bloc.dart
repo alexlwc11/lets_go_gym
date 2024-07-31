@@ -22,25 +22,32 @@ part 'locations_event.dart';
 part 'locations_state.dart';
 
 class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
-  final GetAllRegions getAllRegions;
-  final GetAllDistricts getAllDistricts;
-  final GetAllSportsCenters getAllSportsCenters;
-  final GetAllBookmarks getAllBookmarks;
-  final GetAllBookmarksAsStream getAllBookmarksAsStream;
-  final AddBookmark addBookmark;
-  final RemoveBookmark removeBookmark;
+  final GetAllRegions _getAllRegions;
+  final GetAllDistricts _getAllDistricts;
+  final GetAllSportsCenters _getAllSportsCenters;
+  final GetAllBookmarks _getAllBookmarks;
+  final GetAllBookmarksAsStream _getAllBookmarksAsStream;
+  final AddBookmark _addBookmark;
+  final RemoveBookmark _removeBookmark;
 
   late final StreamSubscription _subscription;
 
   LocationsBloc({
-    required this.getAllRegions,
-    required this.getAllDistricts,
-    required this.getAllSportsCenters,
-    required this.getAllBookmarks,
-    required this.getAllBookmarksAsStream,
-    required this.addBookmark,
-    required this.removeBookmark,
-  }) : super(LocationsDataLoadingInProgress()) {
+    required GetAllRegions getAllRegions,
+    required GetAllDistricts getAllDistricts,
+    required GetAllSportsCenters getAllSportsCenters,
+    required GetAllBookmarks getAllBookmarks,
+    required GetAllBookmarksAsStream getAllBookmarksAsStream,
+    required AddBookmark addBookmark,
+    required RemoveBookmark removeBookmark,
+  })  : _removeBookmark = removeBookmark,
+        _addBookmark = addBookmark,
+        _getAllBookmarksAsStream = getAllBookmarksAsStream,
+        _getAllBookmarks = getAllBookmarks,
+        _getAllSportsCenters = getAllSportsCenters,
+        _getAllDistricts = getAllDistricts,
+        _getAllRegions = getAllRegions,
+        super(LocationsDataLoadingInProgress()) {
     on<LocationsDataRequested>(_onLocationsDataRequested);
     on<LocationsFilterUpdated>(_onLocationsFilterUpdated);
     on<BookmarkUpdateRequested>(_onBookmarkUpdateRequested);
@@ -58,7 +65,7 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
   List<LocationItemVM> _displayItemVMs = [];
 
   void _setupSubscription() {
-    _subscription = getAllBookmarksAsStream
+    _subscription = _getAllBookmarksAsStream
         .execute()
         .throttleTime(
           const Duration(milliseconds: 300),
@@ -75,11 +82,11 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
   Future<void> _onLocationsDataRequested(
       LocationsDataRequested event, Emitter<LocationsState> emit) async {
     try {
-      final regions = await _getAllRegions();
-      final districts = await _getAllDistricts();
-      final sportsCenters = await _getAllSportsCenters();
+      final regions = await _getRegions();
+      final districts = await _getDistricts();
+      final sportsCenters = await _getSportsCenters();
 
-      _bookmarkedIds = await _getAllBookmarkedIds();
+      _bookmarkedIds = await _getBookmarkedIds();
 
       _locationItemVMs = _convertDataToVMs(
         regions: regions,
@@ -124,9 +131,9 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
       if (item == null) throw Exception('item not found');
 
       if (item.isBookmarked) {
-        await removeBookmark.execute(item.sportsCenterId);
+        await _removeBookmark.execute(item.sportsCenterId);
       } else {
-        await addBookmark.execute(item.sportsCenterId);
+        await _addBookmark.execute(item.sportsCenterId);
       }
     } catch (_) {
       // TODO handle error
@@ -145,36 +152,36 @@ class LocationsBloc extends Bloc<LocationsEvent, LocationsState> {
     emit(LocationsDataUpdated(displayItemVMs: _displayItemVMs.toList()));
   }
 
-  Future<List<Region>> _getAllRegions() async {
+  Future<List<Region>> _getRegions() async {
     try {
-      return await getAllRegions.execute();
+      return await _getAllRegions.execute();
     } catch (_) {
       log("Failed to get all regions");
       rethrow;
     }
   }
 
-  Future<List<District>> _getAllDistricts() async {
+  Future<List<District>> _getDistricts() async {
     try {
-      return await getAllDistricts.execute();
+      return await _getAllDistricts.execute();
     } catch (_) {
       log("Failed to get all districts");
       rethrow;
     }
   }
 
-  Future<List<SportsCenter>> _getAllSportsCenters() async {
+  Future<List<SportsCenter>> _getSportsCenters() async {
     try {
-      return await getAllSportsCenters.execute();
+      return await _getAllSportsCenters.execute();
     } catch (_) {
       log("Failed to get all sports centers");
       rethrow;
     }
   }
 
-  Future<Set<int>> _getAllBookmarkedIds() async {
+  Future<Set<int>> _getBookmarkedIds() async {
     try {
-      final bookmarks = await getAllBookmarks.execute();
+      final bookmarks = await _getAllBookmarks.execute();
 
       return bookmarks.map((e) => e.sportsCenterId).toSet();
     } catch (_) {

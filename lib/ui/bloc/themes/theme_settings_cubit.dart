@@ -3,24 +3,26 @@ import 'package:lets_go_gym/domain/usecases/app_settings/get_current_theme_setti
 import 'package:lets_go_gym/domain/usecases/app_settings/update_theme_settings.dart';
 
 class ThemeSettingsCubit extends Cubit<String> {
-  final GetCurrentThemeSettings getCurrentThemeSettings;
-  final UpdateThemeSettings updateThemeSettings;
+  final GetCurrentThemeSettings _getCurrentThemeSettings;
+  final UpdateThemeSettings _updateThemeSettings;
 
   ThemeSettingsCubit({
-    required this.getCurrentThemeSettings,
-    required this.updateThemeSettings,
-  }) : super('') {
+    required GetCurrentThemeSettings getCurrentThemeSettings,
+    required UpdateThemeSettings updateThemeSettings,
+  })  : _updateThemeSettings = updateThemeSettings,
+        _getCurrentThemeSettings = getCurrentThemeSettings,
+        super('') {
     loadSettings();
   }
 
   Future<void> loadSettings() async {
-    final currentSettings = await getCurrentThemeSettings.execute();
+    final currentSettings = await _getCurrentThemeSettings.execute();
 
     emit(currentSettings);
   }
 
   Future<void> updateSettings(String updatedThemeCode) async {
-    await updateThemeSettings.execute(updatedThemeCode);
+    await _updateThemeSettings.execute(updatedThemeCode);
 
     emit(updatedThemeCode);
   }

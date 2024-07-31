@@ -21,44 +21,53 @@ part 'location_event.dart';
 part 'location_state.dart';
 
 class LocationBloc extends Bloc<LocationEvent, LocationState> {
-  final int sportsCenterId;
+  final int _sportsCenterId;
 
-  final GetRegionById getRegionById;
-  final GetDistrictById getDistrictById;
-  final GetSportsCenterById getSportsCenterById;
-  final GetSportsCenterDetailsUrl getSportsCenterDetailsUrl;
-  final CheckIfBookmarked checkIfBookmarked;
-  final CheckIfBookmarkedAsStream checkIfBookmarkedAsStream;
-  final AddBookmark addBookmark;
-  final RemoveBookmark removeBookmark;
+  final GetRegionById _getRegionById;
+  final GetDistrictById _getDistrictById;
+  final GetSportsCenterById _getSportsCenterById;
+  final GetSportsCenterDetailsUrl _getSportsCenterDetailsUrl;
+  final CheckIfBookmarked _checkIfBookmarked;
+  final CheckIfBookmarkedAsStream _checkIfBookmarkedAsStream;
+  final AddBookmark _addBookmark;
+  final RemoveBookmark _removeBookmark;
 
   late final StreamSubscription _subscription;
 
   LocationBloc({
-    required this.sportsCenterId,
-    required this.getRegionById,
-    required this.getDistrictById,
-    required this.getSportsCenterById,
-    required this.getSportsCenterDetailsUrl,
-    required this.checkIfBookmarked,
-    required this.checkIfBookmarkedAsStream,
-    required this.addBookmark,
-    required this.removeBookmark,
-  }) : super(LocationDataLoadingInProgress()) {
+    required int sportsCenterId,
+    required GetRegionById getRegionById,
+    required GetDistrictById getDistrictById,
+    required GetSportsCenterById getSportsCenterById,
+    required GetSportsCenterDetailsUrl getSportsCenterDetailsUrl,
+    required CheckIfBookmarked checkIfBookmarked,
+    required CheckIfBookmarkedAsStream checkIfBookmarkedAsStream,
+    required AddBookmark addBookmark,
+    required RemoveBookmark removeBookmark,
+  })  : _removeBookmark = removeBookmark,
+        _addBookmark = addBookmark,
+        _checkIfBookmarkedAsStream = checkIfBookmarkedAsStream,
+        _checkIfBookmarked = checkIfBookmarked,
+        _getSportsCenterDetailsUrl = getSportsCenterDetailsUrl,
+        _getSportsCenterById = getSportsCenterById,
+        _getDistrictById = getDistrictById,
+        _getRegionById = getRegionById,
+        _sportsCenterId = sportsCenterId,
+        super(LocationDataLoadingInProgress()) {
     on<LocationDataRequested>(_onLocationDataLoadRequested);
     on<LocationIsBookmarkedUpdateReceived>(
         _onLocationIsBookmarkedUpdateReceived);
     on<LocationDetailsUrlRequested>(_onLocationDetailsUrlRequested);
     on<BookmarkUpdateRequested>(_onBookmarkUpdateRequested);
 
-    add(LocationDataRequested(sportsCenterId: sportsCenterId));
+    add(LocationDataRequested(sportsCenterId: _sportsCenterId));
   }
 
   late LocationVM _locationVM;
 
   void _setupSubscription() {
-    _subscription = checkIfBookmarkedAsStream
-        .execute(sportsCenterId)
+    _subscription = _checkIfBookmarkedAsStream
+        .execute(_sportsCenterId)
         .throttleTime(
           const Duration(milliseconds: 300),
           trailing: true,
@@ -73,10 +82,10 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   Future<void> _onLocationDataLoadRequested(
       LocationDataRequested event, Emitter<LocationState> emit) async {
     try {
-      final sportsCenter = await _getSportsCenterById(sportsCenterId);
-      final district = await _getDistrictById(sportsCenter.districtId);
-      final region = await _getRegionById(district.regionId);
-      final isBookmarked = await _checkIfBookmarked(sportsCenterId);
+      final sportsCenter = await _getSportsCenter(_sportsCenterId);
+      final district = await _getDistrict(sportsCenter.districtId);
+      final region = await _getRegion(district.regionId);
+      final isBookmarked = await _checkBookmarked(_sportsCenterId);
 
       _locationVM = LocationVM.create(
         region: region,
@@ -86,7 +95,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       );
 
       emit(LocationDataUpdated(vm: _locationVM));
-      add(LocationDetailsUrlRequested(sportsCenterId: sportsCenterId));
+      add(LocationDetailsUrlRequested(sportsCenterId: _sportsCenterId));
     } catch (_) {
       // TODO handle error
       // emit(LocationDataUpdateFailure());
@@ -98,7 +107,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
   Future<void> _onLocationDetailsUrlRequested(
       LocationDetailsUrlRequested event, Emitter<LocationState> emit) async {
     try {
-      final detailsUrl = await _getSportsCenterDetailsUrl(event.sportsCenterId);
+      final detailsUrl = await _getDetailsUrl(event.sportsCenterId);
 
       _locationVM = _locationVM.copyWith(detailsUrl: detailsUrl);
       emit(LocationDataUpdated(vm: _locationVM));
@@ -109,9 +118,9 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       BookmarkUpdateRequested event, Emitter<LocationState> emit) async {
     try {
       if (_locationVM.isBookmarked) {
-        await removeBookmark.execute(sportsCenterId);
+        await _removeBookmark.execute(_sportsCenterId);
       } else {
-        await addBookmark.execute(sportsCenterId);
+        await _addBookmark.execute(_sportsCenterId);
       }
     } catch (_) {
       // TODO handle error
@@ -125,9 +134,9 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     emit(LocationDataUpdated(vm: _locationVM));
   }
 
-  Future<Region> _getRegionById(int regionId) async {
+  Future<Region> _getRegion(int regionId) async {
     try {
-      final region = await getRegionById.execute(regionId);
+      final region = await _getRegionById.execute(regionId);
       if (region == null) throw Exception('Cannot find region');
 
       return region;
@@ -137,9 +146,9 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     }
   }
 
-  Future<District> _getDistrictById(int districtId) async {
+  Future<District> _getDistrict(int districtId) async {
     try {
-      final district = await getDistrictById.execute(districtId);
+      final district = await _getDistrictById.execute(districtId);
       if (district == null) throw Exception('Cannot find district');
 
       return district;
@@ -149,9 +158,9 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     }
   }
 
-  Future<SportsCenter> _getSportsCenterById(int sportsCenterId) async {
+  Future<SportsCenter> _getSportsCenter(int sportsCenterId) async {
     try {
-      final sportsCenter = await getSportsCenterById.execute(sportsCenterId);
+      final sportsCenter = await _getSportsCenterById.execute(sportsCenterId);
       if (sportsCenter == null) throw Exception('Cannot find sports center');
 
       return sportsCenter;
@@ -161,18 +170,18 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     }
   }
 
-  Future<String> _getSportsCenterDetailsUrl(int sportsCenterId) async {
+  Future<String> _getDetailsUrl(int sportsCenterId) async {
     try {
-      return await getSportsCenterDetailsUrl.execute(sportsCenterId);
+      return await _getSportsCenterDetailsUrl.execute(sportsCenterId);
     } catch (error) {
       log("Failed to get sports center details url: $error");
       rethrow;
     }
   }
 
-  Future<bool> _checkIfBookmarked(int sportsCenterId) async {
+  Future<bool> _checkBookmarked(int sportsCenterId) async {
     try {
-      return await checkIfBookmarked.execute(sportsCenterId);
+      return await _checkIfBookmarked.execute(sportsCenterId);
     } catch (error) {
       log("Failed to get bookmark data: $error");
       rethrow;

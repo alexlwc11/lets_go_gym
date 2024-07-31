@@ -24,37 +24,52 @@ part 'entry_event.dart';
 part 'entry_state.dart';
 
 class EntryBloc extends Bloc<EntryEvent, EntryState> {
-  final RegisterNewUser registerNewUser;
-  final UserSignIn userSignIn;
-  final GetDeviceUUID getDeviceUUID;
-  final SaveDeviceUUID saveDeviceUUID;
-  final GetStoredSessionToken getStoredSessionToken;
-  final SaveSessionToken saveSessionToken;
-  final GetAppInfo getAppInfo;
-  final GetCurrentDataInfo getCurrentDataInfo;
-  final UpdateRegionsData updateRegionsData;
-  final UpdateDistrictsData updateDistrictsData;
-  final UpdateSportsCentersData updateSportsCentersData;
-  final UpdateRegionDataLastUpdated updateRegionDataLastUpdated;
-  final UpdateDistrictDataLastUpdated updateDistrictDataLastUpdated;
-  final UpdateSportsCenterDataLastUpdated updateSportsCenterDataLastUpdated;
+  final RegisterNewUser _registerNewUser;
+  final UserSignIn _userSignIn;
+  final GetDeviceUUID _getDeviceUUID;
+  final SaveDeviceUUID _saveDeviceUUID;
+  final GetStoredSessionToken _getStoredSessionToken;
+  final SaveSessionToken _saveSessionToken;
+  final GetAppInfo _getAppInfo;
+  final GetCurrentDataInfo _getCurrentDataInfo;
+  final UpdateRegionsData _updateRegionsData;
+  final UpdateDistrictsData _updateDistrictsData;
+  final UpdateSportsCentersData _updateSportsCentersData;
+  final UpdateRegionDataLastUpdated _updateRegionDataLastUpdated;
+  final UpdateDistrictDataLastUpdated _updateDistrictDataLastUpdated;
+  final UpdateSportsCenterDataLastUpdated _updateSportsCenterDataLastUpdated;
 
   EntryBloc({
-    required this.registerNewUser,
-    required this.userSignIn,
-    required this.getDeviceUUID,
-    required this.saveDeviceUUID,
-    required this.getStoredSessionToken,
-    required this.saveSessionToken,
-    required this.getAppInfo,
-    required this.getCurrentDataInfo,
-    required this.updateRegionsData,
-    required this.updateDistrictsData,
-    required this.updateSportsCentersData,
-    required this.updateRegionDataLastUpdated,
-    required this.updateDistrictDataLastUpdated,
-    required this.updateSportsCenterDataLastUpdated,
-  }) : super(DataUpdating()) {
+    required RegisterNewUser registerNewUser,
+    required UserSignIn userSignIn,
+    required GetDeviceUUID getDeviceUUID,
+    required SaveDeviceUUID saveDeviceUUID,
+    required GetStoredSessionToken getStoredSessionToken,
+    required SaveSessionToken saveSessionToken,
+    required GetAppInfo getAppInfo,
+    required GetCurrentDataInfo getCurrentDataInfo,
+    required UpdateRegionsData updateRegionsData,
+    required UpdateDistrictsData updateDistrictsData,
+    required UpdateSportsCentersData updateSportsCentersData,
+    required UpdateRegionDataLastUpdated updateRegionDataLastUpdated,
+    required UpdateDistrictDataLastUpdated updateDistrictDataLastUpdated,
+    required UpdateSportsCenterDataLastUpdated
+        updateSportsCenterDataLastUpdated,
+  })  : _updateSportsCenterDataLastUpdated = updateSportsCenterDataLastUpdated,
+        _updateDistrictDataLastUpdated = updateDistrictDataLastUpdated,
+        _updateRegionDataLastUpdated = updateRegionDataLastUpdated,
+        _updateSportsCentersData = updateSportsCentersData,
+        _updateDistrictsData = updateDistrictsData,
+        _updateRegionsData = updateRegionsData,
+        _getCurrentDataInfo = getCurrentDataInfo,
+        _getAppInfo = getAppInfo,
+        _saveSessionToken = saveSessionToken,
+        _getStoredSessionToken = getStoredSessionToken,
+        _saveDeviceUUID = saveDeviceUUID,
+        _getDeviceUUID = getDeviceUUID,
+        _userSignIn = userSignIn,
+        _registerNewUser = registerNewUser,
+        super(DataUpdating()) {
     on<AuthTokenRequested>(_onAuthTokenRequested);
     on<AppInfoRequested>(_onAppInfoRequested);
     on<CurrentDataInfoRequested>(_onCurrentDataInfoRequested);
@@ -72,14 +87,14 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
   Future<void> _onAuthTokenRequested(
       AuthTokenRequested event, Emitter<EntryState> emit) async {
     try {
-      String? deviceUUID = await getDeviceUUID.execute();
-      SessionToken? storedSessionToken = await getStoredSessionToken.execute();
+      String? deviceUUID = await _getDeviceUUID.execute();
+      SessionToken? storedSessionToken = await _getStoredSessionToken.execute();
       if (deviceUUID == null) {
         // no device UUID found, generate new UUID and register as new user
         final newDeviceUUID = generateUUID();
-        final newSessionToken = await registerNewUser.execute(newDeviceUUID);
-        await saveSessionToken.execute(newSessionToken);
-        await saveDeviceUUID.execute(newDeviceUUID);
+        final newSessionToken = await _registerNewUser.execute(newDeviceUUID);
+        await _saveSessionToken.execute(newSessionToken);
+        await _saveDeviceUUID.execute(newDeviceUUID);
       } else if (storedSessionToken == null ||
           (storedSessionToken.sessionTokenExpiredAt.isBefore(DateTime.now()) &&
               storedSessionToken.refreshTokenExpiredAt
@@ -87,8 +102,8 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
         // sign in with the stored device UUID if:
         // 1. no session token found OR
         // 2. session token and refresh token are expired
-        final newSessionToken = await userSignIn.execute(deviceUUID);
-        await saveSessionToken.execute(newSessionToken);
+        final newSessionToken = await _userSignIn.execute(deviceUUID);
+        await _saveSessionToken.execute(newSessionToken);
       }
 
       emit(DataUpdating(finishedStep: AppInitStep.authToken));
@@ -101,7 +116,7 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
   Future<void> _onAppInfoRequested(
       AppInfoRequested event, Emitter<EntryState> emit) async {
     try {
-      final latestAppInfo = await getAppInfo.execute();
+      final latestAppInfo = await _getAppInfo.execute();
       _latestDataInfo = latestAppInfo.dataInfo;
 
       final packageInfo = await PackageInfo.fromPlatform();
@@ -127,7 +142,7 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
   Future<void> _onCurrentDataInfoRequested(
       CurrentDataInfoRequested event, Emitter<EntryState> emit) async {
     try {
-      _dataInfo = await getCurrentDataInfo.execute();
+      _dataInfo = await _getCurrentDataInfo.execute();
 
       emit(DataUpdating(finishedStep: AppInitStep.dataInfo));
       add(RegionDataUpdateRequested());
@@ -143,9 +158,9 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       if (latestUpdatedAt != null) {
         final lastUpdatedAt = _dataInfo?.regionDataLastUpdatedAt;
         if (lastUpdatedAt?.isBefore(latestUpdatedAt) != false) {
-          await updateRegionsData.execute();
+          await _updateRegionsData.execute();
 
-          await updateRegionDataLastUpdated.execute();
+          await _updateRegionDataLastUpdated.execute();
         }
       }
 
@@ -163,9 +178,9 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       if (latestUpdatedAt != null) {
         final lastUpdatedAt = _dataInfo?.districtDataLastUpdatedAt;
         if (lastUpdatedAt?.isBefore(latestUpdatedAt) != false) {
-          await updateDistrictsData.execute();
+          await _updateDistrictsData.execute();
 
-          await updateDistrictDataLastUpdated.execute();
+          await _updateDistrictDataLastUpdated.execute();
         }
       }
 
@@ -183,9 +198,9 @@ class EntryBloc extends Bloc<EntryEvent, EntryState> {
       if (latestUpdatedAt != null) {
         final lastUpdatedAt = _dataInfo?.sportsCenterDataLastUpdatedAt;
         if (lastUpdatedAt?.isBefore(latestUpdatedAt) != false) {
-          await updateSportsCentersData.execute();
+          await _updateSportsCentersData.execute();
 
-          await updateSportsCenterDataLastUpdated.execute();
+          await _updateSportsCenterDataLastUpdated.execute();
         }
       }
 

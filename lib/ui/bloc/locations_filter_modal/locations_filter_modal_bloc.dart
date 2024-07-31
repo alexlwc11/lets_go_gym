@@ -15,14 +15,16 @@ part 'locations_filter_modal_state.dart';
 
 class LocationsFilterModalBloc
     extends Bloc<LocationsFilterModalEvent, LocationsFilterModalState> {
-  final GetAllRegions getAllRegions;
-  final GetAllDistricts getAllDistricts;
+  final GetAllRegions _getAllRegions;
+  final GetAllDistricts _getAllDistricts;
 
   LocationsFilterModalBloc({
     required LocationsFilter currentFilter,
-    required this.getAllRegions,
-    required this.getAllDistricts,
-  }) : super(LocationsFilterModalDataLoadingInProgress()) {
+    required GetAllRegions getAllRegions,
+    required GetAllDistricts getAllDistricts,
+  })  : _getAllDistricts = getAllDistricts,
+        _getAllRegions = getAllRegions,
+        super(LocationsFilterModalDataLoadingInProgress()) {
     on<LocationsFilterModalInitRequested>(_onLocationsFilterModalInitRequested);
     on<AllRegionChipSelected>(_onAllRegionChipSelected);
     on<RegionFilterUpdateRequested>(_onRegionFilterUpdateRequested);
@@ -42,8 +44,8 @@ class LocationsFilterModalBloc
       LocationsFilterModalInitRequested event,
       Emitter<LocationsFilterModalState> emit) async {
     try {
-      _regions = await _getAllRegions();
-      _districts = await _getAllDistricts();
+      _regions = await _getRegions();
+      _districts = await _getDistricts();
 
       emit(LocationsFilterModalDataUpdated(
         regionChipItemVMs: _generateRegionChipItemVMs(
@@ -161,18 +163,18 @@ class LocationsFilterModalBloc
         .toList();
   }
 
-  Future<List<Region>> _getAllRegions() async {
+  Future<List<Region>> _getRegions() async {
     try {
-      return await getAllRegions.execute();
+      return await _getAllRegions.execute();
     } catch (_) {
       log("Failed to get all regions");
       rethrow;
     }
   }
 
-  Future<List<District>> _getAllDistricts() async {
+  Future<List<District>> _getDistricts() async {
     try {
-      return await getAllDistricts.execute();
+      return await _getAllDistricts.execute();
     } catch (_) {
       log("Failed to get all districts");
       rethrow;
