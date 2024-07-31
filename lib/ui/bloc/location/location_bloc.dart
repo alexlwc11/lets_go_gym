@@ -85,7 +85,7 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
       final sportsCenter = await _getSportsCenter(_sportsCenterId);
       final district = await _getDistrict(sportsCenter.districtId);
       final region = await _getRegion(district.regionId);
-      final isBookmarked = await _checkBookmarked(_sportsCenterId);
+      final isBookmarked = _checkBookmarked(_sportsCenterId);
 
       _locationVM = LocationVM.create(
         region: region,
@@ -179,9 +179,9 @@ class LocationBloc extends Bloc<LocationEvent, LocationState> {
     }
   }
 
-  Future<bool> _checkBookmarked(int sportsCenterId) async {
+  bool _checkBookmarked(int sportsCenterId) {
     try {
-      return await _checkIfBookmarked.execute(sportsCenterId);
+      return _checkIfBookmarked.execute(sportsCenterId);
     } catch (error) {
       log("Failed to get bookmark data: $error");
       rethrow;
