@@ -25,9 +25,6 @@ if (flutterVersionName == null) {
 android {
     namespace "com.dev.alexlwc.lets_go_gym"
     compileSdkVersion flutter.compileSdkVersion
-    // Some plugins required later version of ndk
-    // ndkVersion flutter.ndkVersion
-    ndkVersion "26.1.10909125"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -61,6 +58,24 @@ android {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+        }
+
+        debug {
+            signingConfig signingConfigs.debug
+        }
+    }
+
+    flavorDimensions "flavor"
+
+    productFlavors{
+        develop{
+            dimension "flavor"
+        }
+        staging{
+            dimension "flavor"
+        }
+        production{
+            dimension "flavor"
         }
     }
 

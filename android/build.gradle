@@ -1,5 +1,5 @@
 buildscript {
-    ext.kotlin_version = '1.7.10'
+    ext.kotlin_version = '1.9.0'
     repositories {
         google()
         mavenCentral()
@@ -15,16 +15,21 @@ allprojects {
         google()
         mavenCentral()
     }
+    tasks.withType(JavaCompile).tap {
+        configureEach {
+            options.compilerArgs << '-Xlint:-options'
+        }
+    }
 }
 
-rootProject.buildDir = '../build'
+rootProject.layout.buildDirectory = file('../build')
 subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.layout.buildDirectory= file("${rootProject.layout.buildDirectory.get().asFile}/${project.name}")
 }
 subprojects {
     project.evaluationDependsOn(':app')
 }
 
 tasks.register("clean", Delete) {
-    delete rootProject.buildDir
+    delete rootProject.layout.buildDirectory
 }
