@@ -1,6 +1,16 @@
 const String appFlavor = String.fromEnvironment('FLUTTER_APP_FLAVOR');
-const String _devFlavor = 'develop';
-const String _stagingFlavor = 'staging';
-const String _prodFlavor = 'production';
 
-String get appFlavorLabel => appFlavor == _prodFlavor ? '' : appFlavor;
+enum AppFlavor {
+  develop(name: 'develop'),
+  staging(name: 'staging'),
+  production(name: 'production');
+
+  final String name;
+
+  const AppFlavor({
+    required this.name,
+  });
+
+  static String get appFlavorLabel =>
+      appFlavor == AppFlavor.production.name ? '' : appFlavor;
+}
