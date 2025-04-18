@@ -1,0 +1,2 @@
+// TODO 1
+- different app name for different flavor (can't be update dynamically as the localized string is used)

@@ -70,9 +70,13 @@ android {
     productFlavors{
         develop{
             dimension "flavor"
+            resValue "string", "appName", "Let\\'s go gym dev"
+            applicationIdSuffix ".dev"
         }
         staging{
             dimension "flavor"
+            resValue "string", "appName", "Let\\'s go gym staging"
+            applicationIdSuffix ".staging"
         }
         production{
             dimension "flavor"

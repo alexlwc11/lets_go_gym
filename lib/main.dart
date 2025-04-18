@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:lets_go_gym/core/utils/helper/app_flavor_helper.dart'
+    as app_flavor_helper;
 import 'package:lets_go_gym/core/utils/helper/clear_storage_helper.dart';
 import 'package:lets_go_gym/core/utils/localization/localization_helper.dart';
 import 'package:lets_go_gym/core/utils/theme/theme_helper.dart';
@@ -37,13 +39,25 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
+    final mainApp = MultiBlocProvider(
       providers: [
         BlocProvider.value(value: di.sl<LanguageSettingsCubit>()),
         BlocProvider.value(value: di.sl<ThemeSettingsCubit>()),
       ],
       child: _App(),
     );
+
+    final appFlavorLabel = app_flavor_helper.appFlavorLabel;
+    return appFlavorLabel.isNotEmpty
+        ? Directionality(
+            textDirection: TextDirection.ltr,
+            child: Banner(
+              message: appFlavorLabel,
+              location: BannerLocation.topEnd,
+              child: mainApp,
+            ),
+          )
+        : mainApp;
   }
 }
 
@@ -51,6 +65,7 @@ class _App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      debugShowCheckedModeBanner: false,
       onGenerateTitle: (context) => context.appLocalization.appTitle,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
