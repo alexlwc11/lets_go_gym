@@ -5,9 +5,11 @@
 *.swp
 .DS_Store
 .atom/
+.build/
 .buildlog/
 .history
 .svn/
+.swiftpm/
 migrate_working_dir/
 
 # IntelliJ related
@@ -29,7 +31,11 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+build/
+
+# localisations
+lib/core/l10n/missing_translations.txt
+lib/core/l10n/app_localizations*.dart
 
 # Symbolication related
 app.*.symbols
@@ -50,4 +56,4 @@ app.*.map.json
 *.freezed.dart
 
 # mock data
-/lib/mock_data/
+lib/mock_data/
