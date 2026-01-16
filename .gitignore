@@ -31,7 +31,7 @@ migrate_working_dir/
 .flutter-plugins-dependencies
 .pub-cache/
 .pub/
-/build/
+build/
 
 # Symbolication related
 app.*.symbols
@@ -52,4 +52,4 @@ app.*.map.json
 *.freezed.dart
 
 # mock data
-/lib/mock_data/
+lib/mock_data/
